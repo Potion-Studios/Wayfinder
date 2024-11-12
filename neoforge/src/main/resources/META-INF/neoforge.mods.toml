@@ -1,26 +1,26 @@
 modLoader = "javafml"
 loaderVersion = "[4,)"
 #issueTrackerURL = ""
-license = "Insert License Here"
+license = "All Rights Reserved"
 
 [[mods]]
-modId = "examplemod"
+modId = "wayfinder"
 version = "${version}"
-displayName = "Example Mod"
-authors = "Me!"
+displayName = "Wayfinder"
+authors = "Joseph T. McQuigg (JT122406), AOCAWOL"
 description = '''
 This is an example description! Tell everyone what your mod is about!
 '''
 #logoFile = ""
 
-[[dependencies.example_mod]]
+[[dependencies.wayfinder]]
 modId = "neoforge"
 type = "required"
 versionRange = "[21.1,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.example_mod]]
+[[dependencies.wayfinder]]
 modId = "minecraft"
 type = "required"
 versionRange = "[1.21,)"

@@ -27,16 +27,14 @@ configurations {
 
 loom.accessWidenerPath.set(project(":common").loom.accessWidenerPath)
 
-
-// Fabric Datagen Gradle config.  Remove if not using Fabric datagen
-fabricApi.configureDataGeneration()
-
 dependencies {
     modImplementation("net.fabricmc:fabric-loader:${project.properties["fabric_loader_version"]}")
     modApi("net.fabricmc.fabric-api:fabric-api:${project.properties["fabric_api_version"]}+$minecraftVersion")
 
     "common"(project(":common", "namedElements")) { isTransitive = false }
     "shadowBundle"(project(":common", "transformProductionFabric"))
+
+    modApi("software.bernie.geckolib:geckolib-fabric-$minecraftVersion:${project.properties["geckolib_version"]}")
 }
 
 tasks {
@@ -49,7 +47,7 @@ tasks {
     }
 
     shadowJar {
-        exclude("architectury.common.json", "com/example/examplemod/fabric/datagen/**")
+        exclude("architectury.common.json")
         configurations = listOf(project.configurations.getByName("shadowBundle"))
         archiveClassifier.set("dev-shadow")
     }

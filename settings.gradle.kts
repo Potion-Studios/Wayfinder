@@ -17,4 +17,4 @@ develocity.buildScan {
 
 include("common", "fabric", "forge", "neoforge")
 
-rootProject.name = "ExampleMod"
+rootProject.name = "Wayfinder"

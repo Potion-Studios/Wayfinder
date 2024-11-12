@@ -1,11 +1,11 @@
-package com.example.examplemod.neoforge.datagen;
+package net.potionstudios.wayfinder.neoforge.datagen;
 
-import com.example.examplemod.ExampleMod;
+import net.potionstudios.wayfinder.Wayfinder;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = ExampleMod.MOD_ID)
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = Wayfinder.MOD_ID)
 class NeoForgeDatagen {
 
     @SubscribeEvent

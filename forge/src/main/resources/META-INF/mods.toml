@@ -1,25 +1,25 @@
 modLoader = "javafml"
 loaderVersion = "[52,)"
 issueTrackerURL = ""
-license = "Insert License Here"
+license = "All Rights Reserved"
 
 [[mods]]
-modId = "examplemod"
+modId = "wayfinder"
 version = "${version}"
-displayName = "ExampleMod"
-authors = "Example Author"
+displayName = "Wayfinder"
+authors = "Joseph T. McQuigg (JT122406), AOCAWOL"
 description = '''
 '''
 #logoFile = ""
 
-[[dependencies.examplemod]]
+[[dependencies.wayfinder]]
 modId = "forge"
 mandatory = true
 versionRange = "[52.0,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.examplemod]]
+[[dependencies.wayfinder]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[1.21.1]"

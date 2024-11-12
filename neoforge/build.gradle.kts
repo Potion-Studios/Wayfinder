@@ -31,7 +31,7 @@ loom {
     // NeoForge Datagen Gradle config.  Remove if not using NeoForge datagen
     runs.create("datagen") {
         data()
-        programArgs("--all", "--mod", "examplemod")
+        programArgs("--all", "--mod", "wayfinder")
         programArgs("--output", project(":common").file("src/main/generated/resources").absolutePath)
         programArgs("--existing", project(":common").file("src/main/resources").absolutePath)
     }
@@ -42,6 +42,8 @@ dependencies {
 
     "common"(project(":common", "namedElements")) { isTransitive = false }
     "shadowBundle"(project(":common", "transformProductionNeoForge"))
+
+    modApi("software.bernie.geckolib:geckolib-neoforge-$minecraftVersion:${project.properties["geckolib_version"]}")
 }
 
 tasks {
@@ -54,7 +56,7 @@ tasks {
     }
 
     shadowJar {
-        exclude("architectury.common.json", "com/example/examplemod/neoforge/datagen/**")
+        exclude("architectury.common.json", "net/potionstudios/wayfinder/neoforge/datagen/**")
         configurations = listOf(project.configurations.getByName("shadowBundle"))
         archiveClassifier.set("dev-shadow")
     }
@@ -62,6 +64,6 @@ tasks {
     remapJar {
         inputFile.set(shadowJar.get().archiveFile)
         dependsOn(shadowJar)
-        atAccessWideners.add("examplemod.accesswidener")
+        atAccessWideners.add("wayfinder.accesswidener")
     }
 }
