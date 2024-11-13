@@ -25,3 +25,10 @@ mandatory = true
 versionRange = "[1.21.1]"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.wayfinder]]
+modId = "geckolib"
+mandatory = true
+versionRange = "[4.7,)"
+ordering = "AFTER"
+side = "BOTH"

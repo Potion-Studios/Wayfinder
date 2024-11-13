@@ -4,7 +4,7 @@ plugins {
 
 architectury {
     platformSetupLoomIde()
-    forge()
+    fabric()
 }
 
 val minecraftVersion = project.properties["minecraft_version"] as String
@@ -18,39 +18,30 @@ configurations {
     create("shadowBundle")
     compileClasspath.get().extendsFrom(configurations["common"])
     runtimeClasspath.get().extendsFrom(configurations["common"])
-    getByName("developmentForge").extendsFrom(configurations["common"])
+    getByName("developmentFabric").extendsFrom(configurations["common"])
     "shadowBundle" {
         isCanBeResolved = true
         isCanBeConsumed = false
     }
 }
 
-loom {
-    accessWidenerPath.set(project(":common").loom.accessWidenerPath)
-
-    forge {
-        convertAccessWideners.set(true)
-        extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
-
-        mixinConfig("examplemod-common.mixins.json")
-        mixinConfig("examplemod.mixins.json")
-    }
-}
+loom.accessWidenerPath.set(project(":Common").loom.accessWidenerPath)
 
 dependencies {
-    forge("net.minecraftforge:forge:$minecraftVersion-${project.properties["forge_version"]}")
+    modImplementation("net.fabricmc:fabric-loader:${project.properties["fabric_loader_version"]}")
+    modApi("net.fabricmc.fabric-api:fabric-api:${project.properties["fabric_api_version"]}+$minecraftVersion")
 
-    "common"(project(":common", "namedElements")) { isTransitive = false }
-    "shadowBundle"(project(":common", "transformProductionForge"))
+    "common"(project(":Common", "namedElements")) { isTransitive = false }
+    "shadowBundle"(project(":Common", "transformProductionFabric"))
 
-    modApi("software.bernie.geckolib:geckolib-forge-$minecraftVersion:${project.properties["geckolib_version"]}")
+    modApi("software.bernie.geckolib:geckolib-fabric-$minecraftVersion:${project.properties["geckolib_version"]}")
 }
 
 tasks {
     processResources {
         inputs.property("version", project.version)
 
-        filesMatching("META-INF/mods.toml") {
+        filesMatching("fabric.mod.json") {
             expand(mapOf("version" to project.version))
         }
     }
@@ -62,11 +53,8 @@ tasks {
     }
 
     remapJar {
+        injectAccessWidener.set(true)
         inputFile.set(shadowJar.get().archiveFile)
         dependsOn(shadowJar)
     }
-}
-
-configurations.configureEach {
-    resolutionStrategy.force("net.sf.jopt-simple:jopt-simple:5.0.4")
 }

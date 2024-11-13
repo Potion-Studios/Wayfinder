@@ -27,5 +27,12 @@ versionRange = "[1.21,)"
 ordering = "NONE"
 side = "BOTH"
 
+[[dependencies.wayfinder]]
+modId = "geckolib"
+type = "required"
+versionRange = "[4.7,)"
+ordering = "AFTER"
+side = "BOTH"
+
 [[mixins]]
 config = "examplemod.mixins.json"

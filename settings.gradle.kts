@@ -15,6 +15,6 @@ develocity.buildScan {
     termsOfUseAgree = "yes"
 }
 
-include("common", "fabric", "forge", "neoforge")
+include("Common", "Fabric", "Forge", "NeoForge")
 
 rootProject.name = "Wayfinder"
