@@ -62,4 +62,16 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity {
     protected @Nullable SoundEvent getDeathSound() {
         return WayfinderSounds.WAYFINDER_DEATH.get();
     }
+
+    @Override
+    protected @Nullable SoundEvent getAmbientSound() {
+        return switch (level().getRandom().nextInt(6)) {
+            case 0 -> WayfinderSounds.WAYFINDER_IDLE0.get();
+            case 1 -> WayfinderSounds.WAYFINDER_IDLE1.get();
+            case 2 -> WayfinderSounds.WAYFINDER_IDLE2.get();
+            case 3 -> WayfinderSounds.WAYFINDER_IDLE3.get();
+            case 4 -> WayfinderSounds.WAYFINDER_IDLE4.get();
+            default -> WayfinderSounds.WAYFINDER_IDLE5.get();
+        };
+    }
 }
