@@ -1,6 +1,7 @@
 package net.potionstudios.wayfinder;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 
 public class Wayfinder {
@@ -16,5 +17,9 @@ public class Wayfinder {
      */
     public static void init() {
 
+    }
+
+    public static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 }
