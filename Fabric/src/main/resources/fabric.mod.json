@@ -20,10 +20,6 @@
       "net.potionstudios.wayfinder.fabric.WayfinderFabric"
     ]
   },
-  "mixins": [
-    "examplemod.mixins.json",
-    "examplemod-common.mixins.json"
-  ],
   "depends": {
     "fabric": "*",
     "minecraft": ">=1.21.1",
