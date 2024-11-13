@@ -21,6 +21,12 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity {
     private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
 
     private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
+    private static final RawAnimation DEATH = RawAnimation.begin().thenPlay("death");
+    private static final RawAnimation SEARCHING_START = RawAnimation.begin().thenPlay("searching_start");
+    private static final RawAnimation SEARCHING_END = RawAnimation.begin().thenPlay("searching_end");
+    private static final RawAnimation SEARCHING_LOOP = RawAnimation.begin().thenLoop("searching_loop");
+    private static final RawAnimation NO = RawAnimation.begin().thenPlay("no");
+
 
     public WayfinderEntity(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
