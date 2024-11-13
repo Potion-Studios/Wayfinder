@@ -19,7 +19,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity {
 
     private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
 
-    protected WayfinderEntity(EntityType<? extends PathfinderMob> entityType, Level level) {
+    public WayfinderEntity(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
     }
 
