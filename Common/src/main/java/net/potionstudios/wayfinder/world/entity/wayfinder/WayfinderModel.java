@@ -1,22 +1,23 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
 import net.minecraft.resources.ResourceLocation;
+import net.potionstudios.wayfinder.Wayfinder;
 import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.model.GeoModel;
 
 class WayfinderModel <T extends GeoAnimatable> extends GeoModel<T> {
     @Override
     public ResourceLocation getModelResource(T animatable) {
-        return null;
+        return Wayfinder.id("geo/wayfinder.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(T animatable) {
-        return null;
+        return Wayfinder.id("textures/entity/wayfinder/wayfinder.png");
     }
 
     @Override
     public ResourceLocation getAnimationResource(T animatable) {
-        return null;
+        return Wayfinder.id("animations/wayfinder.animation.json");
     }
 }
