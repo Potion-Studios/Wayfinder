@@ -1,3 +1,4 @@
 {
-  "entity.wayfinder.wayfinder": "Wayfinder"
+  "entity.wayfinder.wayfinder": "Wayfinder",
+  "subtitles.entity.wayfinder.death": "Wayfinder dies"
 }

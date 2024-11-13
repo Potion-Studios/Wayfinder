@@ -1,0 +1,44 @@
+{
+  "wayfinder.death": {
+    "sounds": [
+      "wayfinder:entity/wayfinder/death"
+    ],
+    "subtitle": "subtitles.entity.wayfinder.death"
+  },
+  "wayfinder.idle0": {
+    "sounds": [
+      "wayfinder:entity/wayfinder/idle0"
+    ],
+    "subtitle": "subtitles.entity.wayfinder.idle0"
+  },
+  "wayfinder.idle1": {
+    "sounds": [
+      "wayfinder:entity/wayfinder/idle1"
+    ],
+    "subtitle": "subtitles.entity.wayfinder.idle1"
+  },
+  "wayfinder.idle2": {
+    "sounds": [
+      "wayfinder:entity/wayfinder/idle2"
+    ],
+    "subtitle": "subtitles.entity.wayfinder.idle2"
+  },
+  "wayfinder.idle3": {
+    "sounds": [
+      "wayfinder:entity/wayfinder/idle3"
+    ],
+    "subtitle": "subtitles.entity.wayfinder.idle3"
+  },
+  "wayfinder.idle4": {
+    "sounds": [
+      "wayfinder:entity/wayfinder/idle4"
+    ],
+    "subtitle": "subtitles.entity.wayfinder.idle4"
+  },
+  "wayfinder.idle5": {
+    "sounds": [
+      "wayfinder:entity/wayfinder/idle5"
+    ],
+    "subtitle": "subtitles.entity.wayfinder.idle5"
+  }
+}
