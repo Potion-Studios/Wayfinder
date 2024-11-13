@@ -1,7 +1,7 @@
 {
 	"format_version": "1.8.0",
 	"animations": {
-		"animation.wayfinder.idle": {
+		"idle": {
 			"loop": true,
 			"animation_length": 2,
 			"bones": {
@@ -95,7 +95,7 @@
 				}
 			}
 		},
-		"animation.wayfinder.death": {
+		"death": {
 			"animation_length": 0.75,
 			"bones": {
 				"hedge_head": {
@@ -164,7 +164,7 @@
 				}
 			}
 		},
-		"animation.wayfinder.searching_start": {
+		"searching_start": {
 			"animation_length": 0.75,
 			"bones": {
 				"hedge_head": {
@@ -230,7 +230,7 @@
 				}
 			}
 		},
-		"animation.wayfinder.searching_end": {
+		"searching_end": {
 			"animation_length": 0.75,
 			"bones": {
 				"hedge_head": {
@@ -296,7 +296,7 @@
 				}
 			}
 		},
-		"animation.wayfinder.searching_loop": {
+		"searching_loop": {
 			"loop": true,
 			"animation_length": 2,
 			"bones": {
@@ -410,7 +410,7 @@
 				}
 			}
 		},
-		"animation.wayfinder.no": {
+		"no": {
 			"animation_length": 1,
 			"bones": {
 				"hedge_head": {

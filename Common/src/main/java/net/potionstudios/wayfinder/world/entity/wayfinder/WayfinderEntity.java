@@ -10,14 +10,17 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class WayfinderEntity extends PathfinderMob implements GeoEntity {
 
     private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
+
+    private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
 
     public WayfinderEntity(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
@@ -25,7 +28,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "controller", 0, this::predicate));
+    }
 
+    private <E extends GeoAnimatable> PlayState predicate(AnimationState<E> event) {
+        return event.setAndContinue(IDLE);
     }
 
     @Override
@@ -34,7 +41,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity {
     }
 
     @Override
-    protected @NotNull InteractionResult mobInteract(Player player, InteractionHand hand) {
+    protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         return super.mobInteract(player, hand);
     }
 
