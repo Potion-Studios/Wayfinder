@@ -18,6 +18,7 @@ public class WayfinderForge {
         IEventBus MOD_BUS = context.getModEventBus();
         IEventBus EVENT_BUS = MinecraftForge.EVENT_BUS;
         Wayfinder.init();
+        ForgePlatformHandler.register(MOD_BUS);
         MOD_BUS.addListener((Consumer<EntityAttributeCreationEvent>) event -> Wayfinder.registerEntityAttributes(event::put));
     }
 }

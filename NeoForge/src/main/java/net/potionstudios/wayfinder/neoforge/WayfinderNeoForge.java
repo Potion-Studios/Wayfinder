@@ -14,6 +14,7 @@ import java.util.function.Consumer;
 public class WayfinderNeoForge {
     public WayfinderNeoForge(IEventBus eventBus) {
         Wayfinder.init();
+        NeoForgePlatformHandler.register(eventBus);
         eventBus.addListener((Consumer<EntityAttributeCreationEvent>) event -> Wayfinder.registerEntityAttributes(event::put));
     }
 }
