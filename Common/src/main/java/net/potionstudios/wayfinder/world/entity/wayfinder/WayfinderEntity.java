@@ -41,6 +41,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity {
     }
 
     private <E extends GeoAnimatable> PlayState predicate(AnimationState<E> event) {
+        if (isDeadOrDying())
+            return event.setAndContinue(DEATH);
         return event.setAndContinue(IDLE);
     }
 
