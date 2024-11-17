@@ -1,5 +1,10 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -10,6 +15,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,6 +25,8 @@ import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.util.GeckoLibUtil;
+
+import java.util.function.Predicate;
 
 public class WayfinderEntity extends PathfinderMob implements GeoEntity {
 
@@ -75,5 +84,9 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity {
             case 4 -> WayfinderSounds.WAYFINDER_IDLE4.get();
             default -> WayfinderSounds.WAYFINDER_IDLE5.get();
         };
+    }
+
+    private @Nullable BlockPos findBiome(ServerLevel level, ResourceKey<Biome> biome) {
+        return level.findClosestBiome3d(Predicate.isEqual(Holder.direct(level.registryAccess().registryOrThrow(Registries.BIOME).getOrThrow(biome))), this.blockPosition(), Wayfinder.CONFIG.wayfinder.MAX_SEARCH_DISTANCE_IN_CHUNKS, 32, 64).getFirst();
     }
 }

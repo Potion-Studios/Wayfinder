@@ -5,6 +5,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.potionstudios.wayfinder.config.Config;
+import net.potionstudios.wayfinder.config.ConfigLoader;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
@@ -19,6 +21,9 @@ public class Wayfinder {
 
     /** The logger for wayfinder. */
     public static final Logger LOGGER = LogUtils.getLogger();
+
+    /** The config for wayfinder. */
+    public static final Config CONFIG = ConfigLoader.loadConfig(Config.class);
 
     /**
      * Initializes the mod.
