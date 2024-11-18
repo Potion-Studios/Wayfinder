@@ -5,6 +5,18 @@
     ],
     "subtitle": "subtitles.entity.wayfinder.death"
   },
+  "wayfinder.hurt0": {
+    "sounds": [
+      "wayfinder:entity/wayfinder/hurt0"
+    ],
+    "subtitle": "subtitles.entity.wayfinder.hurt0"
+  },
+  "wayfinder.hurt1": {
+    "sounds": [
+      "wayfinder:entity/wayfinder/hurt1"
+    ],
+    "subtitle": "subtitles.entity.wayfinder.hurt1"
+  },
   "wayfinder.idle0": {
     "sounds": [
       "wayfinder:entity/wayfinder/idle0"

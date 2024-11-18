@@ -37,6 +37,7 @@ subprojects {
         maven("https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/").content {
             includeGroup("software.bernie.geckolib")
         }
+        maven("https://jitpack.io")
     }
 
     @Suppress("UnstableApiUsage")

@@ -44,6 +44,8 @@ dependencies {
     "shadowBundle"(project(":Common", "transformProductionNeoForge"))
 
     modApi("software.bernie.geckolib:geckolib-neoforge-$minecraftVersion:${project.properties["geckolib_version"]}")
+
+    modLocalRuntime("com.github.Jab125.architectury-data-generation-fix:architectury-data-generation-fix-neoforge:21.0.3")
 }
 
 tasks {

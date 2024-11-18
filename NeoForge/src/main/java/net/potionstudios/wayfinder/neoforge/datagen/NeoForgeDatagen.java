@@ -36,6 +36,8 @@ class NeoForgeDatagen {
         protected void addTranslations() {
             add(WayfinderEntities.WAYFINDER.get(), "Wayfinder");
             add("subtitles.entity.wayfinder.death", "Wayfinder dies");
+            add("subtitles.entity.wayfinder.hurt0", "Wayfinder hurts");
+            add("subtitles.entity.wayfinder.hurt1", "Wayfinder hurts");
         }
     }
 
@@ -54,6 +56,8 @@ class NeoForgeDatagen {
             add(WayfinderSounds.WAYFINDER_IDLE4.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle4"))).subtitle(subtitle("entity.wayfinder.idle4")));
             add(WayfinderSounds.WAYFINDER_IDLE5.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle5"))).subtitle(subtitle("entity.wayfinder.idle5")));
             add(WayfinderSounds.WAYFINDER_DEATH.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/death"))).subtitle(subtitle("entity.wayfinder.death")));
+            add(WayfinderSounds.WAYFINDER_HURT0.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/hurt0"))).subtitle(subtitle("entity.wayfinder.hurt0")));
+            add(WayfinderSounds.WAYFINDER_HURT1.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/hurt1"))).subtitle(subtitle("entity.wayfinder.hurt1")));
         }
 
         private String subtitle(String subtitle) {

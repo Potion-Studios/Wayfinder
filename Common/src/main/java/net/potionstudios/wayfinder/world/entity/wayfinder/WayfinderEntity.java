@@ -8,6 +8,7 @@ import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -111,8 +112,13 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
+    protected @Nullable SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
+	    return getRandom().nextBoolean() ? WayfinderSounds.WAYFINDER_HURT0.get() : WayfinderSounds.WAYFINDER_HURT1.get();
+    }
+
+    @Override
     protected @Nullable SoundEvent getAmbientSound() {
-        return switch (level().getRandom().nextInt(6)) {
+        return switch (getRandom().nextInt(6)) {
             case 0 -> WayfinderSounds.WAYFINDER_IDLE0.get();
             case 1 -> WayfinderSounds.WAYFINDER_IDLE1.get();
             case 2 -> WayfinderSounds.WAYFINDER_IDLE2.get();
