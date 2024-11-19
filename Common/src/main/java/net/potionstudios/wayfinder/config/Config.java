@@ -6,6 +6,7 @@ public class Config {
 
     public static class Wayfinder {
         public int MAX_SEARCH_DISTANCE_IN_CHUNKS = 100;
+        public int COOLDOWN_IN_SECONDS = 60;
     }
 
 }
