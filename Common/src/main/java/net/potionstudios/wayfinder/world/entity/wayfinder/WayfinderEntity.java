@@ -32,7 +32,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
 
     private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
-    private static final RawAnimation DEATH = RawAnimation.begin().thenPlay("death");
+    private static final RawAnimation DEATH = RawAnimation.begin().then("death", Animation.LoopType.HOLD_ON_LAST_FRAME);
     private static final RawAnimation SEARCHING_START = RawAnimation.begin().thenPlay("searching_start");
     private static final RawAnimation SEARCHING_END = RawAnimation.begin().thenPlay("searching_end");
     private static final RawAnimation SEARCHING_LOOP = RawAnimation.begin().thenLoop("searching_loop");
@@ -66,7 +66,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
             uuid = compound.getUUID("Owner");
         else {
             String s = compound.getString("Owner");
-            uuid = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), s);
+            uuid = OldUsersConverter.convertMobOwnerIfNecessary(getServer(), s);
         }
 
         if (uuid != null) setOwnerUUID(uuid);
@@ -78,12 +78,12 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public void setOwnerUUID(@Nullable UUID uuid) {
-        this.entityData.set(DATA_OWNERUUID_ID, Optional.ofNullable(uuid));
+        entityData.set(DATA_OWNERUUID_ID, Optional.ofNullable(uuid));
     }
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "controller", 0, this::predicate));
+        controllers.add(new AnimationController<>(this, "controller", 0, this::predicate).triggerableAnim("no", NO));
     }
 
     private <E extends GeoAnimatable> PlayState predicate(AnimationState<E> event) {
@@ -99,6 +99,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
+        triggerAnim("controller", "no");
         return super.mobInteract(player, hand);
     }
 
