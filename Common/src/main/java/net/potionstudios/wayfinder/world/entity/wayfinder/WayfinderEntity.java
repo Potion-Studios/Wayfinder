@@ -40,6 +40,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     //private static final EntityDataAccessor<Optional<BlockPos>> BLOCK_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private boolean orderedToSit;
 
     public WayfinderEntity(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
@@ -56,6 +57,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         super.addAdditionalSaveData(compound);
         if (getOwnerUUID() != null)
             compound.putUUID("Owner", getOwnerUUID());
+        compound.putBoolean("Sitting", this.orderedToSit);
     }
 
     @Override
@@ -70,6 +72,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         }
 
         if (uuid != null) setOwnerUUID(uuid);
+
+        this.orderedToSit = compound.getBoolean("Sitting");
     }
 
     @Override
@@ -101,6 +105,23 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         triggerAnim("controller", "no");
         return super.mobInteract(player, hand);
+    }
+
+    @Override
+    public boolean canBeLeashed() {
+        return false;
+    }
+
+    public boolean isOrderedToSit() {
+        return this.orderedToSit;
+    }
+
+    public void setOrderedToSit(boolean orderedToSit) {
+        this.orderedToSit = orderedToSit;
+    }
+
+    public final boolean unableToMoveToOwner() {
+        return isOrderedToSit() || isPassenger() || this.getOwner() != null && getOwner().isSpectator();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
