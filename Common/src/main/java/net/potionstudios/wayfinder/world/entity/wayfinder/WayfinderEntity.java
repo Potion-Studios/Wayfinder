@@ -14,6 +14,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,9 +42,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     //private static final EntityDataAccessor<Optional<BlockPos>> BLOCK_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private boolean orderedToSit;
+    private float phaseOffset;
 
     public WayfinderEntity(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
+        phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
     }
 
     @Override
@@ -58,6 +61,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         if (getOwnerUUID() != null)
             compound.putUUID("Owner", getOwnerUUID());
         compound.putBoolean("Sitting", this.orderedToSit);
+        compound.putFloat("Offset", phaseOffset);
     }
 
     @Override
@@ -74,6 +78,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         if (uuid != null) setOwnerUUID(uuid);
 
         this.orderedToSit = compound.getBoolean("Sitting");
+        phaseOffset = compound.getFloat("Offset");
     }
 
     @Override
@@ -125,7 +130,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 4.0D).add(Attributes.MOVEMENT_SPEED, 0.4D).add(Attributes.FALL_DAMAGE_MULTIPLIER, 0);
+        return Mob.createMobAttributes().add(Attributes.MAX_HEALTH, 4.0D).add(Attributes.MOVEMENT_SPEED, 0.4D).add(Attributes.FALL_DAMAGE_MULTIPLIER, 0).add(Attributes.GRAVITY, 0.02f);
     }
 
     @Override
@@ -148,5 +153,31 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
             case 4 -> WayfinderSounds.WAYFINDER_IDLE4.get();
             default -> WayfinderSounds.WAYFINDER_IDLE5.get();
         };
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!level().isClientSide()) {
+            // Get current position
+            double groundY = level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockPosition()).getY();
+            double currentY = getY();
+
+            if ((currentY - groundY) <= 2) {
+                setNoGravity(true);
+                // Calculate a smooth floating offset using sine wave
+                double floatOffset = Math.sin(tickCount * 0.1 + phaseOffset) * 0.05;
+
+                // Keep the ghost between 0.5 and 2 blocks above ground
+                double targetY = Math.max(groundY + 0.5, Math.min(currentY + floatOffset, groundY + 2.0));
+
+                // Adjust Y position while maintaining fluidity
+                this.setPos(getX(), targetY, getZ());
+
+                // Prevent phasing through the ground
+                if (onGround())
+                    setDeltaMovement(getDeltaMovement().multiply(1, 0, 1));
+            } else setNoGravity(false);
+        }
     }
 }
