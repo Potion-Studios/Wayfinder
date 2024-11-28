@@ -12,9 +12,11 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,6 +49,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     public WayfinderEntity(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
         phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
+        setPersistenceRequired();
     }
 
     @Override
@@ -77,7 +80,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
         if (uuid != null) setOwnerUUID(uuid);
 
-        this.orderedToSit = compound.getBoolean("Sitting");
+        orderedToSit = compound.getBoolean("Sitting");
         phaseOffset = compound.getFloat("Offset");
     }
 
@@ -108,6 +111,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
+        setOwnerUUID(player.getUUID());
         triggerAnim("controller", "no");
         return super.mobInteract(player, hand);
     }
@@ -153,6 +157,12 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
             case 4 -> WayfinderSounds.WAYFINDER_IDLE4.get();
             default -> WayfinderSounds.WAYFINDER_IDLE5.get();
         };
+    }
+
+    @Override
+    protected void registerGoals() {
+        //goalSelector.addGoal(0, new CustomFollowOwnerGoal(this, getOwner(),1.0D, 10.0F, 2.0F));
+        goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0F));
     }
 
     @Override
