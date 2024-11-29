@@ -12,12 +12,12 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
+import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
+import net.potionstudios.wayfinder.world.entity.ai.goal.FollowOwnerGoal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoAnimatable;
@@ -50,6 +50,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         super(entityType, level);
         phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
         setPersistenceRequired();
+        moveControl = new WayfinderMoveControl(this, phaseOffset);
     }
 
     @Override
@@ -161,33 +162,12 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     protected void registerGoals() {
-        //goalSelector.addGoal(0, new CustomFollowOwnerGoal(this, getOwner(),1.0D, 10.0F, 2.0F));
-        goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        goalSelector.addGoal(0, new FollowOwnerGoal(this,1.0D, 10.0F, 2.0F));
+        //goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0F));
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        if (!level().isClientSide()) {
-            // Get current position
-            double groundY = level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockPosition()).getY();
-            double currentY = getY();
-
-            if ((currentY - groundY) <= 2) {
-                setNoGravity(true);
-                // Calculate a smooth floating offset using sine wave
-                double floatOffset = Math.sin(tickCount * 0.1 + phaseOffset) * 0.05;
-
-                // Keep the ghost between 0.5 and 2 blocks above ground
-                double targetY = Math.max(groundY + 0.5, Math.min(currentY + floatOffset, groundY + 2.0));
-
-                // Adjust Y position while maintaining fluidity
-                this.setPos(getX(), targetY, getZ());
-
-                // Prevent phasing through the ground
-                if (onGround())
-                    setDeltaMovement(getDeltaMovement().multiply(1, 0, 1));
-            } else setNoGravity(false);
-        }
+    public boolean onGround() {
+        return getY() - level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockPosition()).getY() <= 2;
     }
 }
