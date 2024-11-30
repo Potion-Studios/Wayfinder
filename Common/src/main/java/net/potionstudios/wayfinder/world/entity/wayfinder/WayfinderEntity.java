@@ -45,12 +45,14 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private boolean orderedToSit;
     private float phaseOffset;
+    private boolean searching;
 
     public WayfinderEntity(EntityType<? extends PathfinderMob> entityType, Level level) {
         super(entityType, level);
         phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
-        setPersistenceRequired();
         moveControl = new WayfinderMoveControl(this, phaseOffset);
+        searching = false;
+        setPersistenceRequired();
     }
 
     @Override
@@ -64,8 +66,9 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         super.addAdditionalSaveData(compound);
         if (getOwnerUUID() != null)
             compound.putUUID("Owner", getOwnerUUID());
-        compound.putBoolean("Sitting", this.orderedToSit);
+        compound.putBoolean("Sitting", orderedToSit);
         compound.putFloat("Offset", phaseOffset);
+        compound.putBoolean("Searching", searching);
     }
 
     @Override
@@ -83,6 +86,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
         orderedToSit = compound.getBoolean("Sitting");
         phaseOffset = compound.getFloat("Offset");
+        searching = compound.getBoolean("Searching");
     }
 
     @Override
@@ -130,8 +134,16 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         this.orderedToSit = orderedToSit;
     }
 
+    public boolean isSearching() {
+        return searching;
+    }
+
+    public void setSearching(boolean searching) {
+        this.searching = searching;
+    }
+
     public final boolean unableToMoveToOwner() {
-        return isOrderedToSit() || isPassenger() || this.getOwner() != null && getOwner().isSpectator();
+        return isOrderedToSit() || isPassenger() || this.getOwner() != null && getOwner().isSpectator() || isSearching();
     }
 
     public static AttributeSupplier.Builder createAttributes() {

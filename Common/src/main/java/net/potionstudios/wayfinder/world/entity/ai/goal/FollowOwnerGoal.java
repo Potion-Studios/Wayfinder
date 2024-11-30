@@ -4,7 +4,6 @@ import java.util.EnumSet;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.level.pathfinder.PathType;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +17,6 @@ public class FollowOwnerGoal extends Goal {
     private int timeToRecalcPath;
     private final float stopDistance;
     private final float startDistance;
-    private float oldWaterCost;
 
     public FollowOwnerGoal(WayfinderEntity wayfinder, double speedModifier, float startDistance, float stopDistance) {
         this.wayfinder = wayfinder;
@@ -32,13 +30,10 @@ public class FollowOwnerGoal extends Goal {
     @Override
     public boolean canUse() {
         LivingEntity livingEntity = this.wayfinder.getOwner();
-        if (livingEntity == null) {
-            return false;
-        } else if (this.wayfinder.unableToMoveToOwner()) {
-            return false;
-        } else if (this.wayfinder.distanceToSqr(livingEntity) < (double)(this.startDistance * this.startDistance)) {
-            return false;
-        } else {
+        if (livingEntity == null) return false;
+        else if (this.wayfinder.unableToMoveToOwner()) return false;
+        else if (this.wayfinder.distanceToSqr(livingEntity) < (double)(this.startDistance * this.startDistance)) return false;
+        else {
             this.owner = livingEntity;
             return true;
         }
@@ -46,25 +41,19 @@ public class FollowOwnerGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        if (this.navigation.isDone()) {
-            return false;
-        } else {
-            return !this.wayfinder.unableToMoveToOwner() && !(this.wayfinder.distanceToSqr(this.owner) <= (double) (this.stopDistance * this.stopDistance));
-        }
+        if (this.navigation.isDone()) return false;
+        else return !this.wayfinder.unableToMoveToOwner() && !(this.wayfinder.distanceToSqr(this.owner) <= (double) (this.stopDistance * this.stopDistance));
     }
 
     @Override
     public void start() {
         this.timeToRecalcPath = 0;
-        this.oldWaterCost = this.wayfinder.getPathfindingMalus(PathType.WATER);
-        this.wayfinder.setPathfindingMalus(PathType.WATER, 0.0F);
     }
 
     @Override
     public void stop() {
         this.owner = null;
         this.navigation.stop();
-        this.wayfinder.setPathfindingMalus(PathType.WATER, this.oldWaterCost);
     }
 
     @Override
