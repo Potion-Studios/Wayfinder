@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
-import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderRenderer;
+import net.potionstudios.wayfinder.client.renderer.entity.WayfinderRenderer;
 
 import java.util.function.BiConsumer;
 

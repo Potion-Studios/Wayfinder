@@ -1,6 +1,7 @@
-package net.potionstudios.wayfinder.world.entity.wayfinder;
+package net.potionstudios.wayfinder.client.renderer.entity;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class WayfinderRenderer<T extends WayfinderEntity> extends GeoEntityRenderer<T> {

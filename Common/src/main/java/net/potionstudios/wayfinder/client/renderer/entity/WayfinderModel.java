@@ -1,4 +1,4 @@
-package net.potionstudios.wayfinder.world.entity.wayfinder;
+package net.potionstudios.wayfinder.client.renderer.entity;
 
 import net.minecraft.resources.ResourceLocation;
 import net.potionstudios.wayfinder.Wayfinder;
