@@ -43,15 +43,14 @@ public class WayfinderScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        RenderSystem.setShaderTexture(0, BOOK_TEXTURE);
-        guiGraphics.blit(BOOK_TEXTURE, this.leftPos, this.bottomPos, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-    }
-
-    @Override
     public void renderBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        assert this.minecraft != null;
+        if (this.minecraft.level == null) {
+            this.renderPanorama(guiGraphics, partialTick);
+        }
 
+        RenderSystem.setShaderTexture(0, BOOK_TEXTURE);
+        guiGraphics.blit(BOOK_TEXTURE, leftPos, bottomPos, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT);
+        this.renderMenuBackground(guiGraphics);
     }
 }
