@@ -5,8 +5,6 @@ import net.potionstudios.wayfinder.Wayfinder;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 
-import java.util.function.Consumer;
-
 /**
  * Main class for the mod on the NeoForge platform.
  */
@@ -15,6 +13,6 @@ public class WayfinderNeoForge {
     public WayfinderNeoForge(IEventBus eventBus) {
         Wayfinder.init();
         NeoForgePlatformHandler.register(eventBus);
-        eventBus.addListener((Consumer<EntityAttributeCreationEvent>) event -> Wayfinder.registerEntityAttributes(event::put));
+        eventBus.addListener((EntityAttributeCreationEvent event) -> Wayfinder.registerEntityAttributes(event::put));
     }
 }

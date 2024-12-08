@@ -10,8 +10,6 @@ import net.potionstudios.wayfinder.Wayfinder;
 import net.minecraftforge.fml.common.Mod;
 import net.potionstudios.wayfinder.forge.client.WayfinderClientForge;
 
-import java.util.function.Consumer;
-
 /**
  * Main class for the mod on the Forge platform.
  */
@@ -23,6 +21,6 @@ public class WayfinderForge {
         Wayfinder.init();
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> WayfinderClientForge.init(MOD_BUS));
         ForgePlatformHandler.register(MOD_BUS);
-        MOD_BUS.addListener((Consumer<EntityAttributeCreationEvent>) event -> Wayfinder.registerEntityAttributes(event::put));
+        MOD_BUS.addListener((EntityAttributeCreationEvent event) -> Wayfinder.registerEntityAttributes(event::put));
     }
 }
