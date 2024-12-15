@@ -3,14 +3,14 @@
   "id": "wayfinder",
   "version": "${version}",
   "name": "Wayfinder",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "description": "Adds Wayfinder Entity that can find any biome",
   "authors": [
     "Joseph T. McQuigg (JT122406)",
     "AOCAWOL"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": ""
+    "homepage": "https://potionstudios.net/",
+    "sources": "https://github.com/Potion-Studios/Wayfinder"
   },
   "license": "All Rights Reserved",
   "icon": "assets/examplemod/icon.png",

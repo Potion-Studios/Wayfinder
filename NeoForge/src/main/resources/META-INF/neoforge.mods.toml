@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[4,)"
-#issueTrackerURL = ""
+issueTrackerURL = "https://github.com/Potion-Studios/Wayfinder/issues"
 license = "All Rights Reserved"
 
 [[mods]]
@@ -9,8 +9,9 @@ version = "${version}"
 displayName = "Wayfinder"
 authors = "Joseph T. McQuigg (JT122406), AOCAWOL"
 description = '''
-This is an example description! Tell everyone what your mod is about!
+Adds Wayfinder Entity that can find any biome
 '''
+displayURL="https://potionstudios.net/"
 #logoFile = ""
 
 [[dependencies.wayfinder]]
