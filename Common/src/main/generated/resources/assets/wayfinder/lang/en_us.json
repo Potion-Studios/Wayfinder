@@ -1,5 +1,6 @@
 {
   "entity.wayfinder.wayfinder": "Wayfinder",
+  "item.wayfinder.wayfinder_spawn_egg": "Wayfinder Spawn Egg",
   "subtitles.entity.wayfinder.death": "Wayfinder dies",
   "subtitles.entity.wayfinder.hurt0": "Wayfinder hurts",
   "subtitles.entity.wayfinder.hurt1": "Wayfinder hurts"

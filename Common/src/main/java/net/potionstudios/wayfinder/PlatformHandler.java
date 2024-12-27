@@ -2,6 +2,10 @@ package net.potionstudios.wayfinder;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
 
 import java.nio.file.Path;
 import java.util.ServiceLoader;
@@ -21,6 +25,18 @@ public interface PlatformHandler {
 	 * @return The path to the config directory
 	 */
 	Path configPath();
+
+	/**
+	 * Creates a spawn egg with the specified parameters
+	 * @see SpawnEggItem
+	 * @param entity The entity to be spawned from the spawn egg
+	 * @param backgroundColor The background color of the spawn egg
+	 * @param highlightColor The highlight color of the spawn egg
+	 * @return Supplier of the SpawnEggItem
+	 */
+	default Supplier<SpawnEggItem> createSpawnEgg(Supplier<EntityType<? extends Mob>> entity, int backgroundColor, int highlightColor) {
+		return () -> new SpawnEggItem(entity.get(), backgroundColor, highlightColor, new Item.Properties());
+	}
 
 	<T> Supplier<T> register(Registry<? super T> registry, String name, Supplier<T> value);
 

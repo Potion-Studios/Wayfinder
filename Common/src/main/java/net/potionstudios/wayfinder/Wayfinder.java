@@ -10,6 +10,7 @@ import net.potionstudios.wayfinder.config.ConfigLoader;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
+import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import org.slf4j.Logger;
 
 import java.util.function.BiConsumer;
@@ -29,6 +30,7 @@ public class Wayfinder {
      * Initializes the mod.
      */
     public static void init() {
+        WayfinderItems.items();
         WayfinderSounds.sounds();
         WayfinderEntities.entities();
     }

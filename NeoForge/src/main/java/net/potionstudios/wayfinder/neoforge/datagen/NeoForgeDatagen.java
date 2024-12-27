@@ -2,6 +2,7 @@ package net.potionstudios.wayfinder.neoforge.datagen;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
@@ -11,6 +12,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
+import net.potionstudios.wayfinder.world.item.WayfinderItems;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = Wayfinder.MOD_ID)
 class NeoForgeDatagen {
@@ -23,6 +25,7 @@ class NeoForgeDatagen {
 
         generator.addProvider(event.includeClient(), new LangGenerator(output, "en_us"));
         generator.addProvider(event.includeClient(), new SoundDefinitionsGenerator(output, existingFileHelper));
+        generator.addProvider(event.includeClient(), new ItemModelGenerator(output, existingFileHelper));
     }
 
 
@@ -38,6 +41,8 @@ class NeoForgeDatagen {
             add("subtitles.entity.wayfinder.death", "Wayfinder dies");
             add("subtitles.entity.wayfinder.hurt0", "Wayfinder hurts");
             add("subtitles.entity.wayfinder.hurt1", "Wayfinder hurts");
+
+            add(WayfinderItems.WAYFINDER_SPAWN_EGG.get(), "Wayfinder Spawn Egg");
         }
     }
 
@@ -62,6 +67,18 @@ class NeoForgeDatagen {
 
         private String subtitle(String subtitle) {
             return "subtitles." + subtitle;
+        }
+    }
+
+    private static class ItemModelGenerator extends ItemModelProvider {
+
+        public ItemModelGenerator(PackOutput output, ExistingFileHelper existingFileHelper) {
+            super(output, Wayfinder.MOD_ID, existingFileHelper);
+        }
+
+        @Override
+        protected void registerModels() {
+            spawnEggItem(WayfinderItems.WAYFINDER_SPAWN_EGG.get());
         }
     }
 }
