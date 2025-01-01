@@ -2,7 +2,7 @@ package net.potionstudios.wayfinder.neoforge.datagen;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
+import net.neoforged.neoforge.client.model.generators.*;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
@@ -13,6 +13,8 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
+import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
+import net.potionstudios.wayfinder.world.level.block.WayfinderHeartBlock;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = Wayfinder.MOD_ID)
 class NeoForgeDatagen {
@@ -26,12 +28,13 @@ class NeoForgeDatagen {
         generator.addProvider(event.includeClient(), new LangGenerator(output, "en_us"));
         generator.addProvider(event.includeClient(), new SoundDefinitionsGenerator(output, existingFileHelper));
         generator.addProvider(event.includeClient(), new ItemModelGenerator(output, existingFileHelper));
+        generator.addProvider(event.includeClient(), new BlockModelGenerator(output, existingFileHelper));
     }
 
 
     private static class LangGenerator extends LanguageProvider {
 
-        public LangGenerator(PackOutput output, String locale) {
+        private LangGenerator(PackOutput output, String locale) {
             super(output, Wayfinder.MOD_ID, locale);
         }
 
@@ -43,12 +46,13 @@ class NeoForgeDatagen {
             add("subtitles.entity.wayfinder.hurt1", "Wayfinder hurts");
 
             add(WayfinderItems.WAYFINDER_SPAWN_EGG.get(), "Wayfinder Spawn Egg");
+            add(WayfinderBlocks.WAYFINER_HEART.get(), "Wayfinder Heart");
         }
     }
 
     private static class SoundDefinitionsGenerator extends SoundDefinitionsProvider {
 
-        protected SoundDefinitionsGenerator(PackOutput output, ExistingFileHelper helper) {
+        private SoundDefinitionsGenerator(PackOutput output, ExistingFileHelper helper) {
             super(output, Wayfinder.MOD_ID, helper);
         }
 
@@ -72,7 +76,7 @@ class NeoForgeDatagen {
 
     private static class ItemModelGenerator extends ItemModelProvider {
 
-        public ItemModelGenerator(PackOutput output, ExistingFileHelper existingFileHelper) {
+        private ItemModelGenerator(PackOutput output, ExistingFileHelper existingFileHelper) {
             super(output, Wayfinder.MOD_ID, existingFileHelper);
         }
 
@@ -81,5 +85,29 @@ class NeoForgeDatagen {
             spawnEggItem(WayfinderItems.WAYFINDER_SPAWN_EGG.get());
         }
     }
-}
 
+    private static class BlockModelGenerator extends BlockStateProvider {
+
+        private BlockModelGenerator(PackOutput output, ExistingFileHelper existingFileHelper) {
+            super(output, Wayfinder.MOD_ID, existingFileHelper);
+        }
+
+
+        @Override
+        protected void registerStatesAndModels() {
+            BlockModelBuilder activated = models().orientable("wayfinder_heart_activated", Wayfinder.id("block/wayfinder_heart_side_activated"), Wayfinder.id("block/wayfinder_heart_front_activated"), Wayfinder.id("block/wayfinder_heart_top_activated"));
+            BlockModelBuilder normal = models().orientable("wayfinder_heart", Wayfinder.id("block/wayfinder_heart_side"), Wayfinder.id("block/wayfinder_heart_front"), Wayfinder.id("block/wayfinder_heart_top"));
+
+            getVariantBuilder(WayfinderBlocks.WAYFINER_HEART.get()).forAllStates(blockState -> {
+                BlockModelBuilder model = blockState.getValue(WayfinderHeartBlock.ACTIVATED) ? activated : normal;
+                return switch (blockState.getValue(WayfinderHeartBlock.FACING)) {
+                    case EAST -> ConfiguredModel.builder().rotationY(90).modelFile(model).build();
+                    case WEST -> ConfiguredModel.builder().rotationY(270).modelFile(model).build();
+                    case SOUTH -> ConfiguredModel.builder().rotationY(180).modelFile(model).build();
+                    default -> ConfiguredModel.builder().modelFile(model).build();
+                };
+            });
+            simpleBlockItem(WayfinderBlocks.WAYFINER_HEART.get(), normal);
+        }
+    }
+}

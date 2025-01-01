@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "wayfinder:block/wayfinder_heart_front_activated",
+    "side": "wayfinder:block/wayfinder_heart_side_activated",
+    "top": "wayfinder:block/wayfinder_heart_top_activated"
+  }
+}
