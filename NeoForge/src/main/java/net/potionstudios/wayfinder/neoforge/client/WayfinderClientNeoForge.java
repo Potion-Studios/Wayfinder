@@ -8,8 +8,6 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.client.WayfinderClient;
 
-import java.util.function.Consumer;
-
 /**
  * This class is used to initialize the NeoForge client side of the mod.
  * @see FMLClientSetupEvent
@@ -19,7 +17,7 @@ import java.util.function.Consumer;
 @Mod(value = Wayfinder.MOD_ID, dist = Dist.CLIENT)
 public class WayfinderClientNeoForge {
 
-    public WayfinderClientNeoForge(IEventBus eventBus) {
-        eventBus.addListener((Consumer<EntityRenderersEvent.RegisterRenderers>) event -> WayfinderClient.registerEntityRenderers(event::registerEntityRenderer));
+    public WayfinderClientNeoForge(final IEventBus eventBus) {
+        eventBus.addListener((EntityRenderersEvent.RegisterRenderers event) -> WayfinderClient.registerEntityRenderers(event::registerEntityRenderer));
     }
 }
