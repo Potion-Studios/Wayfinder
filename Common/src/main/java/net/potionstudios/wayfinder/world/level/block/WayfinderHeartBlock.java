@@ -60,7 +60,7 @@ public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
                 } else {
                     if (!player.isCreative()) stack.shrink(cost);
                     level.playSound(null, pos, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.BLOCKS);
-                    spawnWayfinder(level, pos.relative(state.getValue(FACING)), player);
+                    spawnWayfinder(level, pos.above(), player);
                 }
                 return ItemInteractionResult.SUCCESS;
             }
@@ -69,7 +69,7 @@ public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
     }
 
     private static void spawnWayfinder(@NotNull Level level ,@NotNull BlockPos pos, @NotNull Player player) {
-        level.addFreshEntity(new WayfinderEntity(level, player, pos.getX(), pos.getY(), pos.getZ()));
+        level.addFreshEntity(new WayfinderEntity(level, player, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5));
     }
 
     private static int getCost(@NotNull Difficulty difficulty) {
