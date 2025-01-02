@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.potionstudios.wayfinder.client.gui.screens.WayfinderScreen;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
+import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
 import net.potionstudios.wayfinder.world.entity.ai.goal.FollowOwnerGoal;
 import org.jetbrains.annotations.NotNull;
@@ -49,12 +50,18 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private float phaseOffset;
     private boolean searching;
 
-    public WayfinderEntity(EntityType<? extends PathfinderMob> entityType, Level level) {
-        super(entityType, level);
+    public WayfinderEntity(Level level, Player owner, double x, double y, double z) {
+        this(WayfinderEntities.WAYFINDER.get(), level);
         phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
         moveControl = new WayfinderMoveControl(this, phaseOffset);
         searching = false;
         setPersistenceRequired();
+        setPos(x, y, z);
+        setOwnerUUID(owner.getUUID());
+    }
+
+    public WayfinderEntity(EntityType<? extends WayfinderEntity> entityType, Level level) {
+        super(entityType, level);
     }
 
     @Override

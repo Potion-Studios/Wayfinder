@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.potionstudios.wayfinder.Wayfinder;
+import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,11 +60,16 @@ public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
                 } else {
                     if (!player.isCreative()) stack.shrink(cost);
                     level.playSound(null, pos, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.BLOCKS);
+                    spawnWayfinder(level, pos.relative(state.getValue(FACING)), player);
                 }
                 return ItemInteractionResult.SUCCESS;
             }
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+    }
+
+    private static void spawnWayfinder(@NotNull Level level ,@NotNull BlockPos pos, @NotNull Player player) {
+        level.addFreshEntity(new WayfinderEntity(level, player, pos.getX(), pos.getY(), pos.getZ()));
     }
 
     private static int getCost(@NotNull Difficulty difficulty) {
