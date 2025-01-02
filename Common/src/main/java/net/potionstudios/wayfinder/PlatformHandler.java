@@ -4,6 +4,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 
@@ -41,6 +42,10 @@ public interface PlatformHandler {
 	<T> Supplier<T> register(Registry<? super T> registry, String name, Supplier<T> value);
 
 	<T> Supplier<Holder.Reference<T>> registerForHolder(Registry<T> registry, String name, Supplier<T> value);
+
+	boolean hasWayfinder(Player player);
+
+	void setWayfinder(Player player, boolean hasWayfinder);
 
 	private static <T> T load(Class<T> clazz) {
 		final T loadedService = ServiceLoader.load(clazz)

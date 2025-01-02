@@ -4,8 +4,10 @@ import com.google.auto.service.AutoService;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.world.entity.player.Player;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
+import net.potionstudios.wayfinder.fabric.data.WayfinderAttachmentData;
 
 import java.nio.file.Path;
 import java.util.function.Supplier;
@@ -27,5 +29,15 @@ public class FabricPlatformHandler implements PlatformHandler {
 	public <T> Supplier<Holder.Reference<T>> registerForHolder(Registry<T> registry, String name, Supplier<T> value) {
 		Holder.Reference<T> reference = Registry.registerForHolder(registry, Wayfinder.id(name), value.get());
 		return () -> reference;
+	}
+
+	@Override
+	public boolean hasWayfinder(Player player) {
+		return WayfinderAttachmentData.hasWayfinder(player);
+	}
+
+	@Override
+	public void setWayfinder(Player player, boolean hasWayfinder) {
+		WayfinderAttachmentData.setWayfinder(player, hasWayfinder);
 	}
 }

@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +44,7 @@ public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
 
     @Override
     protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
-        if (!state.getValue(ACTIVATED) && stack.is(EMERALD_TAG)) {
+        if (!state.getValue(ACTIVATED) && stack.is(EMERALD_TAG) && !PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
             int cost = getCost(level.getDifficulty());
             if (stack.getCount() >= cost) {
                 level.setBlockAndUpdate(pos, state.setValue(ACTIVATED, true));
@@ -65,7 +66,7 @@ public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
                 return ItemInteractionResult.SUCCESS;
             }
         }
-        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+        return ItemInteractionResult.FAIL;
     }
 
     private static void spawnWayfinder(@NotNull Level level ,@NotNull BlockPos pos, @NotNull Player player) {

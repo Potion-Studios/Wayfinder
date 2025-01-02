@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.client.gui.screens.WayfinderScreen;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
@@ -58,7 +60,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         searching = false;
         setPersistenceRequired();
         setPos(x, y, z);
-        setOwnerUUID(owner.getUUID());
+        setOwner(owner);
     }
 
     public WayfinderEntity(EntityType<? extends WayfinderEntity> entityType, Level level) {
@@ -104,6 +106,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         return entityData.get(DATA_OWNERUUID_ID).orElse(null);
     }
 
+    public void setOwner(@NotNull Player player) {
+        setOwnerUUID(player.getUUID());
+        PlatformHandler.PLATFORM_HANDLER.setWayfinder(player, true);
+    }
+
     public void setOwnerUUID(@Nullable UUID uuid) {
         entityData.set(DATA_OWNERUUID_ID, Optional.ofNullable(uuid));
     }
@@ -126,8 +133,9 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
-        setOwnerUUID(player.getUUID());
-        if (level().isClientSide() && player.getUUID().equals(getOwnerUUID()))
+        if (getOwner() == null && !level().isClientSide())
+            setOwner((ServerPlayer) player);
+        else if (player.getUUID().equals(getOwnerUUID()))
             Minecraft.getInstance().setScreen(new WayfinderScreen());
         else triggerAnim("controller", "no");
         return super.mobInteract(player, hand);
@@ -199,5 +207,13 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     @Override
     public boolean onGround() {
         return getY() - level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockPosition()).getY() <= 2;
+    }
+
+    @Override
+    protected void tickDeath() {
+        super.tickDeath();
+        if (!level().isClientSide()) {
+            PlatformHandler.PLATFORM_HANDLER.setWayfinder((Player) getOwner(), false);
+        }
     }
 }
