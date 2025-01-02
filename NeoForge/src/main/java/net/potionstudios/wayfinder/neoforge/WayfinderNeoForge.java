@@ -17,14 +17,6 @@ public class WayfinderNeoForge {
         Wayfinder.init();
         NeoForgePlatformHandler.register(eventBus);
         eventBus.addListener((EntityAttributeCreationEvent event) -> Wayfinder.registerEntityAttributes(event::put));
-        NeoForge.EVENT_BUS.addListener(this::registerCommands);
-    }
-
-    /**
-     * Registers Commands
-     * @see RegisterCommandsEvent
-     */
-    private void registerCommands(final RegisterCommandsEvent event) {
-        WayfinderReloadCommand.register(event.getDispatcher()::register);
+        NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent event) -> WayfinderReloadCommand.register(event.getDispatcher()::register));
     }
 }

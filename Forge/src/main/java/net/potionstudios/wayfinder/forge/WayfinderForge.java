@@ -24,14 +24,6 @@ public class WayfinderForge {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> WayfinderClientForge.init(MOD_BUS));
         ForgePlatformHandler.register(MOD_BUS);
         MOD_BUS.addListener((EntityAttributeCreationEvent event) -> Wayfinder.registerEntityAttributes(event::put));
-        EVENT_BUS.addListener(this::registerCommands);
-    }
-
-    /**
-     * Registers Commands
-     * @see RegisterCommandsEvent
-     */
-    private void registerCommands(final RegisterCommandsEvent event) {
-        WayfinderReloadCommand.register(event.getDispatcher()::register);
+        EVENT_BUS.addListener((RegisterCommandsEvent event) -> WayfinderReloadCommand.register(event.getDispatcher()::register));
     }
 }

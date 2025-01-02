@@ -15,8 +15,6 @@ public class WayfinderFabric implements ModInitializer {
     public void onInitialize() {
         Wayfinder.init();
         Wayfinder.registerEntityAttributes(FabricDefaultAttributeRegistry::register);
-        CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> {
-            WayfinderReloadCommand.register(dispatcher::register);
-        }));
+        CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> WayfinderReloadCommand.register(dispatcher::register)));
     }
 }

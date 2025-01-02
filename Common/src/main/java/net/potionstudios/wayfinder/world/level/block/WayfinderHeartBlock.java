@@ -74,10 +74,9 @@ public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
 
     private static int getCost(@NotNull Difficulty difficulty) {
         return switch (difficulty) {
-            case EASY -> 1;
             case NORMAL -> 2;
             case HARD -> 3;
-            default -> 0;
+            default -> 1;
         } * Math.abs(Wayfinder.CONFIG.EMERALD_COST_MULTIPLIER);
     }
 
