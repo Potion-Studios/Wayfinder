@@ -210,10 +210,10 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
-    protected void tickDeath() {
-        super.tickDeath();
-        if (!level().isClientSide()) {
+    public boolean hurt(@NotNull DamageSource source, float amount) {
+        boolean hurt = super.hurt(source, amount);
+        if (hurt && isDeadOrDying() && getOwner() != null)
             PlatformHandler.PLATFORM_HANDLER.setWayfinder((Player) getOwner(), false);
-        }
+        return hurt;
     }
 }
