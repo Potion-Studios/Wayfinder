@@ -25,7 +25,7 @@ public class Wayfinder {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     /** The config for wayfinder. */
-    public static final Config CONFIG = ConfigLoader.loadConfig(Config.class);
+    public static final Config.Wayfinder CONFIG = ConfigLoader.loadConfig(Config.class).wayfinder;
 
     /**
      * Initializes the mod.

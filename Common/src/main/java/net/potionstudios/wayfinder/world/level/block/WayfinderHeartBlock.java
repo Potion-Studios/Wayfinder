@@ -78,7 +78,7 @@ public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
             case NORMAL -> 2;
             case HARD -> 3;
             default -> 0;
-        } * Math.abs(Wayfinder.CONFIG.wayfinder.EMERALD_COST_MULTIPLIER);
+        } * Math.abs(Wayfinder.CONFIG.EMERALD_COST_MULTIPLIER);
     }
 
     @Override
