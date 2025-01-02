@@ -47,6 +47,8 @@ class NeoForgeDatagen {
 
             add(WayfinderItems.WAYFINDER_SPAWN_EGG.get(), "Wayfinder Spawn Egg");
             add(WayfinderBlocks.WAYFINER_HEART.get(), "Wayfinder Heart");
+
+            add("wayfinder.commands.reload.success", "Wayfinder config reloaded");
         }
     }
 
@@ -96,7 +98,7 @@ class NeoForgeDatagen {
         @Override
         protected void registerStatesAndModels() {
             BlockModelBuilder activated = models().orientable("wayfinder_heart_activated", Wayfinder.id("block/wayfinder_heart_side_activated"), Wayfinder.id("block/wayfinder_heart_front_activated"), Wayfinder.id("block/wayfinder_heart_top_activated"));
-            BlockModelBuilder normal = models().orientable("wayfinder_heart", Wayfinder.id("block/wayfinder_heart_side"), Wayfinder.id("block/wayfinder_heart_front"), Wayfinder.id("block/wayfinder_heart_top"));
+            BlockModelBuilder normal = models().orientable("wayfinder_heart", mcLoc("block/chiseled_tuff"), Wayfinder.id("block/wayfinder_heart_front"), mcLoc("block/chiseled_tuff_top"));
 
             getVariantBuilder(WayfinderBlocks.WAYFINER_HEART.get()).forAllStates(blockState -> {
                 BlockModelBuilder model = blockState.getValue(WayfinderHeartBlock.ACTIVATED) ? activated : normal;

@@ -2,12 +2,14 @@ package net.potionstudios.wayfinder.forge;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.minecraftforge.fml.common.Mod;
+import net.potionstudios.wayfinder.commands.WayfinderReloadCommand;
 import net.potionstudios.wayfinder.forge.client.WayfinderClientForge;
 
 /**
@@ -22,5 +24,14 @@ public class WayfinderForge {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> WayfinderClientForge.init(MOD_BUS));
         ForgePlatformHandler.register(MOD_BUS);
         MOD_BUS.addListener((EntityAttributeCreationEvent event) -> Wayfinder.registerEntityAttributes(event::put));
+        EVENT_BUS.addListener(this::registerCommands);
+    }
+
+    /**
+     * Registers Commands
+     * @see RegisterCommandsEvent
+     */
+    private void registerCommands(final RegisterCommandsEvent event) {
+        WayfinderReloadCommand.register(event.getDispatcher()::register);
     }
 }
