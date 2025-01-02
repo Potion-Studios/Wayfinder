@@ -2,7 +2,7 @@
   "parent": "minecraft:block/orientable",
   "textures": {
     "front": "wayfinder:block/wayfinder_heart_front",
-    "side": "wayfinder:block/wayfinder_heart_side",
-    "top": "wayfinder:block/wayfinder_heart_top"
+    "side": "minecraft:block/chiseled_tuff",
+    "top": "minecraft:block/chiseled_tuff_top"
   }
 }

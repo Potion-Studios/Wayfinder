@@ -7,6 +7,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -177,6 +178,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     protected @Nullable SoundEvent getAmbientSound() {
+        if (getRandom().nextBoolean())
+            return SoundEvents.EMPTY;
         return switch (getRandom().nextInt(6)) {
             case 0 -> WayfinderSounds.WAYFINDER_IDLE0.get();
             case 1 -> WayfinderSounds.WAYFINDER_IDLE1.get();
