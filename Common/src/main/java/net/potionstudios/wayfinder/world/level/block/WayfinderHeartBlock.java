@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
@@ -48,20 +49,14 @@ public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
             int cost = getCost(level.getDifficulty());
             if (stack.getCount() >= cost) {
                 level.setBlockAndUpdate(pos, state.setValue(ACTIVATED, true));
-                if (level.isClientSide()) {
-                    RandomSource random = level.getRandom();
-                    for (int i = 0; i < random.nextInt(10, 15); i++)
-                        level.addParticle(
-                                ParticleTypes.HAPPY_VILLAGER,
-                                pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 1.5,
-                                pos.getY() + 1.0 + (random.nextDouble() - 0.5) * 1.5,
-                                pos.getZ() + 0.5 + random.nextDouble() * 0.5,
-                                (random.nextDouble() - 0.5) * 0.2, random.nextDouble() * -0.1, (random.nextDouble() - 0.5) * 0.2
-                        );
-                } else {
+                if (level.isClientSide())
+                    animateTick(state, level, pos, level.getRandom());
+                else {
                     if (!player.isCreative()) stack.shrink(cost);
                     level.playSound(null, pos, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.BLOCKS);
                     spawnWayfinder(level, pos.above(), player);
+
+                    level.scheduleTick(pos, this, 20 * Wayfinder.CONFIG.WAYFINDER_HEART_BLOCK_COOLDOWN_IN_SECONDS);
                 }
                 return ItemInteractionResult.SUCCESS;
             }
@@ -69,7 +64,26 @@ public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
         return ItemInteractionResult.FAIL;
     }
 
-    private static void spawnWayfinder(@NotNull Level level ,@NotNull BlockPos pos, @NotNull Player player) {
+    @Override
+    protected void tick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
+        if (state.getValue(ACTIVATED))
+            level.setBlockAndUpdate(pos, state.setValue(ACTIVATED, false));
+    }
+
+    @Override
+    public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull RandomSource random) {
+        if (state.getValue(ACTIVATED) && random.nextBoolean())
+            for (int i = 0; i < random.nextInt(5, 10); i++)
+                level.addParticle(
+                        ParticleTypes.HAPPY_VILLAGER,
+                        pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 1.5,
+                        pos.getY() + 1.0 + (random.nextDouble() - 0.5) * 1.5,
+                        pos.getZ() + 0.5 + random.nextDouble() * 0.5,
+                        (random.nextDouble() - 0.5) * 0.2, random.nextDouble() * -0.1, (random.nextDouble() - 0.5) * 0.2
+                );
+    }
+
+    private static void spawnWayfinder(@NotNull Level level , @NotNull BlockPos pos, @NotNull Player player) {
         level.addFreshEntity(new WayfinderEntity(level, player, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5));
     }
 
