@@ -12,7 +12,7 @@ description = '''
 Adds Wayfinder Entity that can find any biome
 '''
 displayURL="https://potionstudios.net/"
-#logoFile = ""
+logoFile = "wayfinder.png"
 
 [[dependencies.wayfinder]]
 modId = "neoforge"

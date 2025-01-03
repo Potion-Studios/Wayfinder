@@ -13,7 +13,7 @@
     "sources": "https://github.com/Potion-Studios/Wayfinder"
   },
   "license": "All Rights Reserved",
-  "icon": "assets/examplemod/icon.png",
+  "icon": "wayfinder.png",
   "environment": "*",
   "entrypoints": {
     "main": [
