@@ -44,10 +44,10 @@ public class WayfinderScreen extends Screen {
 
     @Override
     public void renderBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        assert this.minecraft != null;
-        if (this.minecraft.level == null) {
+        if (this.minecraft == null)
+            return;
+        else if (this.minecraft.level == null)
             this.renderPanorama(guiGraphics, partialTick);
-        }
 
         RenderSystem.setShaderTexture(0, BOOK_TEXTURE);
         guiGraphics.blit(BOOK_TEXTURE, leftPos, bottomPos, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT);

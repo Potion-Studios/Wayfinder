@@ -45,19 +45,15 @@ public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
 
     @Override
     protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
+        if (level.isClientSide()) return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
         if (!state.getValue(ACTIVATED) && stack.is(EMERALD_TAG) && !PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
             int cost = getCost(level.getDifficulty());
             if (stack.getCount() >= cost) {
+                level.scheduleTick(pos, this, 20 * Wayfinder.CONFIG.WAYFINDER_HEART_BLOCK_COOLDOWN_IN_SECONDS);
                 level.setBlockAndUpdate(pos, state.setValue(ACTIVATED, true));
-                if (level.isClientSide())
-                    animateTick(state, level, pos, level.getRandom());
-                else {
-                    if (!player.isCreative()) stack.shrink(cost);
-                    level.playSound(null, pos, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.BLOCKS);
-                    spawnWayfinder(level, pos.above(), player);
-
-                    level.scheduleTick(pos, this, 20 * Wayfinder.CONFIG.WAYFINDER_HEART_BLOCK_COOLDOWN_IN_SECONDS);
-                }
+                if (!player.isCreative()) stack.shrink(cost);
+                level.playSound(null, pos, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.BLOCKS);
+                spawnWayfinder(level, pos.above(), player);
                 return ItemInteractionResult.SUCCESS;
             }
         }
