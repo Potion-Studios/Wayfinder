@@ -27,7 +27,10 @@ public class WayfinderMoveControl extends MoveControl {
 
             // Adjust Y position while maintaining fluidity
             mob.setPos(mob.getX(), targetY, mob.getZ());
-        } else mob.setNoGravity(false);
+        } else {
+            mob.setNoGravity(false);
+            mob.applyGravity();
+        }
         super.tick();
     }
 }
