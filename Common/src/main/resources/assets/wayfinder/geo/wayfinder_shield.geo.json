@@ -1,0 +1,75 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 128,
+				"texture_height": 128,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "Wayfinder",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "hedge_head",
+					"parent": "Wayfinder",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-5, 11, -5], "size": [10, 6, 10], "uv": [0, 32]},
+						{"origin": [-5, 7, -5], "size": [10, 4, 0], "uv": [20, 55]},
+						{"origin": [-5, 7, 5], "size": [10, 4, 0], "uv": [20, 59]},
+						{"origin": [-5, 7, -5], "size": [0, 4, 10], "uv": [40, 45]},
+						{"origin": [5, 7, -5], "size": [0, 4, 10], "uv": [0, 48]}
+					]
+				},
+				{
+					"name": "Book",
+					"parent": "Wayfinder",
+					"pivot": [1, 0, 1],
+					"rotation": [0, -40, 0],
+					"cubes": [
+						{"origin": [-3, 3, -6], "size": [5, 8, 1], "pivot": [2, 3, -5], "rotation": [40.24258, 5.73853, 4.83711], "uv": [54, 59]},
+						{"origin": [-4, 3, -5], "size": [7, 9, 0], "pivot": [-5, 3, -4], "rotation": [40.24258, 5.73853, 4.83711], "uv": [40, 59]}
+					]
+				},
+				{
+					"name": "body",
+					"parent": "Wayfinder",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-3.5, 4, -3], "size": [7, 7, 6], "uv": [40, 32]}
+					]
+				},
+				{
+					"name": "wings",
+					"parent": "Wayfinder",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-5, 3, 3.2], "size": [10, 7, 0], "pivot": [2, 8, 4], "rotation": [10, 0, 0], "uv": [20, 48]}
+					]
+				},
+				{
+					"name": "feet",
+					"parent": "Wayfinder",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-3, 1, 0], "size": [2, 4, 0], "pivot": [-2, 3, 1], "rotation": [-5, 0, 0], "uv": [60, 45]},
+						{"origin": [1, 1, 0], "size": [2, 4, 0], "pivot": [2, 3, 1], "rotation": [7.5, 0, 0], "uv": [60, 49]}
+					]
+				},
+				{
+					"name": "shield",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-8, 2, -9], "size": [16, 16, 16], "uv": [0, 0]}
+					]
+				}
+			]
+		}
+	]
+}

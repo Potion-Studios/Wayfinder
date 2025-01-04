@@ -2,18 +2,24 @@ package net.potionstudios.wayfinder.client.renderer.entity;
 
 import net.minecraft.resources.ResourceLocation;
 import net.potionstudios.wayfinder.Wayfinder;
-import software.bernie.geckolib.animatable.GeoAnimatable;
+import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import software.bernie.geckolib.model.GeoModel;
 
-class WayfinderModel <T extends GeoAnimatable> extends GeoModel<T> {
+class WayfinderModel <T extends WayfinderEntity> extends GeoModel<T> {
     @Override
     public ResourceLocation getModelResource(T animatable) {
+        if (animatable.isScared() && animatable.hasShield())
+            return Wayfinder.id("geo/wayfinder_shield.geo.json");
         return Wayfinder.id("geo/wayfinder.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(T animatable) {
-        return Wayfinder.id("textures/entity/wayfinder/wayfinder.png");
+    if (animatable.isScared() && animatable.hasShield())
+        if (animatable.shield() == WayfinderEntity.SHIELD.FULL)
+            return Wayfinder.id("textures/entity/wayfinder/wayfinder_shield.png");
+        else return Wayfinder.id("textures/entity/wayfinder/wayfinder_shield_broken.png");
+    return Wayfinder.id("textures/entity/wayfinder/wayfinder.png");
     }
 
     @Override

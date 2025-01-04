@@ -7,6 +7,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -44,25 +45,31 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private static final RawAnimation SEARCHING_END = RawAnimation.begin().thenPlay("searching_end");
     private static final RawAnimation SEARCHING_LOOP = RawAnimation.begin().thenLoop("searching_loop");
     private static final RawAnimation NO = RawAnimation.begin().thenPlay("no");
+    private static final RawAnimation SIT = RawAnimation.begin().thenPlay("sit");
+    private static final RawAnimation SIT_IDLE = RawAnimation.begin().thenLoop("sit_idle");
+    private static final RawAnimation SCARED = RawAnimation.begin().thenLoop("scared");
 
     //private static final EntityDataAccessor<Optional<BlockPos>> BLOCK_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_UUID);
-    private boolean orderedToSit;
+    private boolean sitting;
     private float phaseOffset;
     private boolean searching;
+    private boolean scared;
+    private SHIELD shield;
 
     public WayfinderEntity(Level level, Player owner, double x, double y, double z) {
         this(WayfinderEntities.WAYFINDER.get(), level);
-        phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
-        moveControl = new WayfinderMoveControl(this, phaseOffset);
-        searching = false;
-        setPersistenceRequired();
         setPos(x, y, z);
         setOwner(owner);
     }
 
     public WayfinderEntity(EntityType<? extends WayfinderEntity> entityType, Level level) {
         super(entityType, level);
+        phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
+        moveControl = new WayfinderMoveControl(this, phaseOffset);
+        searching = false;
+        setPersistenceRequired();
+        shield = SHIELD.FULL;
     }
 
     @Override
@@ -76,9 +83,10 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         super.addAdditionalSaveData(compound);
         if (getOwnerUUID() != null)
             compound.putUUID("Owner", getOwnerUUID());
-        compound.putBoolean("Sitting", orderedToSit);
+        compound.putBoolean("Sitting", sitting);
         compound.putFloat("Offset", phaseOffset);
         compound.putBoolean("Searching", searching);
+        compound.putString("shield", shield.getSerializedName());
     }
 
     @Override
@@ -94,9 +102,10 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
         if (uuid != null) setOwnerUUID(uuid);
 
-        orderedToSit = compound.getBoolean("Sitting");
+        sitting = compound.getBoolean("Sitting");
         phaseOffset = compound.getFloat("Offset");
         searching = compound.getBoolean("Searching");
+        shield = SHIELD.byName(compound.getString("shield"));
     }
 
     @Override
@@ -115,12 +124,16 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "controller", 0, this::predicate).triggerableAnim("no", NO));
+        controllers.add(new AnimationController<>(this, "controller", 0, this::predicate).triggerableAnim("no", NO).triggerableAnim("sit", SIT));
     }
 
     private <E extends GeoAnimatable> PlayState predicate(AnimationState<E> event) {
         if (isDeadOrDying())
             return event.setAndContinue(DEATH);
+        else if (isScared())
+            return event.setAndContinue(SCARED);
+        else if (isSitting())
+            return event.setAndContinue(SIT_IDLE);
         return event.setAndContinue(IDLE);
     }
 
@@ -136,6 +149,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         //else if (player.getUUID().equals(getOwnerUUID()))
             //Minecraft.getInstance().setScreen(new WayfinderScreen());
         //else triggerAnim("controller", "no");
+        setScared(true);
         return super.mobInteract(player, hand);
     }
 
@@ -144,12 +158,12 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         return false;
     }
 
-    public boolean isOrderedToSit() {
-        return this.orderedToSit;
+    public boolean isSitting() {
+        return this.sitting;
     }
 
-    public void setOrderedToSit(boolean orderedToSit) {
-        this.orderedToSit = orderedToSit;
+    public void setSitting(boolean sitting) {
+        this.sitting = sitting;
     }
 
     public boolean isSearching() {
@@ -160,8 +174,28 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         this.searching = searching;
     }
 
+    public boolean isScared() {
+        return scared;
+    }
+
+    public void setScared(boolean scared) {
+        this.scared = scared;
+    }
+
+    public SHIELD shield() {
+        return shield;
+    }
+
+    public void setShield(SHIELD shield) {
+        this.shield = shield;
+    }
+
+    public boolean hasShield() {
+        return this.shield() != SHIELD.NONE;
+    }
+
     public final boolean unableToMoveToOwner() {
-        return isOrderedToSit() || isPassenger() || this.getOwner() != null && getOwner().isSpectator() || isSearching();
+        return isSitting() || isPassenger() || this.getOwner() != null && getOwner().isSpectator() || isSearching();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -209,9 +243,41 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
+        if (isScared())
+            if (this.shield() == SHIELD.FULL) {
+                this.setShield(SHIELD.HALF);
+                return false;
+            } else if (this.shield() == SHIELD.HALF) {
+                this.setShield(SHIELD.NONE);
+                return false;
+        } else setScared(true);
         boolean hurt = super.hurt(source, amount);
         if (hurt && isDeadOrDying() && getOwner() != null)
             PlatformHandler.PLATFORM_HANDLER.setWayfinder((Player) getOwner(), false);
         return hurt;
+    }
+
+    public enum SHIELD implements StringRepresentable {
+        FULL("full"),
+        HALF("half"),
+        NONE("none");
+
+        private final String name;
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return name;
+        }
+
+        public static SHIELD byName(String name) {
+            for (SHIELD shield : values())
+                if (shield.getSerializedName().equals(name))
+                    return shield;
+            return NONE;
+        }
+
+        SHIELD(String name) {
+            this.name = name;
+        }
     }
 }

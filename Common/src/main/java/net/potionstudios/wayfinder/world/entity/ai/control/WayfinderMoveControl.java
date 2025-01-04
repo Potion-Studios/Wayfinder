@@ -3,6 +3,7 @@ package net.potionstudios.wayfinder.world.entity.ai.control;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 
 public class WayfinderMoveControl extends MoveControl {
 
@@ -15,9 +16,10 @@ public class WayfinderMoveControl extends MoveControl {
 
     @Override
     public void tick() {
+        WayfinderEntity mob = (WayfinderEntity) this.mob;
         double groundY = mob.level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, mob.blockPosition()).getY();
         double currentY = mob.getY();
-        if ((currentY - groundY) <= 2) {
+        if (!mob.isSitting() && (currentY - groundY) <= 2) {
             mob.setNoGravity(true);
             // Calculate a smooth floating offset using sine wave
             double floatOffset = Math.sin(mob.tickCount * 0.1 + phaseOffset) * 0.05;
