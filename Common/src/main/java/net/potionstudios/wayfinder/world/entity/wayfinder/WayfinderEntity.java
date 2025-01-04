@@ -257,6 +257,12 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         return hurt;
     }
 
+    @Override
+    protected void tickDeath() {
+        setDeltaMovement(getDeltaMovement().add(0, -0.04, 0));
+        super.tickDeath();
+    }
+
     public enum SHIELD implements StringRepresentable {
         FULL("full"),
         HALF("half"),
