@@ -1,7 +1,10 @@
 package net.potionstudios.wayfinder;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -12,6 +15,7 @@ import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
+import net.potionstudios.wayfinder.world.level.levelgen.structure.village.PlaceInVillage;
 import org.slf4j.Logger;
 
 import java.util.function.BiConsumer;
@@ -38,6 +42,14 @@ public class Wayfinder {
     }
 
     /**
+     * Runs on Server Start.
+     * @param server the server to run on
+     */
+    public static void serverStart(MinecraftServer server) {
+        PlaceInVillage.addStructuresToVillages(server);
+    }
+
+    /**
      * Registers Entity Attributes
      */
     public static void registerEntityAttributes(BiConsumer<EntityType<? extends LivingEntity>, AttributeSupplier> consumer) {
@@ -52,5 +64,15 @@ public class Wayfinder {
      */
     public static ResourceLocation id(String path) {
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    }
+
+    /**
+     * Creates a new resource key for Oh The Biomes We've Gone.
+     * @param registryKey the registry key for the resource
+     * @param name the name of the resource
+     * @return the new resource key with the Biomes We've Gone location
+     */
+    public static <T> ResourceKey<T> key(ResourceKey<? extends Registry<T>> registryKey, String name) {
+        return ResourceKey.create(registryKey, id(name));
     }
 }

@@ -1,6 +1,5 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -19,7 +18,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.potionstudios.wayfinder.PlatformHandler;
-import net.potionstudios.wayfinder.client.gui.screens.WayfinderScreen;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
@@ -135,9 +133,9 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         if (!level().isClientSide() && getOwner() == null)
             setOwner(player);
-        else if (player.getUUID().equals(getOwnerUUID()))
-            Minecraft.getInstance().setScreen(new WayfinderScreen());
-        else triggerAnim("controller", "no");
+        //else if (player.getUUID().equals(getOwnerUUID()))
+            //Minecraft.getInstance().setScreen(new WayfinderScreen());
+        //else triggerAnim("controller", "no");
         return super.mobInteract(player, hand);
     }
 

@@ -1,8 +1,12 @@
 package net.potionstudios.wayfinder.neoforge.datagen;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.client.model.generators.*;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
@@ -15,6 +19,10 @@ import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
 import net.potionstudios.wayfinder.world.level.block.WayfinderHeartBlock;
+import net.potionstudios.wayfinder.world.level.levelgen.structure.processor.WayfinderStructureProcessorLists;
+
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = Wayfinder.MOD_ID)
 class NeoForgeDatagen {
@@ -24,6 +32,10 @@ class NeoForgeDatagen {
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         PackOutput output = generator.getPackOutput();
+        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+
+        DatapackBuiltinEntriesProvider datapackBuiltinEntriesProvider = new DatapackBuiltinEntriesProvider(output, lookupProvider, BUILDER, Set.of(Wayfinder.MOD_ID));
+        generator.addProvider(event.includeServer(), datapackBuiltinEntriesProvider);
 
         generator.addProvider(event.includeClient(), new LangGenerator(output, "en_us"));
         generator.addProvider(event.includeClient(), new SoundDefinitionsGenerator(output, existingFileHelper));
@@ -112,4 +124,7 @@ class NeoForgeDatagen {
             simpleBlockItem(WayfinderBlocks.WAYFINER_HEART.get(), normal);
         }
     }
+
+    private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
+            .add(Registries.PROCESSOR_LIST, pContext -> WayfinderStructureProcessorLists.STRUCTURE_PROCESSOR_LIST_FACTORIES.forEach((structureProcessorListResourceKey, processorListFactory) -> pContext.register(structureProcessorListResourceKey, processorListFactory.generate(pContext.lookup(Registries.PROCESSOR_LIST)))));
 }
