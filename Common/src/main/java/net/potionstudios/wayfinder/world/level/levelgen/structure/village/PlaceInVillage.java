@@ -60,6 +60,7 @@ public class PlaceInVillage {
      */
     public static void addStructuresToVillages(@NotNull MinecraftServer server) {
         addBuildingToPool(server, getMcRL("plains/houses"), WayfinderStructureProcessorLists.PLAINS_SHRINE, Wayfinder.id("wayfinder_plains_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+        addBuildingToPool(server, getMcRL("savanna/houses"), WayfinderStructureProcessorLists.PLAINS_SHRINE, Wayfinder.id("wayfinder_plains_shrine"), StructureTemplatePool.Projection.RIGID, 2);
         addBuildingToPool(server, getMcRL("taiga/houses"), WayfinderStructureProcessorLists.TAIGA_SHRINE, Wayfinder.id("wayfinder_taiga_shrine"), StructureTemplatePool.Projection.RIGID, 2);
         addBuildingToPool(server, getMcRL("desert/houses"), WayfinderStructureProcessorLists.DESERT_SHRINE, Wayfinder.id("wayfinder_desert_shrine"), StructureTemplatePool.Projection.RIGID, 2);
         addBuildingToPool(server, getMcRL("snowy/houses"), WayfinderStructureProcessorLists.SNOWY_SHRINE, Wayfinder.id("wayfinder_snowy_shrine"), StructureTemplatePool.Projection.RIGID, 2);
