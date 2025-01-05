@@ -1,10 +1,21 @@
 package net.potionstudios.wayfinder.neoforge.datagen;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.loot.EntityLootSubProvider;
+import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.neoforged.neoforge.client.model.generators.*;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -20,9 +31,13 @@ import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
 import net.potionstudios.wayfinder.world.level.block.WayfinderHeartBlock;
 import net.potionstudios.wayfinder.world.level.levelgen.structure.processor.WayfinderStructureProcessorLists;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = Wayfinder.MOD_ID)
 class NeoForgeDatagen {
@@ -41,6 +56,7 @@ class NeoForgeDatagen {
         generator.addProvider(event.includeClient(), new SoundDefinitionsGenerator(output, existingFileHelper));
         generator.addProvider(event.includeClient(), new ItemModelGenerator(output, existingFileHelper));
         generator.addProvider(event.includeClient(), new BlockModelGenerator(output, existingFileHelper));
+        generator.addProvider(event.includeServer(), new LootGenerator(output, lookupProvider));
     }
 
 
@@ -122,6 +138,37 @@ class NeoForgeDatagen {
                 };
             });
             simpleBlockItem(WayfinderBlocks.WAYFINER_HEART.get(), normal);
+        }
+    }
+
+    private static class LootGenerator extends LootTableProvider {
+        private LootGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+            super(output, Collections.emptySet(), ImmutableList.of(
+                    new SubProviderEntry(EntityLootGenerator::new, LootContextParamSets.ENTITY)
+            ), registries);
+        }
+    }
+
+    private static class EntityLootGenerator extends EntityLootSubProvider {
+        private static final ArrayList<EntityType<?>> knownEntities = new ArrayList<>();
+        private EntityLootGenerator(HolderLookup.Provider registries) {
+            super(FeatureFlags.REGISTRY.allFlags(), registries);
+        }
+
+        @Override
+        public void generate() {
+            add(WayfinderEntities.WAYFINDER.get(), LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(LootItem.lootTableItem(Items.BOOK))));
+        }
+
+        @Override
+        protected void add(@NotNull EntityType<?> entityType, LootTable.@NotNull Builder builder) {
+            super.add(entityType, builder);
+            knownEntities.add(entityType);
+        }
+
+        @Override
+        protected @NotNull Stream<EntityType<?>> getKnownEntityTypes() {
+            return knownEntities.stream();
         }
     }
 
