@@ -151,20 +151,16 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
-        if (!level().isClientSide() && getOwner() == null)
-            setOwner(player);
-
         if (level().isClientSide()){
             if (player.getUUID().equals(getOwnerUUID())) {
                 WayfinderScreen.openScreen();
                 return InteractionResult.SUCCESS;
             } else triggerAnim("controller", "no");
             return InteractionResult.FAIL;
+        } else if (getOwner() == null) {
+            setOwner(player);
+            return InteractionResult.SUCCESS;
         }
-
-        //else if (player.getUUID().equals(getOwnerUUID()))
-            //Minecraft.getInstance().setScreen(new WayfinderScreen());
-        //else triggerAnim("controller", "no");
         return super.mobInteract(player, hand);
     }
 
