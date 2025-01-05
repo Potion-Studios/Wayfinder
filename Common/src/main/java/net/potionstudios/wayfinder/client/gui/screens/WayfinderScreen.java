@@ -1,6 +1,7 @@
 package net.potionstudios.wayfinder.client.gui.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -52,5 +53,9 @@ public class WayfinderScreen extends Screen {
         RenderSystem.setShaderTexture(0, BOOK_TEXTURE);
         guiGraphics.blit(BOOK_TEXTURE, leftPos, bottomPos, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT);
         this.renderMenuBackground(guiGraphics);
+    }
+
+    public static void openScreen() {
+        Minecraft.getInstance().setScreen(new WayfinderScreen());
     }
 }

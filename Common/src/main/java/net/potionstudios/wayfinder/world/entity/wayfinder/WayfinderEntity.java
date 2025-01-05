@@ -23,6 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.potionstudios.wayfinder.PlatformHandler;
+import net.potionstudios.wayfinder.client.gui.screens.WayfinderScreen;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
@@ -55,10 +56,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     //private static final EntityDataAccessor<Optional<BlockPos>> BLOCK_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Boolean> DATA_SCARED = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
+
     private boolean sitting;
     private float phaseOffset;
     private boolean searching;
-    private boolean scared;
     private SHIELD shield;
 
     public WayfinderEntity(Level level, Player owner, double x, double y, double z) {
@@ -80,6 +82,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(DATA_OWNERUUID_ID, Optional.empty());
+        builder.define(DATA_SCARED, false);
     }
 
     @Override
@@ -150,10 +153,18 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         if (!level().isClientSide() && getOwner() == null)
             setOwner(player);
+
+        if (level().isClientSide()){
+            if (player.getUUID().equals(getOwnerUUID())) {
+                WayfinderScreen.openScreen();
+                return InteractionResult.SUCCESS;
+            } else triggerAnim("controller", "no");
+            return InteractionResult.FAIL;
+        }
+
         //else if (player.getUUID().equals(getOwnerUUID()))
             //Minecraft.getInstance().setScreen(new WayfinderScreen());
         //else triggerAnim("controller", "no");
-        setScared(true);
         return super.mobInteract(player, hand);
     }
 
@@ -179,11 +190,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public boolean isScared() {
-        return scared;
+        return entityData.get(DATA_SCARED);
     }
 
     public void setScared(boolean scared) {
-        this.scared = scared;
+        entityData.set(DATA_SCARED, scared);
     }
 
     public SHIELD shield() {
