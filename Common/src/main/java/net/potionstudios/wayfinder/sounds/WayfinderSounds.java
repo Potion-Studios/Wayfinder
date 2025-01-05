@@ -18,6 +18,9 @@ public class WayfinderSounds {
     public static final Supplier<SoundEvent> WAYFINDER_DEATH = createVariableRangeEvent("wayfinder.death");
     public static final Supplier<SoundEvent> WAYFINDER_HURT0 = createVariableRangeEvent("wayfinder.hurt0");
     public static final Supplier<SoundEvent> WAYFINDER_HURT1 = createVariableRangeEvent("wayfinder.hurt1");
+    public static final Supplier<SoundEvent> WAYFINDER_SHIELD_HIT = createVariableRangeEvent("wayfinder.shield_hit");
+    public static final Supplier<SoundEvent> WAYFINDER_SHIELD_BREAK = createVariableRangeEvent("wayfinder.shield_break");
+    public static final Supplier<SoundEvent> WAYFINDER_SUMMON = createVariableRangeEvent("wayfinder.summon");
 
 
     private static Supplier<SoundEvent> createVariableRangeEvent(String id) {

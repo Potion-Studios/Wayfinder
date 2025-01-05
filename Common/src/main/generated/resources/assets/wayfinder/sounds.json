@@ -52,5 +52,23 @@
       "wayfinder:entity/wayfinder/idle5"
     ],
     "subtitle": "subtitles.entity.wayfinder.idle5"
+  },
+  "wayfinder.shield_break": {
+    "sounds": [
+      "wayfinder:entity/wayfinder/shield_break"
+    ],
+    "subtitle": "subtitles.entity.wayfinder.shield_break"
+  },
+  "wayfinder.shield_hit": {
+    "sounds": [
+      "wayfinder:entity/wayfinder/shield_hit"
+    ],
+    "subtitle": "subtitles.entity.wayfinder.shield_hit"
+  },
+  "wayfinder.summon": {
+    "sounds": [
+      "wayfinder:entity/wayfinder/summon"
+    ],
+    "subtitle": "subtitles.entity.wayfinder.summon"
   }
 }

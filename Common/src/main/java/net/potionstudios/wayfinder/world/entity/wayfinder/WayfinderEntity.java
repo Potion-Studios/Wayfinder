@@ -7,6 +7,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.ai.goal.FollowMobGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -234,7 +236,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     protected void registerGoals() {
-        goalSelector.addGoal(0, new FollowOwnerGoal(this,1.0D, 10.0F, 2.0F));
+        goalSelector.addGoal(0, new FollowMobGoal(this,1.0D, 10.0F, 2.0F));
         goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(1, new AvoidEntityGoal<>(this, Monster.class, 8.0F, 1, 1));
     }
@@ -248,15 +250,20 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     public boolean hurt(@NotNull DamageSource source, float amount) {
         if (isScared())
             if (this.shield() == SHIELD.FULL) {
+                this.playSound(WayfinderSounds.WAYFINDER_SHIELD_HIT.get());
                 this.setShield(SHIELD.HALF);
                 return false;
             } else if (this.shield() == SHIELD.HALF) {
+                this.playSound(WayfinderSounds.WAYFINDER_SHIELD_BREAK.get());
                 this.setShield(SHIELD.NONE);
                 return false;
-        } else setScared(true);
+        }
         boolean hurt = super.hurt(source, amount);
         if (hurt && isDeadOrDying() && getOwner() != null)
             PlatformHandler.PLATFORM_HANDLER.setWayfinder((Player) getOwner(), false);
+
+        if (hurt) setScared(true);
+
         return hurt;
     }
 

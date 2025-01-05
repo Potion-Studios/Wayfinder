@@ -5,5 +5,7 @@
   "subtitles.entity.wayfinder.death": "Wayfinder dies",
   "subtitles.entity.wayfinder.hurt0": "Wayfinder hurts",
   "subtitles.entity.wayfinder.hurt1": "Wayfinder hurts",
+  "subtitles.entity.wayfinder.shield_break": "Wayfinder shield breaks",
+  "subtitles.entity.wayfinder.shield_hit": "Wayfinder shield hit",
   "wayfinder.commands.reload.success": "Wayfinder config reloaded"
 }

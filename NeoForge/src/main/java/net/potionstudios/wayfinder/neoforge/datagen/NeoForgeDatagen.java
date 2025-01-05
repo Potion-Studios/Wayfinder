@@ -72,6 +72,9 @@ class NeoForgeDatagen {
             add("subtitles.entity.wayfinder.death", "Wayfinder dies");
             add("subtitles.entity.wayfinder.hurt0", "Wayfinder hurts");
             add("subtitles.entity.wayfinder.hurt1", "Wayfinder hurts");
+            add("subtitles.entity.wayfinder.shield_hit", "Wayfinder shield hit");
+            add("subtitles.entity.wayfinder.shield_break", "Wayfinder shield breaks");
+
 
             add(WayfinderItems.WAYFINDER_SPAWN_EGG.get(), "Wayfinder Spawn Egg");
             add(WayfinderBlocks.WAYFINER_HEART.get(), "Wayfinder Heart");
@@ -97,6 +100,9 @@ class NeoForgeDatagen {
             add(WayfinderSounds.WAYFINDER_DEATH.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/death"))).subtitle(subtitle("entity.wayfinder.death")));
             add(WayfinderSounds.WAYFINDER_HURT0.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/hurt0"))).subtitle(subtitle("entity.wayfinder.hurt0")));
             add(WayfinderSounds.WAYFINDER_HURT1.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/hurt1"))).subtitle(subtitle("entity.wayfinder.hurt1")));
+            add(WayfinderSounds.WAYFINDER_SHIELD_HIT.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/shield_hit"))).subtitle(subtitle("entity.wayfinder.shield_hit")));
+            add(WayfinderSounds.WAYFINDER_SHIELD_BREAK.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/shield_break"))).subtitle(subtitle("entity.wayfinder.shield_break")));
+            add(WayfinderSounds.WAYFINDER_SUMMON.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/summon"))).subtitle(subtitle("entity.wayfinder.summon")));
         }
 
         private String subtitle(String subtitle) {

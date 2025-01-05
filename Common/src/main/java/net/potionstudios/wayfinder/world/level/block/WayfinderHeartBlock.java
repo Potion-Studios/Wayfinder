@@ -7,7 +7,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -27,6 +26,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
+import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,7 +52,7 @@ public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
                 level.scheduleTick(pos, this, 20 * Wayfinder.CONFIG.WAYFINDER_HEART_BLOCK_COOLDOWN_IN_SECONDS);
                 level.setBlockAndUpdate(pos, state.setValue(ACTIVATED, true));
                 if (!player.isCreative()) stack.shrink(cost);
-                level.playSound(null, pos, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.BLOCKS);
+                level.playSound(null, pos, WayfinderSounds.WAYFINDER_SUMMON.get(), SoundSource.BLOCKS);
                 spawnWayfinder(level, pos.above(), player);
                 return ItemInteractionResult.SUCCESS;
             }
@@ -72,10 +72,10 @@ public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
             for (int i = 0; i < random.nextInt(5, 10); i++)
                 level.addParticle(
                         ParticleTypes.HAPPY_VILLAGER,
-                        pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 1.5,
-                        pos.getY() + 1.0 + (random.nextDouble() - 0.5) * 1.5,
-                        pos.getZ() + 0.5 + random.nextDouble() * 0.5,
-                        (random.nextDouble() - 0.5) * 0.2, random.nextDouble() * -0.1, (random.nextDouble() - 0.5) * 0.2
+                        pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 0.8,
+                        pos.getY() + 1.3 + (random.nextDouble() - 0.5) * 0.8,
+                        pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 0.8,
+                        (random.nextDouble() - 0.5) * 0.2,random.nextDouble() * 0.1,(random.nextDouble() - 0.5) * 0.2
                 );
     }
 
