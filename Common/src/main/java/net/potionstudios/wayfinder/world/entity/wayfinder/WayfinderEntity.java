@@ -7,7 +7,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -27,7 +26,6 @@ import net.potionstudios.wayfinder.client.gui.screens.WayfinderScreen;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
-import net.potionstudios.wayfinder.world.entity.ai.goal.FollowOwnerGoal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoAnimatable;
@@ -57,8 +55,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     //private static final EntityDataAccessor<Optional<BlockPos>> BLOCK_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Boolean> DATA_SCARED = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_SITTING = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
 
-    private boolean sitting;
     private float phaseOffset;
     private boolean searching;
     private SHIELD shield;
@@ -83,6 +81,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         super.defineSynchedData(builder);
         builder.define(DATA_OWNERUUID_ID, Optional.empty());
         builder.define(DATA_SCARED, false);
+        builder.define(DATA_SITTING, false);
     }
 
     @Override
@@ -90,7 +89,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         super.addAdditionalSaveData(compound);
         if (getOwnerUUID() != null)
             compound.putUUID("Owner", getOwnerUUID());
-        compound.putBoolean("Sitting", sitting);
+        compound.putBoolean("Sitting", entityData.get(DATA_SITTING));
         compound.putFloat("Offset", phaseOffset);
         compound.putBoolean("Searching", searching);
         compound.putString("shield", shield.getSerializedName());
@@ -109,7 +108,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
         if (uuid != null) setOwnerUUID(uuid);
 
-        sitting = compound.getBoolean("Sitting");
+        entityData.set(DATA_SITTING, compound.getBoolean("Sitting"));
         phaseOffset = compound.getFloat("Offset");
         searching = compound.getBoolean("Searching");
         shield = SHIELD.byName(compound.getString("shield"));
@@ -170,11 +169,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public boolean isSitting() {
-        return this.sitting;
+        return entityData.get(DATA_SITTING);
     }
 
     public void setSitting(boolean sitting) {
-        this.sitting = sitting;
+        entityData.set(DATA_SITTING, sitting);
     }
 
     public boolean isSearching() {
