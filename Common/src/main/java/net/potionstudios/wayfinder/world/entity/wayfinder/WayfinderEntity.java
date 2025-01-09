@@ -1,5 +1,6 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -152,7 +153,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         if (level().isClientSide()){
             if (player.getUUID().equals(getOwnerUUID())) {
-                WayfinderScreen.openScreen();
+                WayfinderScreen.openScreen(this, level().registryAccess().registryOrThrow(Registries.BIOME));
                 return InteractionResult.SUCCESS;
             } else triggerAnim("controller", "no");
             return InteractionResult.FAIL;
