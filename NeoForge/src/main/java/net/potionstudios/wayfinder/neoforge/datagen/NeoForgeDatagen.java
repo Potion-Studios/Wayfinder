@@ -1,6 +1,7 @@
 package net.potionstudios.wayfinder.neoforge.datagen;
 
 import com.google.common.collect.ImmutableList;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -17,10 +18,7 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.neoforged.neoforge.client.model.generators.*;
-import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.common.data.LanguageProvider;
-import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
+import net.neoforged.neoforge.common.data.*;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -37,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = Wayfinder.MOD_ID)
@@ -57,6 +56,7 @@ class NeoForgeDatagen {
         generator.addProvider(event.includeClient(), new ItemModelGenerator(output, existingFileHelper));
         generator.addProvider(event.includeClient(), new BlockModelGenerator(output, existingFileHelper));
         generator.addProvider(event.includeServer(), new LootGenerator(output, lookupProvider));
+        generator.addProvider(event.includeServer(), new AdvancementProvider(output, lookupProvider, existingFileHelper, ImmutableList.of(new AdvancementGenerator())));
     }
 
 
@@ -175,6 +175,14 @@ class NeoForgeDatagen {
         @Override
         protected @NotNull Stream<EntityType<?>> getKnownEntityTypes() {
             return knownEntities.stream();
+        }
+    }
+
+    private static class AdvancementGenerator implements AdvancementProvider.AdvancementGenerator {
+
+        @Override
+        public void generate(HolderLookup.@NotNull Provider arg, @NotNull Consumer<AdvancementHolder> consumer, @NotNull ExistingFileHelper existingFileHelper) {
+
         }
     }
 
