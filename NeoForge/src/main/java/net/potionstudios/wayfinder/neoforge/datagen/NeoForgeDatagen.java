@@ -1,7 +1,10 @@
 package net.potionstudios.wayfinder.neoforge.datagen;
 
 import com.google.common.collect.ImmutableList;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementType;
+import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -9,6 +12,8 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.EntityLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Items;
@@ -80,6 +85,9 @@ class NeoForgeDatagen {
             add(WayfinderBlocks.WAYFINER_HEART.get(), "Wayfinder Heart");
 
             add("wayfinder.commands.reload.success", "Wayfinder config reloaded");
+
+            add("advancements.wayfinder.so_it_begins.title", "So it begins..");
+            add("advancements.wayfinder.so_it_begins.description", "Summon your first Wayfinder");
         }
     }
 
@@ -182,7 +190,21 @@ class NeoForgeDatagen {
 
         @Override
         public void generate(HolderLookup.@NotNull Provider arg, @NotNull Consumer<AdvancementHolder> consumer, @NotNull ExistingFileHelper existingFileHelper) {
+            AdvancementHolder root = Advancement.Builder.advancement()
+                    .addCriterion("summon_wayfinder", ItemUsedOnLocationTrigger.TriggerInstance.itemUsedOnBlock(LocationPredicate.Builder.location().setBlock(
+                            BlockPredicate.Builder.block().of(WayfinderBlocks.WAYFINER_HEART.get())
+                    ), ItemPredicate.Builder.item().of(Items.EMERALD)))
+                    .display(
+                            Items.EMERALD,
+                            translateAble("so_it_begins.title"),
+                            translateAble("so_it_begins.description"),
+                            null, AdvancementType.TASK, true, true, false
+                    )
+                    .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/so_it_begins"), existingFileHelper);
+        }
 
+        private static MutableComponent translateAble(String key) {
+            return Component.translatable( "advancements." + Wayfinder.MOD_ID +"." + key);
         }
     }
 

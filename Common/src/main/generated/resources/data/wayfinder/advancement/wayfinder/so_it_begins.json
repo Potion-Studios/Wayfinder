@@ -1,0 +1,43 @@
+{
+  "criteria": {
+    "summon_wayfinder": {
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "wayfinder:wayfinder_heart"
+              }
+            }
+          },
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": "minecraft:emerald"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:item_used_on_block"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.wayfinder.so_it_begins.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:emerald"
+    },
+    "title": {
+      "translate": "advancements.wayfinder.so_it_begins.title"
+    }
+  },
+  "requirements": [
+    [
+      "summon_wayfinder"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
