@@ -23,6 +23,7 @@
     }
   },
   "display": {
+    "background": "minecraft:textures/block/moss_block.png",
     "description": {
       "translate": "advancements.wayfinder.so_it_begins.description"
     },

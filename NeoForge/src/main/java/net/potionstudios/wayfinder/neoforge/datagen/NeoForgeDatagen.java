@@ -14,6 +14,7 @@ import net.minecraft.data.loot.EntityLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Items;
@@ -47,7 +48,7 @@ import java.util.stream.Stream;
 class NeoForgeDatagen {
 
     @SubscribeEvent
-    private static void onGatherData(GatherDataEvent event) {
+    private static void onGatherData(final GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         PackOutput output = generator.getPackOutput();
@@ -198,7 +199,7 @@ class NeoForgeDatagen {
                             Items.EMERALD,
                             translateAble("so_it_begins.title"),
                             translateAble("so_it_begins.description"),
-                            null, AdvancementType.TASK, true, true, false
+                            ResourceLocation.withDefaultNamespace("textures/block/moss_block.png"), AdvancementType.TASK, true, true, false
                     )
                     .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/so_it_begins"), existingFileHelper);
         }
