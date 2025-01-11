@@ -8,6 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.config.Config;
 import net.potionstudios.wayfinder.config.ConfigLoader;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
@@ -39,6 +40,7 @@ public class Wayfinder {
         WayfinderBlocks.blocks();
         WayfinderSounds.sounds();
         WayfinderEntities.entities();
+        WayfinderCriteriaTriggers.criteriaTriggers();
     }
 
     /**

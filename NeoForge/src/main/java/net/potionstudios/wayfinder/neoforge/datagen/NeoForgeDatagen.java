@@ -29,6 +29,7 @@ import net.potionstudios.wayfinder.Wayfinder;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.potionstudios.wayfinder.advancements.critereon.WayfinderOwnerKilledTrigger;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
@@ -89,6 +90,8 @@ class NeoForgeDatagen {
 
             add("advancements.wayfinder.so_it_begins.title", "So it begins..");
             add("advancements.wayfinder.so_it_begins.description", "Summon your first Wayfinder");
+            add("advancements.wayfinder.ultimate_betrayal.title", "Ultimate Betrayal");
+            add("advancements.wayfinder.ultimate_betrayal.description", "You should be ashamed of yourself..");
         }
     }
 
@@ -202,6 +205,17 @@ class NeoForgeDatagen {
                             ResourceLocation.withDefaultNamespace("textures/block/moss_block.png"), AdvancementType.TASK, true, true, false
                     )
                     .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/so_it_begins"), existingFileHelper);
+
+            Advancement.Builder.advancement()
+                    .addCriterion("kill_wayfinder", WayfinderOwnerKilledTrigger.TriggerInstance.ownerKilledWayfinder())
+                    .display(
+                            Items.BOOK,
+                            translateAble("ultimate_betrayal.title"),
+                            translateAble("ultimate_betrayal.description"),
+                            null, AdvancementType.CHALLENGE, true, true, true
+                    )
+                    .parent(root)
+                    .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/ultimate_betrayal"), existingFileHelper);
         }
 
         private static MutableComponent translateAble(String key) {

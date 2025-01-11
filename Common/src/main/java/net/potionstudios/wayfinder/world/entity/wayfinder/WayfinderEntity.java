@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -23,6 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.potionstudios.wayfinder.PlatformHandler;
+import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.client.gui.screens.WayfinderScreen;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
@@ -266,8 +268,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                 return false;
         }
         boolean hurt = super.hurt(source, amount);
-        if (hurt && isDeadOrDying() && getOwner() != null)
+        if (hurt && isDeadOrDying() && getOwner() != null) {
             PlatformHandler.PLATFORM_HANDLER.setWayfinder((Player) getOwner(), false);
+            if (source.getEntity() != null && source.getEntity() instanceof ServerPlayer player && getOwner().is(player))
+                WayfinderCriteriaTriggers.WAYFINDER_OWNER_KILLED.get().trigger(player);
+        }
 
         if (hurt) setScared(true);
 

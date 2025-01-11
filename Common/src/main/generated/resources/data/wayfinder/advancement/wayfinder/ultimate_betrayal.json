@@ -1,0 +1,28 @@
+{
+  "parent": "wayfinder:wayfinder/so_it_begins",
+  "criteria": {
+    "kill_wayfinder": {
+      "trigger": "wayfinder:wayfinder_owner_killed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.wayfinder.ultimate_betrayal.description"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "minecraft:book"
+    },
+    "title": {
+      "translate": "advancements.wayfinder.ultimate_betrayal.title"
+    }
+  },
+  "requirements": [
+    [
+      "kill_wayfinder"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
