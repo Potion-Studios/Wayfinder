@@ -17,8 +17,10 @@ public class ScaredWayfinderGoal extends Goal {
 
     @Override
     public void tick() {
-        boolean range = !entity.level().getNearbyEntities(Monster.class, TargetingConditions.forNonCombat().range(Wayfinder.CONFIG.SCARED_PROJECTILE_MOB_DISTANCE).selector(livingEntity -> livingEntity.getType().is(WayfinderEntityTypeTags.SCARES_WAYFINDER)), entity, entity.getBoundingBox().inflate(10)).isEmpty();
-        entity.setScared(range);
+        entity.setScared(!entity.level().getNearbyEntities(Monster.class,
+                TargetingConditions.forNonCombat()
+                        .selector(livingEntity -> livingEntity.getType().is(WayfinderEntityTypeTags.SCARES_WAYFINDER)),
+                            entity, entity.getBoundingBox().inflate(Wayfinder.CONFIG.SCARED_PROJECTILE_MOB_DISTANCE)).isEmpty());
     }
 
     @Override

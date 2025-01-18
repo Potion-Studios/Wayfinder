@@ -1,6 +1,7 @@
 package net.potionstudios.wayfinder.fabric;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -26,5 +27,6 @@ public class WayfinderFabric implements ModInitializer {
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(group -> group.accept(WayfinderItems.WAYFINDER_SPAWN_EGG.get()));
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(group -> group.accept(WayfinderBlocks.WAYFINER_HEART.get()));
         ServerLifecycleEvents.SERVER_STARTING.register(Wayfinder::serverStart);
+        ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> Wayfinder.onEntityLoad(entity));
     }
 }

@@ -5,13 +5,17 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.monster.Monster;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.config.Config;
 import net.potionstudios.wayfinder.config.ConfigLoader;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
+import net.potionstudios.wayfinder.tags.WayfinderEntityTypeTags;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
@@ -49,6 +53,16 @@ public class Wayfinder {
      */
     public static void serverStart(MinecraftServer server) {
         PlaceInVillage.addStructuresToVillages(server);
+    }
+
+    /**
+     * Runs when an entity is loaded.
+     * This is used to add an attack goal to monsters that scare wayfinders.
+     * @param entity the entity that is loaded
+     */
+    public static void onEntityLoad(Entity entity) {
+        if (entity instanceof Monster monster && monster.getType().is(WayfinderEntityTypeTags.SCARES_WAYFINDER))
+            monster.goalSelector.addGoal(3,  new NearestAttackableTargetGoal<>(monster, WayfinderEntity.class, true));
     }
 
     /**

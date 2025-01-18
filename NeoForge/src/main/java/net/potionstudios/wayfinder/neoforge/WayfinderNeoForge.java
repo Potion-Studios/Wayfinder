@@ -5,6 +5,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.neoforged.bus.api.IEventBus;
@@ -31,5 +32,6 @@ public class WayfinderNeoForge {
                 event.accept(WayfinderBlocks.WAYFINER_HEART.get());
         });
         EVENT_BUS.addListener((ServerAboutToStartEvent event) -> Wayfinder.serverStart(event.getServer()));
+        EVENT_BUS.addListener((EntityJoinLevelEvent event) -> Wayfinder.onEntityLoad(event.getEntity()));
     }
 }
