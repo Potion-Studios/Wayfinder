@@ -12,9 +12,11 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.EntityLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.data.tags.EntityTypeTagsProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Items;
@@ -31,12 +33,14 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderOwnerKilledTrigger;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
+import net.potionstudios.wayfinder.tags.WayfinderEntityTypeTags;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
 import net.potionstudios.wayfinder.world.level.block.WayfinderHeartBlock;
 import net.potionstudios.wayfinder.world.level.levelgen.structure.processor.WayfinderStructureProcessorLists;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,6 +68,7 @@ class NeoForgeDatagen {
         generator.addProvider(event.includeClient(), new BlockModelGenerator(output, existingFileHelper));
         generator.addProvider(event.includeServer(), new LootGenerator(output, lookupProvider));
         generator.addProvider(event.includeServer(), new AdvancementProvider(output, lookupProvider, existingFileHelper, ImmutableList.of(new AdvancementGenerator())));
+        generator.addProvider(event.includeServer(), new EntityTypeTagsGenerator(output, lookupProvider, existingFileHelper));
     }
 
 
@@ -220,6 +225,20 @@ class NeoForgeDatagen {
 
         private static MutableComponent translateAble(String key) {
             return Component.translatable( "advancements." + Wayfinder.MOD_ID +"." + key);
+        }
+    }
+
+    private static class EntityTypeTagsGenerator extends EntityTypeTagsProvider {
+
+        private EntityTypeTagsGenerator(PackOutput arg, CompletableFuture<HolderLookup.Provider> completableFuture, @Nullable ExistingFileHelper existingFileHelper) {
+            super(arg, completableFuture, Wayfinder.MOD_ID, existingFileHelper);
+        }
+
+        @Override
+        protected void addTags(HolderLookup.@NotNull Provider provider) {
+            tag(WayfinderEntityTypeTags.SCARES_WAYFINDER).add(EntityType.WITCH, EntityType.SKELETON, EntityType.GHAST, EntityType.BLAZE);
+            tag(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(WayfinderEntities.WAYFINDER.get());
+            tag(EntityTypeTags.NOT_SCARY_FOR_PUFFERFISH).add(WayfinderEntities.WAYFINDER.get());
         }
     }
 

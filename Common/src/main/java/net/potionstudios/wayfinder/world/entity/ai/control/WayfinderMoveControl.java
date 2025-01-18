@@ -34,6 +34,7 @@ public class WayfinderMoveControl extends MoveControl {
             mob.setNoGravity(false);
             mob.applyGravity();
         }
-        super.tick();
+        if (!mob.isScared())
+            super.tick();
     }
 }

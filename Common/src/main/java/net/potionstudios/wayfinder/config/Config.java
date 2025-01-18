@@ -9,5 +9,6 @@ public class Config {
         public int COOLDOWN_IN_SECONDS = 60;
         public int EMERALD_COST_MULTIPLIER = 1;
         public int WAYFINDER_HEART_BLOCK_COOLDOWN_IN_SECONDS = 15;
+        public int SCARED_PROJECTILE_MOB_DISTANCE = 10;
     }
 }
