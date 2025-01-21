@@ -1,5 +1,6 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -22,6 +23,7 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
@@ -29,6 +31,7 @@ import net.potionstudios.wayfinder.client.gui.screens.WayfinderScreen;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
+import net.potionstudios.wayfinder.world.entity.ai.goal.GoToBiomeGoal;
 import net.potionstudios.wayfinder.world.entity.ai.goal.ScaredWayfinderGoal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -64,6 +67,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private float phaseOffset;
     private boolean searching;
     private SHIELD shield;
+    private boolean hasTarget;
 
     public WayfinderEntity(Level level, Player owner, double x, double y, double z) {
         this(WayfinderEntities.WAYFINDER.get(), level);
@@ -78,6 +82,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         searching = false;
         setPersistenceRequired();
         shield = SHIELD.FULL;
+        hasTarget = false;
     }
 
     @Override
@@ -97,6 +102,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         compound.putFloat("Offset", phaseOffset);
         compound.putBoolean("Searching", searching);
         compound.putString("shield", shield.getSerializedName());
+        compound.putBoolean("HasTarget", hasTarget);
     }
 
     @Override
@@ -116,6 +122,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         phaseOffset = compound.getFloat("Offset");
         searching = compound.getBoolean("Searching");
         shield = SHIELD.byName(compound.getString("shield"));
+        hasTarget = compound.getBoolean("HasTarget");
     }
 
     @Override
@@ -208,6 +215,10 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         return this.shield() != SHIELD.NONE;
     }
 
+    public boolean hasTarget() {
+        return hasTarget;
+    }
+
     public final boolean unableToMoveToOwner() {
         return isSitting() || isPassenger() || this.getOwner() != null && getOwner().isSpectator() || isSearching();
     }
@@ -249,6 +260,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         goalSelector.addGoal(0, new ScaredWayfinderGoal(this));
         goalSelector.addGoal(0, new FollowMobGoal(this,1.0D, 10.0F, 2.0F));
         goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        goalSelector.addGoal(2, new GoToBiomeGoal(this, biome -> biome.is(Biomes.BADLANDS)));
         //goalSelector.addGoal(1, new AvoidEntityGoal<>(this, Monster.class, 8.0F, 1, 1));
     }
 
