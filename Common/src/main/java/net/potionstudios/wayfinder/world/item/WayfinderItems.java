@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 
 public class WayfinderItems {
 
-    public static final Supplier<SpawnEggItem> WAYFINDER_SPAWN_EGG = register("wayfinder_spawn_egg", PlatformHandler.PLATFORM_HANDLER.createSpawnEgg(WayfinderEntities.WAYFINDER::get, new Color(79, 57, 46).getRGB(), new Color(192, 106, 5).getRGB()));
+    public static final Supplier<SpawnEggItem> WAYFINDER_SPAWN_EGG = register("wayfinder_spawn_egg", PlatformHandler.PLATFORM_HANDLER.createSpawnEgg(WayfinderEntities.WAYFINDER::get, new Color(84, 71, 63).getRGB(), new Color(108, 128, 49).getRGB()));
 
     public static <I extends Item> Supplier<I> register(String id, Supplier<I> item) {
         return PlatformHandler.PLATFORM_HANDLER.register(BuiltInRegistries.ITEM, id, item);
