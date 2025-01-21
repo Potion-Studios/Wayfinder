@@ -13,7 +13,7 @@ import java.nio.file.Path;
 import java.util.function.Supplier;
 
 @AutoService(PlatformHandler.class)
-public class FabricPlatformHandler implements PlatformHandler {
+public final class FabricPlatformHandler implements PlatformHandler {
 	@Override
 	public Path configPath() {
 		return FabricLoader.getInstance().getConfigDir().resolve(Wayfinder.MOD_ID);

@@ -18,13 +18,13 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 @AutoService(PlatformHandler.class)
-public class NeoForgePlatformHandler implements PlatformHandler {
+public final class NeoForgePlatformHandler implements PlatformHandler {
 	@Override
 	public Path configPath() {
 		return FMLPaths.CONFIGDIR.get().resolve(Wayfinder.MOD_ID);
 	}
 
-	public static final Map<ResourceKey<?>, DeferredRegister> CACHED = new Reference2ObjectOpenHashMap<>();
+	private static final Map<ResourceKey<?>, DeferredRegister> CACHED = new Reference2ObjectOpenHashMap<>();
 
 	@Override
 	public <T> Supplier<T> register(Registry<? super T> registry, String name, Supplier<T> value) {
@@ -47,7 +47,7 @@ public class NeoForgePlatformHandler implements PlatformHandler {
 		player.getPersistentData().putBoolean("hasWayfinder", hasWayfinder);
 	}
 
-	public static void register(IEventBus bus) {
+	public static void register(final IEventBus bus) {
 		CACHED.values().forEach(deferredRegister -> deferredRegister.register(bus));
 	}
 }

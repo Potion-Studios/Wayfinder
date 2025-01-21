@@ -23,13 +23,13 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 @AutoService(PlatformHandler.class)
-public class ForgePlatformHandler implements PlatformHandler {
+public final class ForgePlatformHandler implements PlatformHandler {
 	@Override
 	public Path configPath() {
 		return FMLPaths.CONFIGDIR.get().resolve(Wayfinder.MOD_ID);
 	}
 
-	public static final Map<ResourceKey<?>, DeferredRegister> CACHED = new Reference2ObjectOpenHashMap<>();
+	private static final Map<ResourceKey<?>, DeferredRegister> CACHED = new Reference2ObjectOpenHashMap<>();
 
 	@Override
 	public Supplier<SpawnEggItem> createSpawnEgg(Supplier<EntityType<? extends Mob>> entity, int backgroundColor, int highlightColor) {
@@ -57,7 +57,7 @@ public class ForgePlatformHandler implements PlatformHandler {
 		player.getPersistentData().putBoolean("hasWayfinder", hasWayfinder);
 	}
 
-	public static void register(IEventBus bus) {
+	public static void register(final IEventBus bus) {
 		CACHED.values().forEach(deferredRegister -> deferredRegister.register(bus));
 	}
 }
