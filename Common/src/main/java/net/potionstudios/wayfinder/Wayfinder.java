@@ -62,7 +62,7 @@ public class Wayfinder {
      */
     public static void onEntityLoad(Entity entity) {
         if (entity instanceof Monster monster && monster.getType().is(WayfinderEntityTypeTags.SCARES_WAYFINDER))
-            monster.goalSelector.addGoal(3,  new NearestAttackableTargetGoal<>(monster, WayfinderEntity.class, true));
+            monster.goalSelector.addGoal(3, new NearestAttackableTargetGoal<>(monster, WayfinderEntity.class, true));
     }
 
     /**

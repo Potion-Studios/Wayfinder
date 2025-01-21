@@ -16,9 +16,9 @@ public class WayfinderBlocks {
 
     public static final Supplier<WayfinderHeartBlock> WAYFINER_HEART = registerBlockItem("wayfinder_heart", () -> new WayfinderHeartBlock(Block.Properties.ofFullCopy(Blocks.STONE).noLootTable().pushReaction(PushReaction.BLOCK)));
 
-    public static <B extends Block> Supplier<B> registerBlockItem(String key, Supplier<B> blockSupplier) {
+    private static <B extends Block> Supplier<B> registerBlockItem(String key, Supplier<B> blockSupplier) {
         Supplier<B> block = register(key, blockSupplier);
-        Supplier<Item> item = WayfinderItems.register(key, () -> new BlockItem(block.get(), new Item.Properties()));
+        WayfinderItems.register(key, () -> new BlockItem(block.get(), new Item.Properties()));
         return block;
     }
 
