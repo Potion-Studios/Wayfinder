@@ -26,6 +26,7 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.neoforged.neoforge.client.model.generators.*;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.*;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -202,7 +203,7 @@ class NeoForgeDatagen {
             AdvancementHolder root = Advancement.Builder.advancement()
                     .addCriterion("summon_wayfinder", ItemUsedOnLocationTrigger.TriggerInstance.itemUsedOnBlock(LocationPredicate.Builder.location().setBlock(
                             BlockPredicate.Builder.block().of(WayfinderBlocks.WAYFINER_HEART.get())
-                    ), ItemPredicate.Builder.item().of(Items.EMERALD)))
+                    ), ItemPredicate.Builder.item().of(Tags.Items.GEMS_EMERALD)))
                     .display(
                             Items.EMERALD,
                             translateAble("so_it_begins.title"),
