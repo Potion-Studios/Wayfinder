@@ -1,6 +1,5 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -10,17 +9,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.FollowMobGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biomes;
@@ -63,10 +59,10 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Boolean> DATA_SCARED = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_SITTING = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> DATA_SHIELD = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.INT);
 
     private float phaseOffset;
     private boolean searching;
-    private SHIELD shield;
     private boolean hasTarget;
 
     public WayfinderEntity(Level level, Player owner, double x, double y, double z) {
@@ -81,7 +77,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         moveControl = new WayfinderMoveControl(this, phaseOffset);
         searching = false;
         setPersistenceRequired();
-        shield = SHIELD.FULL;
         hasTarget = false;
     }
 
@@ -91,6 +86,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         builder.define(DATA_OWNERUUID_ID, Optional.empty());
         builder.define(DATA_SCARED, false);
         builder.define(DATA_SITTING, false);
+        builder.define(DATA_SHIELD, 2);
     }
 
     @Override
@@ -101,8 +97,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         compound.putBoolean("Sitting", entityData.get(DATA_SITTING));
         compound.putFloat("Offset", phaseOffset);
         compound.putBoolean("Searching", searching);
-        compound.putString("shield", shield.getSerializedName());
         compound.putBoolean("HasTarget", hasTarget);
+        compound.putInt("Shield", entityData.get(DATA_SHIELD));
     }
 
     @Override
@@ -119,9 +115,9 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         if (uuid != null) setOwnerUUID(uuid);
 
         entityData.set(DATA_SITTING, compound.getBoolean("Sitting"));
+        entityData.set(DATA_SHIELD, compound.getInt("Shield"));
         phaseOffset = compound.getFloat("Offset");
         searching = compound.getBoolean("Searching");
-        shield = SHIELD.byName(compound.getString("shield"));
         hasTarget = compound.getBoolean("HasTarget");
     }
 
@@ -204,11 +200,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public SHIELD shield() {
-        return shield;
+        return SHIELD.byHits(entityData.get(DATA_SHIELD));
     }
 
     public void setShield(SHIELD shield) {
-        this.shield = shield;
+        entityData.set(DATA_SHIELD, shield.hits());
     }
 
     public boolean hasShield() {
@@ -260,7 +256,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         goalSelector.addGoal(0, new ScaredWayfinderGoal(this));
         goalSelector.addGoal(0, new FollowMobGoal(this,1.0D, 10.0F, 2.0F));
         goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        goalSelector.addGoal(2, new GoToBiomeGoal(this, biome -> biome.is(Biomes.BADLANDS)));
+        //goalSelector.addGoal(2, new GoToBiomeGoal(this, biome -> biome.is(Biomes.BADLANDS)));
         //goalSelector.addGoal(1, new AvoidEntityGoal<>(this, Monster.class, 8.0F, 1, 1));
     }
 
@@ -271,14 +267,15 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
+        if (level().isClientSide()) return false;
         if (isScared())
             if (this.shield() == SHIELD.FULL) {
-                this.playSound(WayfinderSounds.WAYFINDER_SHIELD_HIT.get());
                 this.setShield(SHIELD.HALF);
+                this.playSound(WayfinderSounds.WAYFINDER_SHIELD_HIT.get());
                 return false;
             } else if (this.shield() == SHIELD.HALF) {
-                this.playSound(WayfinderSounds.WAYFINDER_SHIELD_BREAK.get());
                 this.setShield(SHIELD.NONE);
+                this.playSound(WayfinderSounds.WAYFINDER_SHIELD_BREAK.get());
                 return false;
         }
         boolean hurt = super.hurt(source, amount);
@@ -299,27 +296,27 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         super.tickDeath();
     }
 
-    public enum SHIELD implements StringRepresentable {
-        FULL("full"),
-        HALF("half"),
-        NONE("none");
+    public enum SHIELD {
+        FULL(2),
+        HALF(1),
+        NONE(0);
 
-        private final String name;
+        private final int hits;
 
-        @Override
-        public @NotNull String getSerializedName() {
-            return name;
+        SHIELD(int hits) {
+	        this.hits = hits;
         }
 
-        public static SHIELD byName(String name) {
-            for (SHIELD shield : values())
-                if (shield.getSerializedName().equals(name))
-                    return shield;
-            return NONE;
+        public int hits() {
+            return hits;
         }
 
-        SHIELD(String name) {
-            this.name = name;
+        public static SHIELD byHits(int hits) {
+            return switch (hits) {
+                case 2 -> FULL;
+                case 1 -> HALF;
+                default -> NONE;
+            };
         }
     }
 }
