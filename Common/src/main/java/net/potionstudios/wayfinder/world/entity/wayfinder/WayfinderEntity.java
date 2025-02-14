@@ -277,15 +277,18 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                 this.setShield(SHIELD.NONE);
                 this.playSound(WayfinderSounds.WAYFINDER_SHIELD_BREAK.get());
                 return false;
-        }
-        boolean hurt = super.hurt(source, amount);
-        if (hurt && isDeadOrDying() && getOwner() != null) {
-            PlatformHandler.PLATFORM_HANDLER.setWayfinder((Player) getOwner(), false);
-            if (source.getEntity() != null && source.getEntity() instanceof ServerPlayer player && getOwner().is(player))
-                WayfinderCriteriaTriggers.WAYFINDER_OWNER_KILLED.get().trigger(player);
-        }
+            }
 
-        if (hurt) setScared(true);
+        boolean hurt = super.hurt(source, amount);
+
+        if (hurt) {
+            setScared(true);
+            if (isDeadOrDying() && getOwner() != null) {
+                PlatformHandler.PLATFORM_HANDLER.setWayfinder((Player) getOwner(), false);
+                if (source.getEntity() != null && source.getEntity() instanceof ServerPlayer player && getOwner().is(player))
+                    WayfinderCriteriaTriggers.WAYFINDER_OWNER_KILLED.get().trigger(player);
+            }
+        }
 
         return hurt;
     }
