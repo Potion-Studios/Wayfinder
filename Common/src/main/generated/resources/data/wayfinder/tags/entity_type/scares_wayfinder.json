@@ -1,8 +1,9 @@
 {
   "values": [
     "minecraft:witch",
-    "minecraft:skeleton",
     "minecraft:ghast",
-    "minecraft:blaze"
+    "minecraft:blaze",
+    "minecraft:wither",
+    "#minecraft:skeletons"
   ]
 }

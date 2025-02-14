@@ -237,7 +237,7 @@ class NeoForgeDatagen {
 
         @Override
         protected void addTags(HolderLookup.@NotNull Provider provider) {
-            tag(WayfinderEntityTypeTags.SCARES_WAYFINDER).add(EntityType.WITCH, EntityType.SKELETON, EntityType.GHAST, EntityType.BLAZE);
+            tag(WayfinderEntityTypeTags.SCARES_WAYFINDER).add(EntityType.WITCH, EntityType.GHAST, EntityType.BLAZE, EntityType.WITHER).addTag(EntityTypeTags.SKELETONS);
             tag(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(WayfinderEntities.WAYFINDER.get());
             tag(EntityTypeTags.NOT_SCARY_FOR_PUFFERFISH).add(WayfinderEntities.WAYFINDER.get());
         }
