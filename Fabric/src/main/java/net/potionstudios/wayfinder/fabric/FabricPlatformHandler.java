@@ -10,6 +10,7 @@ import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.fabric.data.WayfinderAttachmentData;
 
 import java.nio.file.Path;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 @AutoService(PlatformHandler.class)
@@ -31,13 +32,14 @@ public final class FabricPlatformHandler implements PlatformHandler {
 		return () -> reference;
 	}
 
+
 	@Override
-	public boolean hasWayfinder(Player player) {
-		return WayfinderAttachmentData.hasWayfinder(player);
+	public void setWayfinder(Player player, UUID wayfinder) {
+		WayfinderAttachmentData.setWayfinder(player, wayfinder);
 	}
 
 	@Override
-	public void setWayfinder(Player player, boolean hasWayfinder) {
-		WayfinderAttachmentData.setWayfinder(player, hasWayfinder);
+	public UUID getWayfinder(Player player) {
+		return WayfinderAttachmentData.getWayfinder(player);
 	}
 }

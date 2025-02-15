@@ -1,5 +1,6 @@
 package net.potionstudios.wayfinder;
 
+import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.EntityType;
@@ -10,6 +11,7 @@ import net.minecraft.world.item.SpawnEggItem;
 
 import java.nio.file.Path;
 import java.util.ServiceLoader;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 /**
@@ -43,9 +45,13 @@ public interface PlatformHandler {
 
 	<T> Supplier<Holder.Reference<T>> registerForHolder(Registry<T> registry, String name, Supplier<T> value);
 
-	boolean hasWayfinder(Player player);
+	default boolean hasWayfinder(Player player) {
+		return getWayfinder(player) != Util.NIL_UUID;
+	};
 
-	void setWayfinder(Player player, boolean hasWayfinder);
+	void setWayfinder(Player player, UUID wayfinder);
+
+	UUID getWayfinder(Player player);
 
 	private static <T> T load(Class<T> clazz) {
 		final T loadedService = ServiceLoader.load(clazz)

@@ -1,5 +1,6 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
+import net.minecraft.Util;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -128,7 +129,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     public void setOwner(@NotNull Player player) {
         setOwnerUUID(player.getUUID());
-        PlatformHandler.PLATFORM_HANDLER.setWayfinder(player, true);
+        PlatformHandler.PLATFORM_HANDLER.setWayfinder(player, getUUID());
     }
 
     public void setOwnerUUID(@Nullable UUID uuid) {
@@ -284,7 +285,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         if (hurt) {
             setScared(true);
             if (isDeadOrDying() && getOwner() != null) {
-                PlatformHandler.PLATFORM_HANDLER.setWayfinder((Player) getOwner(), false);
+                PlatformHandler.PLATFORM_HANDLER.setWayfinder((Player) getOwner(), Util.NIL_UUID);
                 if (source.getEntity() != null && source.getEntity() instanceof ServerPlayer player && getOwner().is(player))
                     WayfinderCriteriaTriggers.WAYFINDER_OWNER_KILLED.get().trigger(player);
             }

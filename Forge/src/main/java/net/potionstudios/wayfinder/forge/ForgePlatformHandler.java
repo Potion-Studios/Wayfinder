@@ -20,6 +20,7 @@ import net.potionstudios.wayfinder.Wayfinder;
 
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 @AutoService(PlatformHandler.class)
@@ -48,13 +49,13 @@ public final class ForgePlatformHandler implements PlatformHandler {
 	}
 
 	@Override
-	public boolean hasWayfinder(Player player) {
-		return player.getPersistentData().getBoolean("hasWayfinder");
+	public void setWayfinder(Player player, UUID wayfinder) {
+		player.getPersistentData().putUUID("wayfinder", wayfinder);
 	}
 
 	@Override
-	public void setWayfinder(Player player, boolean hasWayfinder) {
-		player.getPersistentData().putBoolean("hasWayfinder", hasWayfinder);
+	public UUID getWayfinder(Player player) {
+		return player.getPersistentData().getUUID("wayfinder");
 	}
 
 	public static void register(final IEventBus bus) {
