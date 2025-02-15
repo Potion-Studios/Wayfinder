@@ -32,7 +32,6 @@ public final class FabricPlatformHandler implements PlatformHandler {
 		return () -> reference;
 	}
 
-
 	@Override
 	public void setWayfinder(Player player, UUID wayfinder) {
 		WayfinderAttachmentData.setWayfinder(player, wayfinder);
