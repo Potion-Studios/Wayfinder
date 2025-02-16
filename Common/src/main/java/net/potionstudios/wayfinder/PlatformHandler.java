@@ -56,6 +56,8 @@ public interface PlatformHandler {
 
 	void sendToPlayer(MultiloaderPacket packet, Player player);
 
+	void sendToServer(MultiloaderPacket packet);
+
 	private static <T> T load(Class<T> clazz) {
 		final T loadedService = ServiceLoader.load(clazz)
 				.findFirst()

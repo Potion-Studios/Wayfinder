@@ -28,9 +28,7 @@ public record WayfinderOpenScreenPacket(Set<ResourceLocation> locations) impleme
 
     @Override
     public void receiveMessage(@Nullable Player player, Consumer<Runnable> consumer) {
-        consumer.accept(() -> {
-            Minecraft.getInstance().setScreen(new WayfinderScreen(locations.stream().toList()));
-        });
+        consumer.accept(() -> Minecraft.getInstance().setScreen(new WayfinderScreen(locations.stream().toList())));
     }
 
     @Override

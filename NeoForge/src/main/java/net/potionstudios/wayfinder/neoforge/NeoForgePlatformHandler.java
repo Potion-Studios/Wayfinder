@@ -6,13 +6,16 @@ import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
+import software.bernie.geckolib.network.packet.MultiloaderPacket;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -52,6 +55,16 @@ public final class NeoForgePlatformHandler implements PlatformHandler {
 	@Override
 	public UUID getWayfinder(Player player) {
 		return player.getPersistentData().getUUID("wayfinder");
+	}
+
+	@Override
+	public void sendToPlayer(MultiloaderPacket packet, Player player) {
+		PacketDistributor.sendToPlayer((ServerPlayer) player, packet);
+	}
+
+	@Override
+	public void sendToServer(MultiloaderPacket packet) {
+		PacketDistributor.sendToServer(packet);
 	}
 
 	public static void register(final IEventBus bus) {

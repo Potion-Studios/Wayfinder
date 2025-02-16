@@ -1,6 +1,7 @@
 package net.potionstudios.wayfinder.fabric;
 
 import com.google.auto.service.AutoService;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Holder;
@@ -48,5 +49,10 @@ public final class FabricPlatformHandler implements PlatformHandler {
 	@Override
 	public void sendToPlayer(MultiloaderPacket packet, Player player) {
 		ServerPlayNetworking.send((ServerPlayer) player, packet);
+	}
+
+	@Override
+	public void sendToServer(MultiloaderPacket packet) {
+		ClientPlayNetworking.send(packet);
 	}
 }

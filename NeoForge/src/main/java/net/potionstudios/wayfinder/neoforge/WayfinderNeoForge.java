@@ -7,10 +7,15 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
+import net.neoforged.neoforge.network.registration.HandlerThread;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.potionstudios.wayfinder.commands.WayfinderReloadCommand;
+import net.potionstudios.wayfinder.network.protocol.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
 
@@ -33,5 +38,9 @@ public class WayfinderNeoForge {
         });
         EVENT_BUS.addListener((ServerAboutToStartEvent event) -> Wayfinder.serverStart(event.getServer()));
         EVENT_BUS.addListener((EntityJoinLevelEvent event) -> Wayfinder.onEntityLoad(event.getEntity()));
+        EVENT_BUS.addListener((RegisterPayloadHandlersEvent event) -> {
+            final PayloadRegistrar registrar = event.registrar(Wayfinder.MOD_ID).executesOn(HandlerThread.NETWORK);
+            registrar.playToClient(WayfinderOpenScreenPacket.TYPE, WayfinderOpenScreenPacket.CODEC, (packet, context) -> packet.receiveMessage(context.player(), context::enqueueWork));
+        });
     }
 }
