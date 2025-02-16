@@ -160,7 +160,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         if (level().isClientSide()){
             if (player.getUUID().equals(getOwnerUUID())) {
-                WayfinderScreen.openScreen(this, level().registryAccess().registryOrThrow(Registries.BIOME));
+                WayfinderScreen.openScreen(level().registryAccess().registryOrThrow(Registries.BIOME).registryKeySet());
                 return InteractionResult.SUCCESS;
             } else triggerAnim("controller", "no");
             return InteractionResult.FAIL;
