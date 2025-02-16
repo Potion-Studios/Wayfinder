@@ -11,7 +11,7 @@ import net.potionstudios.wayfinder.Wayfinder;
 import net.fabricmc.api.ModInitializer;
 import net.potionstudios.wayfinder.commands.WayfinderReloadCommand;
 import net.potionstudios.wayfinder.fabric.data.WayfinderAttachmentData;
-import net.potionstudios.wayfinder.network.protocol.WayfinderOpenScreenPacket;
+import net.potionstudios.wayfinder.network.protocol.WayfinderNetworking;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
 
@@ -30,6 +30,6 @@ public class WayfinderFabric implements ModInitializer {
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(group -> group.accept(WayfinderBlocks.WAYFINER_HEART.get()));
         ServerLifecycleEvents.SERVER_STARTING.register(Wayfinder::serverStart);
         ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> Wayfinder.onEntityLoad(entity));
-        PayloadTypeRegistry.playS2C().register(WayfinderOpenScreenPacket.TYPE, WayfinderOpenScreenPacket.CODEC);
+        WayfinderNetworking.registerS2CPackets((PayloadTypeRegistry.playS2C()::register));
     }
 }

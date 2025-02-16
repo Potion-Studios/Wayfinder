@@ -1,4 +1,4 @@
-package net.potionstudios.wayfinder.network.protocol;
+package net.potionstudios.wayfinder.network.packets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
