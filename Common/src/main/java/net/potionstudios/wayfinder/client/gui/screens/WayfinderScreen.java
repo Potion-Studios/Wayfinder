@@ -7,9 +7,10 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.PageButton;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
+import net.potionstudios.wayfinder.network.packets.WayfinderBiomePacket;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -73,10 +74,8 @@ public class WayfinderScreen extends Screen {
             ResourceLocation biome = biomes.get(i);
             int buttonX = (i % ITEMS_PER_PAGE) % 2 == 0 ? startXLeftPage : startXRightPage;
             int buttonY = bottomPos + (i % ITEMS_PER_PAGE) / 2 * 20 + 20;
-            this.addRenderableWidget(new Button(buttonX, buttonY, 100, 20, Component.translatable("biome." + biome.toLanguageKey()), button -> {
-                Wayfinder.LOGGER.info("Teleporting to biome: {}", biome);
-                //Send Packet to server of biome resource location
-            }, supplier -> null));
+            this.addRenderableWidget(new Button(buttonX, buttonY, 100, 20, Component.translatable("biome." + biome.toLanguageKey()), button ->
+                    PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderBiomePacket(biome)), Button.DEFAULT_NARRATION));
         }
 
         if (currentPage != 0)
