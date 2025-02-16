@@ -2,6 +2,7 @@ package net.potionstudios.wayfinder.neoforge;
 
 import com.google.auto.service.AutoService;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -40,7 +41,7 @@ public final class NeoForgePlatformHandler implements PlatformHandler {
 
 	@Override
 	public boolean hasWayfinder(Player player) {
-		return player.getPersistentData().getBoolean("hasWayfinder");
+        return player.getPersistentData().hasUUID("wayfinder") && PlatformHandler.super.hasWayfinder(player);
 	}
 
 	@Override

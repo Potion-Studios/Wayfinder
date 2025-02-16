@@ -49,6 +49,11 @@ public final class ForgePlatformHandler implements PlatformHandler {
 	}
 
 	@Override
+	public boolean hasWayfinder(Player player) {
+		return player.getPersistentData().hasUUID("wayfinder") && PlatformHandler.super.hasWayfinder(player);
+	}
+
+	@Override
 	public void setWayfinder(Player player, UUID wayfinder) {
 		player.getPersistentData().putUUID("wayfinder", wayfinder);
 	}
