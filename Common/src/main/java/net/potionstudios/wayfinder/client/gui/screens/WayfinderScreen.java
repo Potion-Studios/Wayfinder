@@ -32,12 +32,12 @@ public class WayfinderScreen extends Screen {
     protected int pageBackButtonX = this.leftPos + 5;
     protected int pageButtonY = this.topPos - 10;
     protected int pageButtonForwardX = this.rightPos - 5;
-    private final List<ResourceKey<Biome>> biomes;
+    private final List<ResourceLocation> biomes;
     private int currentPage = 0;
 
-    public WayfinderScreen(Set<ResourceKey<Biome>> biomeRegistry) {
+    public WayfinderScreen(List<ResourceLocation> biomeRegistry) {
         super(Component.literal(""));
-        this.biomes = biomeRegistry.stream().toList();
+        this.biomes = biomeRegistry;
     }
 
     @Override
@@ -72,11 +72,12 @@ public class WayfinderScreen extends Screen {
         int end = Math.min(start + ITEMS_PER_PAGE, biomes.size());
 
         for (int i = start; i < end; i++) {
-            ResourceKey<Biome> biome = biomes.get(i);
+            ResourceLocation biome = biomes.get(i);
             int buttonX = (i % ITEMS_PER_PAGE) % 2 == 0 ? startXLeftPage : startXRightPage;
             int buttonY = bottomPos + (i % ITEMS_PER_PAGE) / 2 * 20 + 20;
-            this.addRenderableWidget(new Button(buttonX, buttonY, 100, 20, Component.translatable("biome." + biome.location().toLanguageKey()), button -> {
-                Wayfinder.LOGGER.info("Teleporting to biome: " + biome);
+            this.addRenderableWidget(new Button(buttonX, buttonY, 100, 20, Component.translatable("biome." + biome.toLanguageKey()), button -> {
+                Wayfinder.LOGGER.info("Teleporting to biome: {}", biome);
+                //Send Packet to server of biome resource location
             }, supplier -> null));
         }
 
@@ -98,6 +99,6 @@ public class WayfinderScreen extends Screen {
     }
 
     public static void openScreen(Set<ResourceKey<Biome>> biomeRegistry) {
-        Minecraft.getInstance().setScreen(new WayfinderScreen(biomeRegistry));
+        Minecraft.getInstance().setScreen(new WayfinderScreen(biomeRegistry.stream().map(ResourceKey::location).toList()));
     }
 }
