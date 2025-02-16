@@ -74,8 +74,10 @@ public class WayfinderScreen extends Screen {
             ResourceLocation biome = biomes.get(i);
             int buttonX = (i % ITEMS_PER_PAGE) % 2 == 0 ? startXLeftPage : startXRightPage;
             int buttonY = bottomPos + (i % ITEMS_PER_PAGE) / 2 * 20 + 20;
-            this.addRenderableWidget(new Button(buttonX, buttonY, 100, 20, Component.translatable("biome." + biome.toLanguageKey()), button ->
-                    PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderBiomePacket(biome)), Button.DEFAULT_NARRATION));
+            this.addRenderableWidget(new Button(buttonX, buttonY, 120, 20, Component.translatable("biome." + biome.toLanguageKey()), button -> {
+                    PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderBiomePacket(biome));
+                    this.onClose();
+            }, Button.DEFAULT_NARRATION));
         }
 
         if (currentPage != 0)

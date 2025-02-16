@@ -1,13 +1,13 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
 import net.minecraft.Util;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
@@ -161,15 +161,14 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     @Override
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         if (!level().isClientSide()) {
+            if (isScared()) return InteractionResult.FAIL;
             if (player.getUUID().equals(getOwnerUUID())) {
-                Set<ResourceLocation> set = new java.util.HashSet<>(Set.of());
-                for (ResourceKey<Biome> key : level().registryAccess().registryOrThrow(Registries.BIOME).registryKeySet()) {
-                    set.add(key.location());
-                }
+                Set<ResourceLocation> set = new java.util.HashSet<>();
+                for (Holder<Biome> key : ((ServerLevel) level()).getChunkSource().getGenerator().getBiomeSource().possibleBiomes())
+                    key.unwrapKey().ifPresent(biome -> set.add(biome.location()));
                 PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderOpenScreenPacket(set), player);
-                //WayfinderScreen.openScreen(level().registryAccess().registryOrThrow(Registries.BIOME).registryKeySet());
                 return InteractionResult.SUCCESS;
-            } //else triggerAnim("controller", "no");
+            } else triggerAnim("controller", "no");
             return InteractionResult.FAIL;
         } else if (getOwner() == null) {
             setOwner(player);
@@ -181,6 +180,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     @Override
     public boolean canBeLeashed() {
         return false;
+    }
+
+    public void sit() {
+        setSitting(true);
+        triggerAnim("controller", "sit");
     }
 
     public boolean isSitting() {
