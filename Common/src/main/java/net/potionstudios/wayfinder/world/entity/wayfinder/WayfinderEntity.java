@@ -6,6 +6,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
@@ -20,11 +22,13 @@ import net.minecraft.world.entity.ai.goal.FollowMobGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.client.gui.screens.WayfinderScreen;
+import net.potionstudios.wayfinder.network.protocol.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
@@ -40,6 +44,7 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public class WayfinderEntity extends PathfinderMob implements GeoEntity, OwnableEntity {
@@ -158,11 +163,16 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
-        if (level().isClientSide()){
+        if (!level().isClientSide()) {
             if (player.getUUID().equals(getOwnerUUID())) {
-                WayfinderScreen.openScreen(level().registryAccess().registryOrThrow(Registries.BIOME).registryKeySet());
+                Set<ResourceLocation> set = new java.util.HashSet<>(Set.of());
+                for (ResourceKey<Biome> key : level().registryAccess().registryOrThrow(Registries.BIOME).registryKeySet()) {
+                    set.add(key.location());
+                }
+                PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderOpenScreenPacket(set), player);
+                //WayfinderScreen.openScreen(level().registryAccess().registryOrThrow(Registries.BIOME).registryKeySet());
                 return InteractionResult.SUCCESS;
-            } else triggerAnim("controller", "no");
+            } //else triggerAnim("controller", "no");
             return InteractionResult.FAIL;
         } else if (getOwner() == null) {
             setOwner(player);

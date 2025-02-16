@@ -1,13 +1,16 @@
 package net.potionstudios.wayfinder.fabric;
 
 import com.google.auto.service.AutoService;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.fabric.data.WayfinderAttachmentData;
+import software.bernie.geckolib.network.packet.MultiloaderPacket;
 
 import java.nio.file.Path;
 import java.util.UUID;
@@ -40,5 +43,10 @@ public final class FabricPlatformHandler implements PlatformHandler {
 	@Override
 	public UUID getWayfinder(Player player) {
 		return WayfinderAttachmentData.getWayfinder(player);
+	}
+
+	@Override
+	public void sendToPlayer(MultiloaderPacket packet, Player player) {
+		ServerPlayNetworking.send((ServerPlayer) player, packet);
 	}
 }

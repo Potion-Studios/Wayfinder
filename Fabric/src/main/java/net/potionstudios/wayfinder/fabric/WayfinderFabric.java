@@ -4,12 +4,14 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.fabricmc.api.ModInitializer;
 import net.potionstudios.wayfinder.commands.WayfinderReloadCommand;
 import net.potionstudios.wayfinder.fabric.data.WayfinderAttachmentData;
+import net.potionstudios.wayfinder.network.protocol.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
 
@@ -28,5 +30,6 @@ public class WayfinderFabric implements ModInitializer {
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(group -> group.accept(WayfinderBlocks.WAYFINER_HEART.get()));
         ServerLifecycleEvents.SERVER_STARTING.register(Wayfinder::serverStart);
         ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> Wayfinder.onEntityLoad(entity));
+        PayloadTypeRegistry.playS2C().register(WayfinderOpenScreenPacket.TYPE, WayfinderOpenScreenPacket.CODEC);
     }
 }

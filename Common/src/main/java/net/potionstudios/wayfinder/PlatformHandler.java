@@ -8,6 +8,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
+import software.bernie.geckolib.network.packet.MultiloaderPacket;
 
 import java.nio.file.Path;
 import java.util.ServiceLoader;
@@ -52,6 +53,8 @@ public interface PlatformHandler {
 	void setWayfinder(Player player, UUID wayfinder);
 
 	UUID getWayfinder(Player player);
+
+	void sendToPlayer(MultiloaderPacket packet, Player player);
 
 	private static <T> T load(Class<T> clazz) {
 		final T loadedService = ServiceLoader.load(clazz)
