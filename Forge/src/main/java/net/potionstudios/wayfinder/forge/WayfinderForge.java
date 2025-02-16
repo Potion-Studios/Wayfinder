@@ -15,6 +15,7 @@ import net.potionstudios.wayfinder.Wayfinder;
 import net.minecraftforge.fml.common.Mod;
 import net.potionstudios.wayfinder.commands.WayfinderReloadCommand;
 import net.potionstudios.wayfinder.forge.client.WayfinderClientForge;
+import net.potionstudios.wayfinder.forge.networking.ForgeNetworking;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
 
@@ -39,5 +40,6 @@ public class WayfinderForge {
         });
         EVENT_BUS.addListener((ServerAboutToStartEvent event) -> Wayfinder.serverStart(event.getServer()));
         EVENT_BUS.addListener((EntityJoinLevelEvent event) -> Wayfinder.onEntityLoad(event.getEntity()));
+        ForgeNetworking.init();
     }
 }

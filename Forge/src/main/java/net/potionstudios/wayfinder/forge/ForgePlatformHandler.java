@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
@@ -17,6 +18,8 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
+import net.potionstudios.wayfinder.forge.networking.ForgeNetworking;
+import software.bernie.geckolib.network.packet.MultiloaderPacket;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -61,6 +64,16 @@ public final class ForgePlatformHandler implements PlatformHandler {
 	@Override
 	public UUID getWayfinder(Player player) {
 		return player.getPersistentData().getUUID("wayfinder");
+	}
+
+	@Override
+	public void sendToPlayer(MultiloaderPacket packet, Player player) {
+		ForgeNetworking.sendToPlayer(packet, (ServerPlayer) player);
+	}
+
+	@Override
+	public void sendToServer(MultiloaderPacket packet) {
+		ForgeNetworking.sendToServer(packet);
 	}
 
 	public static void register(final IEventBus bus) {
