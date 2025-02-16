@@ -40,6 +40,7 @@ public class WayfinderNeoForge {
         eventBus.addListener((RegisterPayloadHandlersEvent event) -> {
             final PayloadRegistrar registrar = event.registrar(Wayfinder.MOD_ID).executesOn(HandlerThread.NETWORK);
             WayfinderNetworking.registerS2CPackets((type, codec) -> registrar.playToClient(type, codec, (packet, context) -> packet.receiveMessage(context.player(), context::enqueueWork)));
+            WayfinderNetworking.registerC2SPackets((type, codec) -> registrar.playToServer(type, codec, (packet, context) -> packet.receiveMessage(context.player(), context::enqueueWork)));
         });
     }
 }

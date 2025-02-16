@@ -1,6 +1,5 @@
 package net.potionstudios.wayfinder.network.packets;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -25,10 +24,9 @@ public record WayfinderOpenScreenPacket(Set<ResourceLocation> locations) impleme
             ByteBufCodecs.collection(HashSet::new, ResourceLocation.STREAM_CODEC), WayfinderOpenScreenPacket::locations,
             WayfinderOpenScreenPacket::new);
 
-
     @Override
     public void receiveMessage(@Nullable Player player, Consumer<Runnable> consumer) {
-        consumer.accept(() -> Minecraft.getInstance().setScreen(new WayfinderScreen(locations.stream().toList())));
+        consumer.accept(() -> WayfinderScreen.openScreen(locations.stream().toList()));
     }
 
     @Override

@@ -9,12 +9,10 @@ import net.minecraft.client.gui.screens.inventory.PageButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.biome.Biome;
 import net.potionstudios.wayfinder.Wayfinder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Set;
 
 public class WayfinderScreen extends Screen {
 
@@ -98,7 +96,7 @@ public class WayfinderScreen extends Screen {
             }, true));
     }
 
-    public static void openScreen(Set<ResourceKey<Biome>> biomeRegistry) {
-        Minecraft.getInstance().setScreen(new WayfinderScreen(biomeRegistry.stream().map(ResourceKey::location).toList()));
+    public static void openScreen(List<ResourceLocation> biomeRegistry) {
+        Minecraft.getInstance().setScreen(new WayfinderScreen(biomeRegistry));
     }
 }

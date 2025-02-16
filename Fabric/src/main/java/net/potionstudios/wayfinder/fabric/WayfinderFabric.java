@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.potionstudios.wayfinder.Wayfinder;
@@ -31,5 +32,7 @@ public class WayfinderFabric implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTING.register(Wayfinder::serverStart);
         ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> Wayfinder.onEntityLoad(entity));
         WayfinderNetworking.registerS2CPackets((PayloadTypeRegistry.playS2C()::register));
+        WayfinderNetworking.registerC2SPackets((PayloadTypeRegistry.playC2S()::register));
+        WayfinderNetworking.registerC2SPackets((type, codec) -> ServerPlayNetworking.registerGlobalReceiver(type, (packet, context) -> packet.receiveMessage(context.player(), context.server()::execute)));
     }
 }
