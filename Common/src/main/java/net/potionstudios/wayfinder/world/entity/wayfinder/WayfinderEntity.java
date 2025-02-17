@@ -1,7 +1,9 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
+import com.google.common.base.Stopwatch;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -25,6 +27,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.potionstudios.wayfinder.PlatformHandler;
+import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
@@ -43,6 +46,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 public class WayfinderEntity extends PathfinderMob implements GeoEntity, OwnableEntity {
 
@@ -175,6 +179,22 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
             return InteractionResult.SUCCESS;
         }
         return super.mobInteract(player, hand);
+    }
+
+    public void startBiomeSearch(ResourceLocation biome) {
+        triggerAnim("controller", "searching_start");
+        setSearching(true);
+        ServerLevel level = (ServerLevel) level();
+        Holder<Biome> biome1 = level.registryAccess().registryOrThrow(Registries.BIOME).getHolder(biome).orElseThrow();
+        Stopwatch stopwatch = Stopwatch.createStarted(Util.TICKER);
+        Predicate<Holder<Biome>> predicate = biomeHolder1 -> biomeHolder1.is(biome1.unwrap().orThrow());
+        var value = level.findClosestBiome3d(predicate, blockPosition(), Wayfinder.CONFIG.MAX_SEARCH_DISTANCE_IN_CHUNKS, 32, 64);
+        stopwatch.stop();
+
+        if (value == null)
+            Wayfinder.LOGGER.info("Biome search took {} ms and found nothing", stopwatch.elapsed().toMillis());
+        else
+            Wayfinder.LOGGER.info("Biome search result: {}", value);
     }
 
     @Override

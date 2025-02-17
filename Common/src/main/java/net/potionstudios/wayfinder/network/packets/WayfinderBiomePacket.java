@@ -29,9 +29,8 @@ public record WayfinderBiomePacket(ResourceLocation biome) implements Multiloade
 		consumer.accept(() -> {
 			// Use Given Player to get the Server and then the Level of the Player's World then the wayfinder based on the UUID then set the biome to find
 			Entity entity = player.getServer().getLevel(player.getCommandSenderWorld().dimension()).getEntity(PlatformHandler.PLATFORM_HANDLER.getWayfinder(player));
-			if (entity instanceof WayfinderEntity wayfinder) {
-				//wayfinder.setbiome(biome);
-			}
+			if (entity instanceof WayfinderEntity wayfinder)
+				wayfinder.startBiomeSearch(biome);
 		});
 	}
 
