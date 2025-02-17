@@ -2,6 +2,7 @@ package net.potionstudios.wayfinder.world.entity.wayfinder;
 
 import com.google.common.base.Stopwatch;
 import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -33,6 +34,7 @@ import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
+import net.potionstudios.wayfinder.world.entity.ai.goal.GoToPosGoal;
 import net.potionstudios.wayfinder.world.entity.ai.goal.ScaredWayfinderGoal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -71,6 +73,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private float phaseOffset;
     private boolean searching;
     private boolean hasTarget;
+    public @Nullable BlockPos blockPos = null;
 
     public WayfinderEntity(Level level, Player owner, double x, double y, double z) {
         this(WayfinderEntities.WAYFINDER.get(), level);
@@ -81,7 +84,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     public WayfinderEntity(EntityType<? extends WayfinderEntity> entityType, Level level) {
         super(entityType, level);
         phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
-        moveControl = new WayfinderMoveControl(this, phaseOffset);
+        //moveControl = new WayfinderMoveControl(this, phaseOffset);
         searching = false;
         setPersistenceRequired();
         hasTarget = false;
@@ -154,6 +157,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
             return event.setAndContinue(SCARED);
         else if (isSitting())
             return event.setAndContinue(SIT_IDLE);
+        else if (isSearching())
+            return event.setAndContinue(SEARCHING_LOOP);
         return event.setAndContinue(IDLE);
     }
 
@@ -194,7 +199,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         if (value == null)
             Wayfinder.LOGGER.info("Biome search took {} ms and found nothing", stopwatch.elapsed().toMillis());
         else
-            Wayfinder.LOGGER.info("Biome search result: {}", value);
+            blockPos = value.getFirst();
     }
 
     @Override
@@ -288,7 +293,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         goalSelector.addGoal(0, new ScaredWayfinderGoal(this));
         goalSelector.addGoal(0, new FollowMobGoal(this,1.0D, 10.0F, 2.0F));
         goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        //goalSelector.addGoal(2, new GoToBiomeGoal(this, biome -> biome.is(Biomes.BADLANDS)));
+        goalSelector.addGoal(2, new GoToPosGoal(this));
         //goalSelector.addGoal(1, new AvoidEntityGoal<>(this, Monster.class, 8.0F, 1, 1));
     }
 
