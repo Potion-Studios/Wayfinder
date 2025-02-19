@@ -19,9 +19,8 @@ class BiomeList extends ContainerObjectSelectionList<BiomeList.Entry> {
 
 	public void setBiomes(@NotNull List<ResourceLocation> biomes) {
 		clearEntries();
-		biomes.sort(Comparator.comparing(ResourceLocation::toLanguageKey));
-		for (ResourceLocation biome : biomes)
-			addEntry(new Entry(biome));
+		if (biomes.isEmpty()) return;
+		biomes.stream().sorted().forEach(biome -> addEntry(new Entry(biome)));
 	}
 
 	@Override
