@@ -57,7 +57,9 @@ class BiomeList extends ContainerObjectSelectionList<BiomeList.Entry> {
 
 		@Override
 		public boolean mouseClicked(double mouseX, double mouseY, int button) {
-			setSelected(this);
+			if (getSelected() == this)
+				setSelected(null);
+			else setSelected(this);
 			return true;
 		}
 
