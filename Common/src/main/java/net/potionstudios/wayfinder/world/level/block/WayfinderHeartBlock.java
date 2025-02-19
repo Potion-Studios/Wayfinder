@@ -80,7 +80,9 @@ public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
     }
 
     private static void spawnWayfinder(@NotNull Level level , @NotNull BlockPos pos, @NotNull Player player) {
-        level.addFreshEntity(new WayfinderEntity(level, player, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5));
+        WayfinderEntity wayfinder = new WayfinderEntity(level, player);
+        wayfinder.setPos(pos.getX(), pos.getY() + 1, pos.getZ());
+        level.addFreshEntity(wayfinder);
     }
 
     private static int getCost(@NotNull Difficulty difficulty) {

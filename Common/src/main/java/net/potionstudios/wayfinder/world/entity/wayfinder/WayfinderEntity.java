@@ -1,7 +1,6 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -10,42 +9,42 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
-import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
-import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
-import net.potionstudios.wayfinder.world.entity.ai.goal.GoToPosGoal;
-import net.potionstudios.wayfinder.world.entity.ai.goal.ScaredWayfinderGoal;
+import net.potionstudios.wayfinder.world.entity.ai.goal.FollowOwnerGoal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.*;
-import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-public class WayfinderEntity extends PathfinderMob implements GeoEntity, OwnableEntity {
+public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
 
     private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
 
@@ -70,16 +69,15 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private boolean hasTarget;
     public @Nullable BlockPos blockPos = null;
 
-    public WayfinderEntity(Level level, Player owner, double x, double y, double z) {
+    public WayfinderEntity(Level level, Player owner) {
         this(WayfinderEntities.WAYFINDER.get(), level);
-        setPos(x, y, z);
         setOwner(owner);
     }
 
     public WayfinderEntity(EntityType<? extends WayfinderEntity> entityType, Level level) {
         super(entityType, level);
         phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
-        //moveControl = new WayfinderMoveControl(this, phaseOffset);
+        moveControl = new FlyingMoveControl(this, 30, true);
         searching = false;
         setPersistenceRequired();
         hasTarget = false;
@@ -156,6 +154,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
             return event.setAndContinue(SEARCHING_LOOP);
         return event.setAndContinue(IDLE);
     }
+
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
@@ -248,9 +247,20 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 20)
-                .add(Attributes.MOVEMENT_SPEED, 0.4D)
+                .add(Attributes.FLYING_SPEED, 0.9D)
                 .add(Attributes.FALL_DAMAGE_MULTIPLIER, 0)
-                .add(Attributes.GRAVITY, 0.02f);
+                .add(Attributes.GRAVITY, 0.0f);
+    }
+
+    @Override
+    public void aiStep() {
+//        if (!this.onGround() && this.getDeltaMovement().y < 0.0) {
+//            this.setDeltaMovement(this.getDeltaMovement().multiply(1.0, 0.75, 1.0));
+//        }
+        if (this.onGround()) {
+            this.setDeltaMovement(this.getDeltaMovement().add(0, 0.1, 0));
+        }
+        super.aiStep();
     }
 
     @Override
@@ -260,7 +270,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     protected @Nullable SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-	    return getRandom().nextBoolean() ? WayfinderSounds.WAYFINDER_HURT0.get() : WayfinderSounds.WAYFINDER_HURT1.get();
+        return getRandom().nextBoolean() ? WayfinderSounds.WAYFINDER_HURT0.get() : WayfinderSounds.WAYFINDER_HURT1.get();
     }
 
     @Override
@@ -279,49 +289,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     protected void registerGoals() {
-        goalSelector.addGoal(0, new ScaredWayfinderGoal(this));
+        goalSelector.addGoal(0, new FollowOwnerGoal(this, getOwner(), 1.2f, 2, 100));
         goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        goalSelector.addGoal(2, new GoToPosGoal(this));
-        //goalSelector.addGoal(1, new AvoidEntityGoal<>(this, Monster.class, 8.0F, 1, 1));
-    }
-
-    @Override
-    public boolean onGround() {
-        return getY() - level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockPosition()).getY() <= 2;
-    }
-
-    @Override
-    public boolean hurt(@NotNull DamageSource source, float amount) {
-        if (level().isClientSide()) return false;
-        if (isScared())
-            if (this.shield() == SHIELD.FULL) {
-                this.setShield(SHIELD.HALF);
-                this.playSound(WayfinderSounds.WAYFINDER_SHIELD_HIT.get());
-                return false;
-            } else if (this.shield() == SHIELD.HALF) {
-                this.setShield(SHIELD.NONE);
-                this.playSound(WayfinderSounds.WAYFINDER_SHIELD_BREAK.get());
-                return false;
-            }
-
-        boolean hurt = super.hurt(source, amount);
-
-        if (hurt) {
-            setScared(true);
-            if (isDeadOrDying() && getOwner() != null) {
-                PlatformHandler.PLATFORM_HANDLER.setWayfinder((Player) getOwner(), Util.NIL_UUID);
-                if (source.getEntity() != null && source.getEntity() instanceof ServerPlayer player && getOwner().is(player))
-                    WayfinderCriteriaTriggers.WAYFINDER_OWNER_KILLED.get().trigger(player);
-            }
-        }
-
-        return hurt;
-    }
-
-    @Override
-    protected void tickDeath() {
-        setDeltaMovement(getDeltaMovement().add(0, -0.04, 0));
-        super.tickDeath();
     }
 
     public enum SHIELD {
@@ -332,7 +301,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         private final int hits;
 
         SHIELD(int hits) {
-	        this.hits = hits;
+            this.hits = hits;
         }
 
         public int hits() {

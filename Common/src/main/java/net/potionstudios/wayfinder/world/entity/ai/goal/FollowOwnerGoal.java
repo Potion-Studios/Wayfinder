@@ -1,67 +1,57 @@
 package net.potionstudios.wayfinder.world.entity.ai.goal;
 
-import java.util.EnumSet;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.phys.Vec3;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.EnumSet;
 
 public class FollowOwnerGoal extends Goal {
-    private final WayfinderEntity wayfinder;
-    @Nullable
-    private LivingEntity owner;
-    private final double speedModifier;
-    private final PathNavigation navigation;
-    private int timeToRecalcPath;
-    private final float stopDistance;
-    private final float startDistance;
+    private final WayfinderEntity mob;
+    private Entity target;
+    private final double speed;
+    private final float minDistance;
+    private final float maxDistance;
 
-    public FollowOwnerGoal(WayfinderEntity wayfinder, double speedModifier, float startDistance, float stopDistance) {
-        this.wayfinder = wayfinder;
-        this.speedModifier = speedModifier;
-        this.navigation = wayfinder.getNavigation();
-        this.startDistance = startDistance;
-        this.stopDistance = stopDistance;
-        this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+    public FollowOwnerGoal(WayfinderEntity mob, Entity target, double speed, float minDistance, float maxDistance) {
+        this.mob = mob;
+        this.target = target;
+        this.speed = speed;
+        this.minDistance = minDistance;
+        this.maxDistance = maxDistance;
+        this.setFlags(EnumSet.of(Goal.Flag.MOVE));
     }
 
     @Override
     public boolean canUse() {
-        LivingEntity livingEntity = this.wayfinder.getOwner();
-        if (livingEntity == null) return false;
-        else if (this.wayfinder.unableToMoveToOwner()) return false;
-        else if (this.wayfinder.distanceToSqr(livingEntity) < (double)(this.startDistance * this.startDistance)) return false;
-        else {
-            this.owner = livingEntity;
+        if (target == null) {
             return true;
+        } else {
+            return target.isAlive() && mob.distanceToSqr(target) > minDistance * minDistance;
         }
     }
 
     @Override
     public boolean canContinueToUse() {
-        if (this.navigation.isDone()) return false;
-        else return !this.wayfinder.unableToMoveToOwner() && !(this.wayfinder.distanceToSqr(this.owner) <= (double) (this.stopDistance * this.stopDistance));
-    }
-
-    @Override
-    public void start() {
-        this.timeToRecalcPath = 0;
-    }
-
-    @Override
-    public void stop() {
-        this.owner = null;
-        this.navigation.stop();
+        if (target == null) {
+            return true;
+        } else {
+            return target.isAlive() && mob.distanceToSqr(target) > minDistance * minDistance && mob.distanceToSqr(target) < maxDistance * maxDistance;
+        }
     }
 
     @Override
     public void tick() {
-        this.wayfinder.getLookControl().setLookAt(this.owner, 10.0F, (float)this.wayfinder.getMaxHeadXRot());
-
-        if (--this.timeToRecalcPath <= 0) {
-            this.timeToRecalcPath = this.adjustedTickDelay(10);
-            this.navigation.moveTo(this.owner, this.speedModifier);
+        if (target != null) {
+            double distance = mob.distanceToSqr(target);
+            if (distance > minDistance * minDistance) {
+                Vec3 direction = new Vec3(target.getX() - mob.getX(), target.getY() - mob.getY(), target.getZ() - mob.getZ()).normalize();
+                Vec3 newPos = new Vec3(target.getX() - direction.x * minDistance, target.getY() - direction.y * minDistance, target.getZ() - direction.z * minDistance);
+                mob.getMoveControl().setWantedPosition(newPos.x, newPos.y + 1.5F, newPos.z, speed);
+            }
+        } else {
+            target = mob.getOwner();
         }
     }
 }
