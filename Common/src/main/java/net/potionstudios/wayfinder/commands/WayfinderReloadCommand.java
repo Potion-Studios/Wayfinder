@@ -18,7 +18,7 @@ public class WayfinderReloadCommand {
 		LiteralArgumentBuilder<CommandSourceStack> command = LiteralArgumentBuilder.literal("reload");
 		command.requires(commandSourceStack -> commandSourceStack.hasPermission(2));
 		command.executes(context -> {
-			Wayfinder.CONFIG = ConfigLoader.loadConfig(Config.class).wayfinder;
+			Wayfinder.CONFIG = ConfigLoader.loadConfig(Config.class);
 			context.getSource().sendSuccess(() -> Component.translatable("wayfinder.commands.reload.success").withStyle(ChatFormatting.GREEN), true);
 			return 1;
 		});

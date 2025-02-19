@@ -98,6 +98,11 @@ class NeoForgeDatagen {
             add("advancements.wayfinder.so_it_begins.description", "Summon your first Wayfinder");
             add("advancements.wayfinder.ultimate_betrayal.title", "Ultimate Betrayal");
             add("advancements.wayfinder.ultimate_betrayal.description", "You should be ashamed of yourself..");
+
+            add("gui.wayfinder.button.sit", "Sit");
+            add("gui.wayfinder.button.follow", "Follow");
+            add("gui.wayfinder.search", "Search Biomes");
+            add("gui.wayfinder.button.select", "Select Biome");
         }
     }
 

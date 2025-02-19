@@ -1,10 +1,9 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
-import com.google.common.base.Stopwatch;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -21,7 +20,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.FollowMobGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -45,10 +43,7 @@ import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Predicate;
+import java.util.*;
 
 public class WayfinderEntity extends PathfinderMob implements GeoEntity, OwnableEntity {
 
@@ -59,8 +54,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private static final RawAnimation SEARCHING_START = RawAnimation.begin().thenPlay("searching_start");
     private static final RawAnimation SEARCHING_END = RawAnimation.begin().thenPlay("searching_end");
     private static final RawAnimation SEARCHING_LOOP = RawAnimation.begin().thenLoop("searching_loop");
-    private static final RawAnimation NO = RawAnimation.begin().thenPlay("no");
-    private static final RawAnimation SIT = RawAnimation.begin().thenPlay("sit");
+    private static final RawAnimation NO = RawAnimation.begin().then("no", Animation.LoopType.PLAY_ONCE);
+    private static final RawAnimation SIT = RawAnimation.begin().then("sit", Animation.LoopType.PLAY_ONCE);
     private static final RawAnimation SIT_IDLE = RawAnimation.begin().thenLoop("sit_idle");
     private static final RawAnimation SCARED = RawAnimation.begin().thenLoop("scared");
 
@@ -147,7 +142,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "controller", 0, this::predicate).triggerableAnim("no", NO).triggerableAnim("sit", SIT));
+        controllers.add(new AnimationController<>(this, "controller", 0, this::predicate).triggerableAnim("no", NO).triggerableAnim("sit", SIT).triggerableAnim("searching_start", SEARCHING_START));
     }
 
     private <E extends GeoAnimatable> PlayState predicate(AnimationState<E> event) {
@@ -172,10 +167,10 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         if (!level().isClientSide()) {
             if (isScared()) return InteractionResult.FAIL;
             if (player.getUUID().equals(getOwnerUUID())) {
-                Set<ResourceLocation> set = new java.util.HashSet<>();
+                List<ResourceLocation> biomeList = new ArrayList<>();
                 for (Holder<Biome> key : ((ServerLevel) level()).getChunkSource().getGenerator().getBiomeSource().possibleBiomes())
-                    key.unwrapKey().ifPresent(biome -> set.add(biome.location()));
-                PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderOpenScreenPacket(set), player);
+                    key.unwrapKey().ifPresent(biome -> biomeList.add(biome.location()));
+                PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderOpenScreenPacket(biomeList, isSitting()), player);
                 return InteractionResult.SUCCESS;
             } else triggerAnim("controller", "no");
             return InteractionResult.FAIL;
@@ -189,17 +184,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     public void startBiomeSearch(ResourceLocation biome) {
         triggerAnim("controller", "searching_start");
         setSearching(true);
-        ServerLevel level = (ServerLevel) level();
-        Holder<Biome> biome1 = level.registryAccess().registryOrThrow(Registries.BIOME).getHolder(biome).orElseThrow();
-        Stopwatch stopwatch = Stopwatch.createStarted(Util.TICKER);
-        Predicate<Holder<Biome>> predicate = biomeHolder1 -> biomeHolder1.is(biome1.unwrap().orThrow());
-        var value = level.findClosestBiome3d(predicate, blockPosition(), Wayfinder.CONFIG.MAX_SEARCH_DISTANCE_IN_CHUNKS, 32, 64);
-        stopwatch.stop();
-
-        if (value == null)
-            Wayfinder.LOGGER.info("Biome search took {} ms and found nothing", stopwatch.elapsed().toMillis());
-        else
-            blockPos = value.getFirst();
+        Pair<BlockPos, Holder<Biome>> value = ((ServerLevel) level()).
+                findClosestBiome3d(biomeHolder -> biomeHolder.is(biome), blockPosition(),
+                        Wayfinder.CONFIG.wayfinder.MAX_SEARCH_DISTANCE_IN_CHUNKS, 32, 64);
+        if (value != null) blockPos = value.getFirst();
+        else triggerAnim("controller", "no");
     }
 
     @Override
@@ -208,8 +197,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public void sit() {
-        setSitting(true);
         triggerAnim("controller", "sit");
+        setSitting(true);
     }
 
     public boolean isSitting() {
@@ -291,7 +280,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new ScaredWayfinderGoal(this));
-        goalSelector.addGoal(0, new FollowMobGoal(this,1.0D, 10.0F, 2.0F));
         goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(2, new GoToPosGoal(this));
         //goalSelector.addGoal(1, new AvoidEntityGoal<>(this, Monster.class, 8.0F, 1, 1));

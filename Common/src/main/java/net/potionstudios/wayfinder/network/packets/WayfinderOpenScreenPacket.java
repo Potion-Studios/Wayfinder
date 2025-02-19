@@ -12,21 +12,22 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.network.packet.MultiloaderPacket;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
-public record WayfinderOpenScreenPacket(Set<ResourceLocation> locations) implements MultiloaderPacket {
+public record WayfinderOpenScreenPacket(List<ResourceLocation> locations, boolean isSitting) implements MultiloaderPacket {
 
     public static final CustomPacketPayload.Type<WayfinderOpenScreenPacket> TYPE = new Type<>(Wayfinder.id("open_screen"));
 
     public static final StreamCodec<FriendlyByteBuf, WayfinderOpenScreenPacket> CODEC = StreamCodec.composite(
-            ByteBufCodecs.collection(HashSet::new, ResourceLocation.STREAM_CODEC), WayfinderOpenScreenPacket::locations,
+            ByteBufCodecs.collection(ArrayList::new, ResourceLocation.STREAM_CODEC), WayfinderOpenScreenPacket::locations,
+            ByteBufCodecs.BOOL, WayfinderOpenScreenPacket::isSitting,
             WayfinderOpenScreenPacket::new);
 
     @Override
     public void receiveMessage(@Nullable Player player, Consumer<Runnable> consumer) {
-        consumer.accept(() -> WayfinderScreen.openScreen(locations.stream().toList()));
+        consumer.accept(() -> WayfinderScreen.openScreen(locations, isSitting));
     }
 
     @Override
