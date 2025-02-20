@@ -10,7 +10,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -47,7 +46,7 @@ public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
     protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
         if (level.isClientSide()) return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
         if (!state.getValue(ACTIVATED) && stack.is(EMERALD_TAG) && !PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
-            int cost = getCost(level.getDifficulty());
+            int cost = getCost(player);
             if (stack.getCount() >= cost) {
                 level.scheduleTick(pos, this, 20 * Wayfinder.CONFIG.wayfinderHeartBlock.ACTIVATION_COOLDOWN_IN_SECONDS);
                 level.setBlockAndUpdate(pos, state.setValue(ACTIVATED, true));
@@ -85,12 +84,10 @@ public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
         level.addFreshEntity(wayfinder);
     }
 
-    private static int getCost(@NotNull Difficulty difficulty) {
-        return switch (difficulty) {
-            case NORMAL -> 2;
-            case HARD -> 3;
-            default -> 1;
-        } * Math.abs(Wayfinder.CONFIG.wayfinderHeartBlock.EMERALD_COST_MULTIPLIER);
+    private static int getCost(@NotNull Player player) {
+        int deaths = PlatformHandler.PLATFORM_HANDLER.getWayfinderDeaths(player);
+        if (deaths == 0) return 1;
+        else return deaths * Math.abs(Wayfinder.CONFIG.wayfinderHeartBlock.EMERALD_DEATH_COST_MULTIPLIER);
     }
 
     @Override

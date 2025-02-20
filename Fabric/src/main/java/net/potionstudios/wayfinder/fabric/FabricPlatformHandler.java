@@ -47,6 +47,16 @@ public final class FabricPlatformHandler implements PlatformHandler {
 	}
 
 	@Override
+	public int getWayfinderDeaths(Player player) {
+		return WayfinderAttachmentData.getWayfinderDeaths(player);
+	}
+
+	@Override
+	public void incrementWayfinderDeaths(Player player) {
+		WayfinderAttachmentData.incrementWayfinderDeaths(player);
+	}
+
+	@Override
 	public void sendToPlayer(MultiloaderPacket packet, Player player) {
 		ServerPlayNetworking.send((ServerPlayer) player, packet);
 	}

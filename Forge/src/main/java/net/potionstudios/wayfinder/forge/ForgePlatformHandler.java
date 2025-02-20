@@ -67,6 +67,16 @@ public final class ForgePlatformHandler implements PlatformHandler {
 	}
 
 	@Override
+	public int getWayfinderDeaths(Player player) {
+		return player.getPersistentData().getInt("wayfinder_deaths");
+	}
+
+	@Override
+	public void incrementWayfinderDeaths(Player player) {
+		player.getPersistentData().putInt("wayfinder_deaths", getWayfinderDeaths(player) + 1);
+	}
+
+	@Override
 	public void sendToPlayer(MultiloaderPacket packet, Player player) {
 		ForgeNetworking.sendToPlayer(packet, (ServerPlayer) player);
 	}

@@ -54,6 +54,10 @@ public interface PlatformHandler {
 
 	UUID getWayfinder(Player player);
 
+	int getWayfinderDeaths(Player player);
+
+	void incrementWayfinderDeaths(Player player);
+
 	void sendToPlayer(MultiloaderPacket packet, Player player);
 
 	void sendToServer(MultiloaderPacket packet);

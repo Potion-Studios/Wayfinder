@@ -13,7 +13,7 @@ public class Config {
     public WayfinderHeartBlock wayfinderHeartBlock = new WayfinderHeartBlock();
 
     public static class WayfinderHeartBlock {
-        public int EMERALD_COST_MULTIPLIER = 1;
+        public int EMERALD_DEATH_COST_MULTIPLIER = 1;
         public int ACTIVATION_COOLDOWN_IN_SECONDS = 15;
     }
 }

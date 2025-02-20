@@ -1,6 +1,7 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -9,6 +10,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -27,6 +29,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
+import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
@@ -298,6 +301,36 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         goalSelector.addGoal(0, new FollowOwnerGoal(this, getOwner(), 1.2f, 2, 100));
         goalSelector.addGoal(0, new GoToPosGoal(this, getOwner(), gettargetBiomeBlockPos(), 3, 2, 100));
         goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0F));
+    }
+
+    @Override
+    public boolean hurt(@NotNull DamageSource source, float amount) {
+        if (level().isClientSide()) return false;
+        if (isScared())
+            if (this.shield() == SHIELD.FULL) {
+                this.setShield(SHIELD.HALF);
+                this.playSound(WayfinderSounds.WAYFINDER_SHIELD_HIT.get());
+                return false;
+            } else if (this.shield() == SHIELD.HALF) {
+                this.setShield(SHIELD.NONE);
+                this.playSound(WayfinderSounds.WAYFINDER_SHIELD_BREAK.get());
+                return false;
+            }
+
+        boolean hurt = super.hurt(source, amount);
+
+        if (hurt) {
+            setScared(true);
+            if (isDeadOrDying() && getOwner() != null) {
+                Player owner = (Player) getOwner();
+                PlatformHandler.PLATFORM_HANDLER.setWayfinder(owner, Util.NIL_UUID);
+                PlatformHandler.PLATFORM_HANDLER.incrementWayfinderDeaths(owner);
+                if (source.getEntity() != null && source.getEntity() instanceof ServerPlayer player && owner.is(player))
+                    WayfinderCriteriaTriggers.WAYFINDER_OWNER_KILLED.get().trigger(player);
+            }
+        }
+
+        return hurt;
     }
 
     public enum SHIELD {
