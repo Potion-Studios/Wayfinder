@@ -5,7 +5,7 @@ public class Config {
     public Wayfinder wayfinder = new Wayfinder();
 
     public static class Wayfinder {
-        public int MAX_SEARCH_DISTANCE_IN_CHUNKS = 100;
+        public int MAX_SEARCH_DISTANCE_IN_BLOCKS = 10000;
         public int COOLDOWN_IN_SECONDS = 60;
         public int SCARED_PROJECTILE_MOB_DISTANCE_IN_BLOCKS = 10;
     }
