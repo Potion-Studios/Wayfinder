@@ -10,7 +10,7 @@ import java.util.EnumSet;
 
 public class FollowOwnerGoal extends Goal {
     private final WayfinderEntity mob;
-    private Entity target;
+    private @Nullable Entity target;
     private final double speed;
     private final float minDistance;
     private final float maxDistance;
@@ -45,6 +45,7 @@ public class FollowOwnerGoal extends Goal {
     @Override
     public void tick() {
         if (target != null) {
+            if (mob.isSitting()) return;
             double distance = mob.distanceToSqr(target);
             if (distance > minDistance * minDistance) {
                 Vec3 direction = new Vec3(target.getX() - mob.getX(), target.getY() - mob.getY(), target.getZ() - mob.getZ()).normalize();
