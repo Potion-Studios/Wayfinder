@@ -31,6 +31,7 @@ import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.entity.ai.goal.FollowOwnerGoal;
+import net.potionstudios.wayfinder.world.entity.ai.goal.GoToPosGoal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoAnimatable;
@@ -96,8 +97,8 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         compound.putBoolean("Sitting", entityData.get(DATA_SITTING));
         compound.putBoolean("Searching", searching);
         compound.putInt("Shield", entityData.get(DATA_SHIELD));
-        if (targetBlockPos().isPresent())
-            compound.putLong("BlockPos", targetBlockPos().get().asLong());
+        if (gettargetBiomeBlockPos().isPresent())
+            compound.putLong("BlockPos", gettargetBiomeBlockPos().get().asLong());
     }
 
     @Override
@@ -233,11 +234,11 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         return this.shield() != SHIELD.NONE;
     }
 
-    public boolean hasTarget() {
-        return targetBlockPos().isPresent();
+    public boolean hasTargetBiome() {
+        return gettargetBiomeBlockPos().isPresent();
     }
 
-    public Optional<BlockPos> targetBlockPos() {
+    public Optional<BlockPos> gettargetBiomeBlockPos() {
         return entityData.get(BLOCK_POS);
     }
 
@@ -246,7 +247,7 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
     }
 
     public final boolean unableToMoveToOwner() {
-        return isSitting() || isPassenger() || getOwner() != null && getOwner().isSpectator() || isSearching();
+        return isSitting() || isPassenger() || getOwner() == null || getOwner().isSpectator();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -295,6 +296,7 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FollowOwnerGoal(this, getOwner(), 1.2f, 2, 100));
+        goalSelector.addGoal(0, new GoToPosGoal(this, getOwner(), gettargetBiomeBlockPos(), 3, 2, 100));
         goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0F));
     }
 

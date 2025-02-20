@@ -45,7 +45,7 @@ public class FollowOwnerGoal extends Goal {
     @Override
     public void tick() {
         if (target != null) {
-            if (mob.isSitting()) return;
+            if (mob.isSitting() || mob.hasTargetBiome()) return;
             double distance = mob.distanceToSqr(target);
             if (distance > minDistance * minDistance) {
                 Vec3 direction = new Vec3(target.getX() - mob.getX(), target.getY() - mob.getY(), target.getZ() - mob.getZ()).normalize();

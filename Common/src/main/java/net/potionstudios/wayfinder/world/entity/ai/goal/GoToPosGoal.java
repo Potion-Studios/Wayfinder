@@ -1,37 +1,60 @@
 package net.potionstudios.wayfinder.world.entity.ai.goal;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.phys.Vec3;
+import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
+import java.util.Optional;
 
 public class GoToPosGoal extends Goal {
     private final WayfinderEntity wayfinder;
+    private Optional<BlockPos> target;
+    private @Nullable LivingEntity owner;
+    private final double speed;
+    private final float minDistance;
+    private final float maxDistance;
 
-    public GoToPosGoal(WayfinderEntity wayfinder) {
+    public GoToPosGoal(WayfinderEntity wayfinder, @Nullable LivingEntity owner, Optional<BlockPos> target, double speed, float minDistance, float maxDistance) {
         this.wayfinder = wayfinder;
+        this.target = target;
+        this.owner = owner;
+        this.speed = speed;
+        this.minDistance = minDistance;
+        this.maxDistance = maxDistance;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.JUMP));
     }
 
     @Override
-    public void start() {
-        BlockPos pos = wayfinder.targetBlockPos().get();
-        wayfinder.getNavigation().moveTo(pos.getX(), pos.getY(), pos.getZ(), 1.0D);
-    }
-
-    @Override
-    public void stop() {
-        wayfinder.getNavigation().stop();
+    public boolean canUse() {
+        return true;
     }
 
     @Override
     public boolean canContinueToUse() {
-        return !wayfinder.getNavigation().isDone();
+        return !target.isPresent() || wayfinder.distanceToSqr(target.get().getX(), target.get().getY(), target.get().getZ()) > 10;
     }
 
     @Override
-    public boolean canUse() {
-        return !wayfinder.isSitting() && wayfinder.hasTarget();
+    public void tick() {
+        //Wayfinder.LOGGER.info("GoToPosGoal tick");
+        if (target.isPresent() && owner.isAlive() && !wayfinder.unableToMoveToOwner()) {
+	        //Wayfinder.LOGGER.info("GoToPos Pos: {}", target.get());
+            double distanceFromOwner = wayfinder.distanceToSqr(owner);
+            if (distanceFromOwner <= 200) {
+                BlockPos target = this.target.get();
+                Vec3 direction = new Vec3(target.getX() - wayfinder.getX(), target.getY() - wayfinder.getY(), target.getZ() - wayfinder.getZ()).normalize();
+                Vec3 newPos = new Vec3(target.getX() - direction.x * minDistance, target.getY() - direction.y * minDistance, target.getZ() - direction.z * minDistance);
+                wayfinder.getMoveControl().setWantedPosition(newPos.x, newPos.y + .25F, newPos.z, speed);
+	            //Wayfinder.LOGGER.info("GoToPosGoal tick: {}", newPos);
+            }
+        } else {
+            target = wayfinder.gettargetBiomeBlockPos();
+            owner = wayfinder.getOwner();
+        }
     }
 }
