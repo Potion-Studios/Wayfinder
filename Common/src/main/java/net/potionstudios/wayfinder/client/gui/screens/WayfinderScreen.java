@@ -30,12 +30,14 @@ public class WayfinderScreen extends Screen {
     protected int startXLeftPage;
     private final List<ResourceLocation> biomes;
     private boolean isSitting;
+    private boolean wasSitting;
     private BiomeList biomeList;
 
     public WayfinderScreen(List<ResourceLocation> biomeRegistry, boolean isSitting) {
         super(Component.literal(""));
         this.biomes = biomeRegistry;
         this.isSitting = isSitting;
+        this.wasSitting = isSitting;
     }
 
     @Override
@@ -106,7 +108,8 @@ public class WayfinderScreen extends Screen {
     @Override
     public void onClose() {
         super.onClose();
-        PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderSitPacket(isSitting));
+        if (isSitting != wasSitting)
+            PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderSitPacket(isSitting));
     }
 
     public static void openScreen(List<ResourceLocation> biomeRegistry, boolean isSitting) {

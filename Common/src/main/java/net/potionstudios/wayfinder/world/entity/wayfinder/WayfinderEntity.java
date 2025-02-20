@@ -253,7 +253,7 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 20)
-                .add(Attributes.FLYING_SPEED, 0.9D)
+                .add(Attributes.FLYING_SPEED, 2D)
                 .add(Attributes.FALL_DAMAGE_MULTIPLIER, 0)
                 .add(Attributes.GRAVITY, 0.0f);
     }
@@ -263,7 +263,7 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
 //        if (!this.onGround() && this.getDeltaMovement().y < 0.0) {
 //            this.setDeltaMovement(this.getDeltaMovement().multiply(1.0, 0.75, 1.0));
 //        }
-        if (this.onGround()) {
+        if (this.onGround() && !isSitting()) {
             this.setDeltaMovement(this.getDeltaMovement().add(0, 0.1, 0));
         }
         super.aiStep();
