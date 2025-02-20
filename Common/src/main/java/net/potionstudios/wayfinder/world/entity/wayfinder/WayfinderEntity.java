@@ -96,6 +96,8 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         compound.putBoolean("Sitting", entityData.get(DATA_SITTING));
         compound.putBoolean("Searching", searching);
         compound.putInt("Shield", entityData.get(DATA_SHIELD));
+        if (targetBlockPos().isPresent())
+            compound.putLong("BlockPos", targetBlockPos().get().asLong());
     }
 
     @Override
@@ -114,6 +116,9 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         entityData.set(DATA_SITTING, compound.getBoolean("Sitting"));
         entityData.set(DATA_SHIELD, compound.getInt("Shield"));
         searching = compound.getBoolean("Searching");
+
+        if (compound.contains("BlockPos"))
+            setTargetBlockPos(Optional.of(BlockPos.of(compound.getLong("BlockPos"))));
     }
 
     @Override
