@@ -58,15 +58,13 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
     private static final RawAnimation SIT_IDLE = RawAnimation.begin().thenLoop("sit_idle");
     private static final RawAnimation SCARED = RawAnimation.begin().thenLoop("scared");
 
-    //private static final EntityDataAccessor<Optional<BlockPos>> BLOCK_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
+    private static final EntityDataAccessor<Optional<BlockPos>> BLOCK_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Boolean> DATA_SCARED = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_SITTING = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> DATA_SHIELD = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.INT);
 
     private boolean searching;
-    private boolean hasTarget;
-    public @Nullable BlockPos blockPos = null;
 
     public WayfinderEntity(Level level, Player owner) {
         this(WayfinderEntities.WAYFINDER.get(), level);
@@ -78,7 +76,6 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         moveControl = new FlyingMoveControl(this, 30, true);
         searching = false;
         setPersistenceRequired();
-        hasTarget = false;
     }
 
     @Override
@@ -88,6 +85,7 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         builder.define(DATA_SCARED, false);
         builder.define(DATA_SITTING, false);
         builder.define(DATA_SHIELD, 2);
+        builder.define(BLOCK_POS, Optional.empty());
     }
 
     @Override
@@ -97,7 +95,6 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
             compound.putUUID("Owner", getOwnerUUID());
         compound.putBoolean("Sitting", entityData.get(DATA_SITTING));
         compound.putBoolean("Searching", searching);
-        compound.putBoolean("HasTarget", hasTarget);
         compound.putInt("Shield", entityData.get(DATA_SHIELD));
     }
 
@@ -117,7 +114,6 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         entityData.set(DATA_SITTING, compound.getBoolean("Sitting"));
         entityData.set(DATA_SHIELD, compound.getInt("Shield"));
         searching = compound.getBoolean("Searching");
-        hasTarget = compound.getBoolean("HasTarget");
     }
 
     @Override
@@ -182,7 +178,7 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         Pair<BlockPos, Holder<Biome>> value = ((ServerLevel) level()).
                 findClosestBiome3d(biomeHolder -> biomeHolder.is(biome), blockPosition(),
                         Wayfinder.CONFIG.wayfinder.MAX_SEARCH_DISTANCE_IN_CHUNKS, 32, 64);
-        if (value != null) blockPos = value.getFirst();
+        if (value != null) setTargetBlockPos(Optional.of(value.getFirst()));
         else triggerAnim("controller", "no");
     }
 
@@ -233,11 +229,19 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
     }
 
     public boolean hasTarget() {
-        return hasTarget;
+        return targetBlockPos().isPresent();
+    }
+
+    public Optional<BlockPos> targetBlockPos() {
+        return entityData.get(BLOCK_POS);
+    }
+
+    public void setTargetBlockPos(Optional<BlockPos> pos) {
+        entityData.set(BLOCK_POS, pos);
     }
 
     public final boolean unableToMoveToOwner() {
-        return isSitting() || isPassenger() || this.getOwner() != null && getOwner().isSpectator() || isSearching();
+        return isSitting() || isPassenger() || getOwner() != null && getOwner().isSpectator() || isSearching();
     }
 
     public static AttributeSupplier.Builder createAttributes() {

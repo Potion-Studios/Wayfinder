@@ -1,5 +1,6 @@
 package net.potionstudios.wayfinder.world.entity.ai.goal;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 
@@ -15,7 +16,8 @@ public class GoToPosGoal extends Goal {
 
     @Override
     public void start() {
-        wayfinder.getNavigation().moveTo(wayfinder.blockPos.getX(), wayfinder.blockPos.getY(), wayfinder.blockPos.getZ(), 1.0D);
+        BlockPos pos = wayfinder.targetBlockPos().get();
+        wayfinder.getNavigation().moveTo(pos.getX(), pos.getY(), pos.getZ(), 1.0D);
     }
 
     @Override
@@ -30,6 +32,6 @@ public class GoToPosGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        return !wayfinder.isSitting() && wayfinder.blockPos != null;
+        return !wayfinder.isSitting() && wayfinder.hasTarget();
     }
 }

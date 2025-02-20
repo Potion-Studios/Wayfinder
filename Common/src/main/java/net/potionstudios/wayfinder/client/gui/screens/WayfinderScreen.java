@@ -81,7 +81,6 @@ public class WayfinderScreen extends Screen {
         int buttonXRight = leftPos + (IMAGE_WIDTH / 2) - 60;
 
         Button sitButton = new Button(buttonXLeft, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.sit"), button -> {
-            PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderSitPacket(true));
             isSitting = true;
         }, Button.DEFAULT_NARRATION);
 
@@ -90,7 +89,6 @@ public class WayfinderScreen extends Screen {
         addRenderableWidget(sitButton);
 
         Button walkButton = new Button(buttonXRight, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.follow"), button -> {
-            PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderSitPacket(false));
             isSitting = false;
         }, Button.DEFAULT_NARRATION);
 
@@ -103,6 +101,12 @@ public class WayfinderScreen extends Screen {
     public void renderBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.renderTransparentBackground(guiGraphics);
         guiGraphics.blit(BOOK_TEXTURE, leftPos, bottomPos, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT);
+    }
+
+    @Override
+    public void onClose() {
+        super.onClose();
+        PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderSitPacket(isSitting));
     }
 
     public static void openScreen(List<ResourceLocation> biomeRegistry, boolean isSitting) {
