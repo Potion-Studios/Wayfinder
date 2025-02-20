@@ -41,16 +41,13 @@ public class GoToPosGoal extends Goal {
 
     @Override
     public void tick() {
-        //Wayfinder.LOGGER.info("GoToPosGoal tick");
-        if (target.isPresent() && owner.isAlive() && !wayfinder.unableToMoveToOwner()) {
-	        //Wayfinder.LOGGER.info("GoToPos Pos: {}", target.get());
+        if (target.isPresent() && !wayfinder.unableToMoveToOwner()) {
             double distanceFromOwner = wayfinder.distanceToSqr(owner);
             if (distanceFromOwner <= 200) {
                 BlockPos target = this.target.get();
                 Vec3 direction = new Vec3(target.getX() - wayfinder.getX(), target.getY() - wayfinder.getY(), target.getZ() - wayfinder.getZ()).normalize();
                 Vec3 newPos = new Vec3(target.getX() - direction.x * minDistance, target.getY() - direction.y * minDistance, target.getZ() - direction.z * minDistance);
                 wayfinder.getMoveControl().setWantedPosition(newPos.x, newPos.y + .25F, newPos.z, speed);
-	            //Wayfinder.LOGGER.info("GoToPosGoal tick: {}", newPos);
             }
         } else {
             target = wayfinder.gettargetBiomeBlockPos();

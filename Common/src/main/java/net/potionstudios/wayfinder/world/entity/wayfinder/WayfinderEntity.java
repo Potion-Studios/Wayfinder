@@ -247,7 +247,7 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
     }
 
     public final boolean unableToMoveToOwner() {
-        return isSitting() || isPassenger() || getOwner() == null || getOwner().isSpectator();
+        return isSitting() || isPassenger() || getOwner() == null || getOwner().isSpectator() || getOwner().isDeadOrDying();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
