@@ -64,7 +64,6 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
     private static final EntityDataAccessor<Boolean> DATA_SITTING = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> DATA_SHIELD = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.INT);
 
-    private float phaseOffset;
     private boolean searching;
     private boolean hasTarget;
     public @Nullable BlockPos blockPos = null;
@@ -76,7 +75,6 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
 
     public WayfinderEntity(EntityType<? extends WayfinderEntity> entityType, Level level) {
         super(entityType, level);
-        phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
         moveControl = new FlyingMoveControl(this, 30, true);
         searching = false;
         setPersistenceRequired();
@@ -98,7 +96,6 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         if (getOwnerUUID() != null)
             compound.putUUID("Owner", getOwnerUUID());
         compound.putBoolean("Sitting", entityData.get(DATA_SITTING));
-        compound.putFloat("Offset", phaseOffset);
         compound.putBoolean("Searching", searching);
         compound.putBoolean("HasTarget", hasTarget);
         compound.putInt("Shield", entityData.get(DATA_SHIELD));
@@ -119,7 +116,6 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
 
         entityData.set(DATA_SITTING, compound.getBoolean("Sitting"));
         entityData.set(DATA_SHIELD, compound.getInt("Shield"));
-        phaseOffset = compound.getFloat("Offset");
         searching = compound.getBoolean("Searching");
         hasTarget = compound.getBoolean("HasTarget");
     }

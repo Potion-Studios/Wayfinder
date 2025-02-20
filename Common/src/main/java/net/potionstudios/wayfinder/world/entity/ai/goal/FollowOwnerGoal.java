@@ -4,6 +4,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.phys.Vec3;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
@@ -14,7 +15,7 @@ public class FollowOwnerGoal extends Goal {
     private final float minDistance;
     private final float maxDistance;
 
-    public FollowOwnerGoal(WayfinderEntity mob, Entity target, double speed, float minDistance, float maxDistance) {
+    public FollowOwnerGoal(WayfinderEntity mob, @Nullable Entity target, double speed, float minDistance, float maxDistance) {
         this.mob = mob;
         this.target = target;
         this.speed = speed;
@@ -48,7 +49,7 @@ public class FollowOwnerGoal extends Goal {
             if (distance > minDistance * minDistance) {
                 Vec3 direction = new Vec3(target.getX() - mob.getX(), target.getY() - mob.getY(), target.getZ() - mob.getZ()).normalize();
                 Vec3 newPos = new Vec3(target.getX() - direction.x * minDistance, target.getY() - direction.y * minDistance, target.getZ() - direction.z * minDistance);
-                mob.getMoveControl().setWantedPosition(newPos.x, newPos.y + 1.5F, newPos.z, speed);
+                mob.getMoveControl().setWantedPosition(newPos.x, newPos.y + .25F, newPos.z, speed);
             }
         } else {
             target = mob.getOwner();
