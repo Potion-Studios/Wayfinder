@@ -53,6 +53,8 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
     private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
 
     private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
+    private static final RawAnimation IDLE_2 = RawAnimation.begin().thenPlay("idle_2");
+    private static final RawAnimation IDLE_3 = RawAnimation.begin().thenPlay("idle_3");
     private static final RawAnimation DEATH = RawAnimation.begin().then("death", Animation.LoopType.HOLD_ON_LAST_FRAME);
     private static final RawAnimation SEARCHING_START = RawAnimation.begin().thenPlay("searching_start");
     private static final RawAnimation SEARCHING_END = RawAnimation.begin().thenPlay("searching_end");
@@ -60,6 +62,8 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
     private static final RawAnimation NO = RawAnimation.begin().then("no", Animation.LoopType.PLAY_ONCE);
     private static final RawAnimation SIT = RawAnimation.begin().then("sit", Animation.LoopType.PLAY_ONCE);
     private static final RawAnimation SIT_IDLE = RawAnimation.begin().thenLoop("sit_idle");
+    private static final RawAnimation SIT_IDLE_2 = RawAnimation.begin().thenLoop("sit_idle_2");
+    private static final RawAnimation SIT_IDLE_3 = RawAnimation.begin().thenLoop("sit_idle_3");
     private static final RawAnimation SCARED = RawAnimation.begin().thenLoop("scared");
 
     private static final EntityDataAccessor<Optional<BlockPos>> BLOCK_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
@@ -150,10 +154,18 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         else if (isScared())
             return event.setAndContinue(SCARED);
         else if (isSitting())
-            return event.setAndContinue(SIT_IDLE);
+            return switch (getRandom().nextInt(10)) {
+            case 0 -> event.setAndContinue(SIT_IDLE_3);
+            case 1, 2 -> event.setAndContinue(SIT_IDLE_2);
+            default -> event.setAndContinue(SIT_IDLE);
+            };
         else if (isSearching())
             return event.setAndContinue(SEARCHING_LOOP);
-        return event.setAndContinue(IDLE);
+        return switch (getRandom().nextInt(10)) {
+            case 0 -> event.setAndContinue(IDLE_3);
+            case 1, 2 -> event.setAndContinue(IDLE_2);
+            default -> event.setAndContinue(IDLE);
+        };
     }
 
 
