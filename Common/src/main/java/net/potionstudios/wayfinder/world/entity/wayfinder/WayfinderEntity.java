@@ -194,6 +194,11 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
     }
 
     public void startBiomeSearch(ResourceLocation biome) {
+        if (level().getBiome(blockPosition()).is(biome)) {
+            triggerAnim("controller", "no");
+            return;
+        }
+
         triggerAnim("controller", "searching_start");
         setSearching(true);
         Pair<BlockPos, Holder<Biome>> value = ((ServerLevel) level()).
