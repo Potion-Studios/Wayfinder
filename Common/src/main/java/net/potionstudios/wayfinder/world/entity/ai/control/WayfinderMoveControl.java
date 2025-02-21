@@ -19,10 +19,19 @@ public class WayfinderMoveControl extends FlyingMoveControl {
         if (wayfinder.isSitting()) { // When sitting the wayfinder should not fly
             wayfinder.setNoGravity(false);
             return;
-        } else if (wayfinder.getOwner() != null && wayfinder.getOwner().distanceToSqr(wayfinder) < 10 && wayfinder.gettargetBiomeBlockPos().isEmpty() && !wayfinder.isScared()) {
+        } /* else if (wayfinder.getOwner() != null && wayfinder.getOwner().distanceToSqr(wayfinder) < 10 && wayfinder.gettargetBiomeBlockPos().isEmpty() && !wayfinder.isScared()) {
             //wayfinder.setNoGravity(true);
             double currentY = wayfinder.getY();
             double ownerY = wayfinder.getOwner().getY();
+
+            if (currentY - ownerY > 2) {
+                wayfinder.setNoGravity(false);
+                wayfinder.applyGravity();
+                return;
+            }
+
+            wayfinder.setNoGravity(true);
+
             // Calculate a smooth floating offset using sine wave
             double floatOffset = Math.sin(mob.tickCount * 0.1 + phaseOffset) * 0.05;
 
@@ -30,11 +39,12 @@ public class WayfinderMoveControl extends FlyingMoveControl {
             double targetY = Math.max(ownerY, Math.min(currentY + floatOffset, ownerY + 2.0));
 
             // Adjust Y position while maintaining fluidity
-            setWantedPosition(mob.getX(), targetY, mob.getZ(), this.speedModifier);
-            operation = Operation.MOVE_TO;
+            wayfinder.setPos(mob.getX(), targetY, mob.getZ());
+            //operation = Operation.MOVE_TO;
+            return;
         } else if (wayfinder.onGround()) {
           setWantedPosition(mob.getX(), mob.getY() + 0.1, mob.getZ(), this.speedModifier);
-        }
+        } */
         super.tick();
     }
 }
