@@ -33,6 +33,7 @@ import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTrigg
 import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
+import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
 import net.potionstudios.wayfinder.world.entity.ai.goal.FollowOwnerGoal;
 import net.potionstudios.wayfinder.world.entity.ai.goal.GoToPosGoal;
 import org.jetbrains.annotations.NotNull;
@@ -72,6 +73,7 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
     private static final EntityDataAccessor<Boolean> DATA_SITTING = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> DATA_SHIELD = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.INT);
 
+    private float phaseOffset;
     private boolean searching;
 
     public WayfinderEntity(Level level, Player owner) {
@@ -81,7 +83,8 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
 
     public WayfinderEntity(EntityType<? extends WayfinderEntity> entityType, Level level) {
         super(entityType, level);
-        moveControl = new FlyingMoveControl(this, 30, true);
+        phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
+        moveControl = new WayfinderMoveControl(this, phaseOffset);
         searching = false;
         setPersistenceRequired();
     }
@@ -102,6 +105,7 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         if (getOwnerUUID() != null)
             compound.putUUID("Owner", getOwnerUUID());
         compound.putBoolean("Sitting", entityData.get(DATA_SITTING));
+        compound.putFloat("Offset", phaseOffset);
         compound.putBoolean("Searching", searching);
         compound.putInt("Shield", entityData.get(DATA_SHIELD));
         if (gettargetBiomeBlockPos().isPresent())
@@ -124,7 +128,7 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         entityData.set(DATA_SITTING, compound.getBoolean("Sitting"));
         entityData.set(DATA_SHIELD, compound.getInt("Shield"));
         searching = compound.getBoolean("Searching");
-
+        phaseOffset = compound.getFloat("Offset");
         if (compound.contains("BlockPos"))
             setTargetBlockPos(Optional.of(BlockPos.of(compound.getLong("BlockPos"))));
     }
@@ -278,18 +282,7 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
                 .add(Attributes.MAX_HEALTH, 20)
                 .add(Attributes.FLYING_SPEED, 2D)
                 .add(Attributes.FALL_DAMAGE_MULTIPLIER, 0)
-                .add(Attributes.GRAVITY, 0.0f);
-    }
-
-    @Override
-    public void aiStep() {
-//        if (!this.onGround() && this.getDeltaMovement().y < 0.0) {
-//            this.setDeltaMovement(this.getDeltaMovement().multiply(1.0, 0.75, 1.0));
-//        }
-        if (this.onGround() && !isSitting()) {
-            this.setDeltaMovement(this.getDeltaMovement().add(0, 0.1, 0));
-        }
-        super.aiStep();
+                .add(Attributes.GRAVITY, 0.1f);
     }
 
     @Override
@@ -319,7 +312,7 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FollowOwnerGoal(this, getOwner(), 1.2f, 2, 100));
-        goalSelector.addGoal(0, new GoToPosGoal(this, getOwner(), gettargetBiomeBlockPos(), 3, 2, 100));
+        goalSelector.addGoal(0, new GoToPosGoal(this, getOwner(), gettargetBiomeBlockPos(), 3, 2));
         goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0F));
     }
 

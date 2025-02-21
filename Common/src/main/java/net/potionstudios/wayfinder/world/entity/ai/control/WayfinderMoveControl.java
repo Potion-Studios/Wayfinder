@@ -1,40 +1,40 @@
 package net.potionstudios.wayfinder.world.entity.ai.control;
 
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 
-public class WayfinderMoveControl extends MoveControl {
+public class WayfinderMoveControl extends FlyingMoveControl {
 
+    private final WayfinderEntity wayfinder;
     private final double phaseOffset;
 
-    public WayfinderMoveControl(Mob mob, double phaseOffset) {
-        super(mob);
+    public WayfinderMoveControl(WayfinderEntity wayfinder, double phaseOffset) {
+        super(wayfinder, 30, true);
+        this.wayfinder = wayfinder;
         this.phaseOffset = phaseOffset;
     }
 
     @Override
     public void tick() {
-        WayfinderEntity mob = (WayfinderEntity) this.mob;
-        double currentY = mob.getY();
-        double groundY = mob.level().getBlockState(mob.blockPosition().below()).getCollisionShape(mob.level(), mob.blockPosition().below()).isEmpty()
-                ? mob.blockPosition().below().getY()
-                : mob.blockPosition().getY();
-        if (!mob.isSitting() && (currentY - groundY) <= 2) {
-            mob.setNoGravity(true);
+        if (wayfinder.isSitting()) { // When sitting the wayfinder should not fly
+            wayfinder.setNoGravity(false);
+            return;
+        } else if (wayfinder.getOwner() != null && wayfinder.getOwner().distanceToSqr(wayfinder) < 10 && wayfinder.gettargetBiomeBlockPos().isEmpty() && !wayfinder.isScared()) {
+            //wayfinder.setNoGravity(true);
+            double currentY = wayfinder.getY();
+            double ownerY = wayfinder.getOwner().getY();
             // Calculate a smooth floating offset using sine wave
             double floatOffset = Math.sin(mob.tickCount * 0.1 + phaseOffset) * 0.05;
 
-            // Keep the ghost between 0.5 and 2 blocks above ground
-            double targetY = Math.max(groundY + 0.5, Math.min(currentY + floatOffset, groundY + 2.0));
+            // Custom Logic from before
+            double targetY = Math.max(ownerY, Math.min(currentY + floatOffset, ownerY + 2.0));
 
             // Adjust Y position while maintaining fluidity
-            mob.setPos(mob.getX(), targetY, mob.getZ());
-        } else {
-            mob.setNoGravity(false);
-            mob.applyGravity();
+            setWantedPosition(mob.getX(), targetY, mob.getZ(), this.speedModifier);
+            operation = Operation.MOVE_TO;
+        } else if (wayfinder.onGround()) {
+          setWantedPosition(mob.getX(), mob.getY() + 0.1, mob.getZ(), this.speedModifier);
         }
-        if (!mob.isScared())
-            super.tick();
+        super.tick();
     }
 }

@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.phys.Vec3;
-import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,15 +16,13 @@ public class GoToPosGoal extends Goal {
     private @Nullable LivingEntity owner;
     private final double speed;
     private final float minDistance;
-    private final float maxDistance;
 
-    public GoToPosGoal(WayfinderEntity wayfinder, @Nullable LivingEntity owner, Optional<BlockPos> target, double speed, float minDistance, float maxDistance) {
+    public GoToPosGoal(WayfinderEntity wayfinder, @Nullable LivingEntity owner, Optional<BlockPos> target, double speed, float minDistance) {
         this.wayfinder = wayfinder;
         this.target = target;
         this.owner = owner;
         this.speed = speed;
         this.minDistance = minDistance;
-        this.maxDistance = maxDistance;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.JUMP));
     }
 
