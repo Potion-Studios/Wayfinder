@@ -67,7 +67,7 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
     private static final RawAnimation SCARED = RawAnimation.begin().thenLoop("scared");
 
     private static final EntityDataAccessor<Optional<BlockPos>> BLOCK_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
-    protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Boolean> DATA_SCARED = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_SITTING = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> DATA_SHIELD = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.INT);
@@ -182,7 +182,10 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
                 List<ResourceLocation> biomeList = new ArrayList<>();
                 for (Holder<Biome> key : ((ServerLevel) level()).getChunkSource().getGenerator().getBiomeSource().possibleBiomes())
                     key.unwrapKey().ifPresent(biome -> biomeList.add(biome.location()));
-                PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderOpenScreenPacket(biomeList, isSitting()), player);
+                ResourceLocation current;
+                if (gettargetBiomeBlockPos().isEmpty()) current = Wayfinder.id("clear_packet");
+                else current = level().getBiome(gettargetBiomeBlockPos().get()).unwrapKey().get().location();
+                PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderOpenScreenPacket(biomeList, current, isSitting()), player);
                 return InteractionResult.SUCCESS;
             } else triggerAnim("controller", "no");
             return InteractionResult.FAIL;

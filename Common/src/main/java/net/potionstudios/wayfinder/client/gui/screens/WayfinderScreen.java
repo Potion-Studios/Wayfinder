@@ -32,11 +32,13 @@ public class WayfinderScreen extends Screen {
     private boolean isSitting;
     private boolean wasSitting;
     private BiomeList biomeList;
+    private ResourceLocation current;
 
-    public WayfinderScreen(List<ResourceLocation> biomeRegistry, boolean isSitting) {
+    public WayfinderScreen(List<ResourceLocation> biomeRegistry, ResourceLocation current, boolean isSitting) {
         super(Component.literal(""));
         this.biomes = biomeRegistry;
         this.isSitting = isSitting;
+        this.current = current;
         this.wasSitting = isSitting;
     }
 
@@ -71,12 +73,20 @@ public class WayfinderScreen extends Screen {
 
         int buttonY = bottomPos + IMAGE_HEIGHT - 40;
 
-        Button selectButton = new Button(rightPos - (IMAGE_WIDTH / 2) + 10, buttonY, (IMAGE_WIDTH / 2) - 25, 20, Component.translatable("gui.wayfinder.button.select"), button -> {
+        Button selectButton = new Button(rightPos - (IMAGE_WIDTH / 2) + 10, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.select"), button -> {
             PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderBiomePacket(biomeList.getFocused().getBiome()));
             this.onClose();
         }, Button.DEFAULT_NARRATION);
         selectButton.active = biomeList.getFocused() != null;
         addRenderableWidget(selectButton);
+
+        Button clearButton = new Button(rightPos - 70, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.clear"), button -> {
+            PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderBiomePacket(Wayfinder.id("clear_packet")));
+            current = Wayfinder.id("clear_packet");
+        }, Button.DEFAULT_NARRATION);
+
+        clearButton.active = !current.equals(Wayfinder.id("clear_packet"));
+        addRenderableWidget(clearButton);
 
         // X positions for left and right buttons on the left page
         int buttonXLeft = leftPos + 20;
@@ -112,8 +122,8 @@ public class WayfinderScreen extends Screen {
             PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderSitPacket(isSitting));
     }
 
-    public static void openScreen(List<ResourceLocation> biomeRegistry, boolean isSitting) {
-        Minecraft.getInstance().setScreen(new WayfinderScreen(biomeRegistry, isSitting));
+    public static void openScreen(List<ResourceLocation> biomeRegistry, ResourceLocation current, boolean isSitting) {
+        Minecraft.getInstance().setScreen(new WayfinderScreen(biomeRegistry, current, isSitting));
     }
 
     private void updateBiomeList(String searchText) {

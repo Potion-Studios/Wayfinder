@@ -16,18 +16,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public record WayfinderOpenScreenPacket(List<ResourceLocation> locations, boolean isSitting) implements MultiloaderPacket {
+public record WayfinderOpenScreenPacket(List<ResourceLocation> locations, ResourceLocation current, boolean isSitting) implements MultiloaderPacket {
 
     public static final CustomPacketPayload.Type<WayfinderOpenScreenPacket> TYPE = new Type<>(Wayfinder.id("open_screen"));
 
     public static final StreamCodec<FriendlyByteBuf, WayfinderOpenScreenPacket> CODEC = StreamCodec.composite(
             ByteBufCodecs.collection(ArrayList::new, ResourceLocation.STREAM_CODEC), WayfinderOpenScreenPacket::locations,
+            ByteBufCodecs.fromCodec(ResourceLocation.CODEC), WayfinderOpenScreenPacket::current,
             ByteBufCodecs.BOOL, WayfinderOpenScreenPacket::isSitting,
             WayfinderOpenScreenPacket::new);
 
     @Override
     public void receiveMessage(@Nullable Player player, Consumer<Runnable> consumer) {
-        consumer.accept(() -> WayfinderScreen.openScreen(locations, isSitting));
+        consumer.accept(() -> WayfinderScreen.openScreen(locations, current, isSitting));
     }
 
     @Override

@@ -102,7 +102,8 @@ class NeoForgeDatagen {
             add("gui.wayfinder.button.sit", "Sit");
             add("gui.wayfinder.button.follow", "Follow");
             add("gui.wayfinder.search", "Search Biomes");
-            add("gui.wayfinder.button.select", "Select Biome");
+            add("gui.wayfinder.button.select", "Select");
+            add("gui.wayfinder.button.clear", "Clear");
         }
     }
 

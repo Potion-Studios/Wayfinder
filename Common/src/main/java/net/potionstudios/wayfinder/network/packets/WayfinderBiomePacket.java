@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.network.packet.MultiloaderPacket;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public record WayfinderBiomePacket(ResourceLocation biome) implements MultiloaderPacket {
@@ -30,7 +31,8 @@ public record WayfinderBiomePacket(ResourceLocation biome) implements Multiloade
 			// Use Given Player to get the Server and then the Level of the Player's World then the wayfinder based on the UUID then set the biome to find
 			Entity entity = player.getServer().getLevel(player.getCommandSenderWorld().dimension()).getEntity(PlatformHandler.PLATFORM_HANDLER.getWayfinder(player));
 			if (entity instanceof WayfinderEntity wayfinder)
-				wayfinder.startBiomeSearch(biome);
+				if (biome.equals(Wayfinder.id("clear_packet"))) wayfinder.setTargetBlockPos(Optional.empty());
+				else wayfinder.startBiomeSearch(biome);
 		});
 	}
 
