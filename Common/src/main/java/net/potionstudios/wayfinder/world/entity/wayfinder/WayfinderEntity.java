@@ -22,7 +22,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.FlyingMoveControl;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -53,16 +53,16 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
 
     private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
 
-    private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
-    private static final RawAnimation IDLE_2 = RawAnimation.begin().thenPlay("idle2");
-    private static final RawAnimation IDLE_3 = RawAnimation.begin().thenPlay("idle3");
+    private static final RawAnimation IDLE_1 = RawAnimation.begin().then("idle1", Animation.LoopType.PLAY_ONCE);
+    private static final RawAnimation IDLE_2 = RawAnimation.begin().then("idle2", Animation.LoopType.PLAY_ONCE);
+    private static final RawAnimation IDLE_3 = RawAnimation.begin().then("idle3", Animation.LoopType.PLAY_ONCE);
     private static final RawAnimation DEATH = RawAnimation.begin().then("death", Animation.LoopType.HOLD_ON_LAST_FRAME);
     private static final RawAnimation SEARCHING_START = RawAnimation.begin().thenPlay("searching_start");
     private static final RawAnimation SEARCHING_END = RawAnimation.begin().thenPlay("searching_end");
     private static final RawAnimation SEARCHING_LOOP = RawAnimation.begin().thenLoop("searching_loop");
     private static final RawAnimation NO = RawAnimation.begin().then("no", Animation.LoopType.PLAY_ONCE);
     private static final RawAnimation SIT = RawAnimation.begin().then("sit", Animation.LoopType.PLAY_ONCE);
-    private static final RawAnimation SIT_IDLE = RawAnimation.begin().thenLoop("sit_idle");
+    private static final RawAnimation SIT_IDLE_1 = RawAnimation.begin().thenLoop("sit_idle1");
     private static final RawAnimation SIT_IDLE_2 = RawAnimation.begin().thenLoop("sit_idle2");
     private static final RawAnimation SIT_IDLE_3 = RawAnimation.begin().thenLoop("sit_idle3");
     private static final RawAnimation SCARED = RawAnimation.begin().thenLoop("scared");
@@ -149,7 +149,9 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "controller", 0, this::predicate).triggerableAnim("no", NO).triggerableAnim("sit", SIT).triggerableAnim("searching_start", SEARCHING_START));
+        controllers.add(new AnimationController<>(this, "controller", 0, this::predicate)
+                .triggerableAnim("no", NO).triggerableAnim("sit", SIT).triggerableAnim("searching_start", SEARCHING_START)
+                .triggerableAnim("idle", IDLE_1).triggerableAnim("idle2", IDLE_2).triggerableAnim("idle3", IDLE_3));
     }
 
     private <E extends GeoAnimatable> PlayState predicate(AnimationState<E> event) {
@@ -157,19 +159,23 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
             return event.setAndContinue(DEATH);
         else if (isScared())
             return event.setAndContinue(SCARED);
-        else if (isSitting())
-            return switch (getRandom().nextInt(10)) {
-            case 0 -> event.setAndContinue(SIT_IDLE_3);
-            case 1, 2 -> event.setAndContinue(SIT_IDLE_2);
-            default -> event.setAndContinue(SIT_IDLE);
-            };
         else if (isSearching())
             return event.setAndContinue(SEARCHING_LOOP);
-        return switch (getRandom().nextInt(10)) {
-            case 0 -> event.setAndContinue(IDLE_3);
-            case 1, 2 -> event.setAndContinue(IDLE_2);
-            default -> event.setAndContinue(IDLE);
-        };
+
+        AnimationController<E> controller = event.getController();
+        if (controller.hasAnimationFinished() || controller.getCurrentRawAnimation() == null) {
+            if (isSitting()) return switch (getRandom().nextInt(3)) {
+                case 0 -> event.setAndContinue(SIT_IDLE_3);
+                case 1 -> event.setAndContinue(SIT_IDLE_2);
+                default -> event.setAndContinue(SIT_IDLE_1);
+            };
+            else return switch (getRandom().nextInt(10)) {
+                case 0 -> event.setAndContinue(IDLE_3);
+                case 1, 2 -> event.setAndContinue(IDLE_2);
+                default -> event.setAndContinue(IDLE_1);
+            };
+        }
+        return PlayState.CONTINUE;
     }
 
 
@@ -225,11 +231,16 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         setSitting(true);
     }
 
+    public void stand() {
+        triggerAnim("controller", "idle" + (getRandom().nextInt(3) + 1));
+        setSitting(false);
+    }
+
     public boolean isSitting() {
         return entityData.get(DATA_SITTING);
     }
 
-    public void setSitting(boolean sitting) {
+    private void setSitting(boolean sitting) {
         entityData.set(DATA_SITTING, sitting);
     }
 
@@ -311,9 +322,10 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
 
     @Override
     protected void registerGoals() {
-        goalSelector.addGoal(0, new FollowOwnerGoal(this, getOwner(), 1.2f, 2, 100));
-        goalSelector.addGoal(0, new GoToPosGoal(this, getOwner(), gettargetBiomeBlockPos(), 3, 2));
-        goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        goalSelector.addGoal(0, new FloatGoal(this));
+        goalSelector.addGoal(1, new FollowOwnerGoal(this, getOwner(), 1.2f, 2, 100));
+        goalSelector.addGoal(1, new GoToPosGoal(this, getOwner(), gettargetBiomeBlockPos(), 3, 2));
+        goalSelector.addGoal(2, new LookAtPlayerGoal(this, Player.class, 8.0F));
     }
 
     @Override

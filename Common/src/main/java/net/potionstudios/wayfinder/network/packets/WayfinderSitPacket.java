@@ -29,7 +29,7 @@ public record WayfinderSitPacket(boolean sit) implements MultiloaderPacket {
 			Entity entity = player.getServer().getLevel(player.getCommandSenderWorld().dimension()).getEntity(PlatformHandler.PLATFORM_HANDLER.getWayfinder(player));
 			if (entity instanceof WayfinderEntity wayfinder)
 				if (sit) wayfinder.sit();
-				else wayfinder.setSitting(false);
+				else wayfinder.stand();
 		});
 	}
 
