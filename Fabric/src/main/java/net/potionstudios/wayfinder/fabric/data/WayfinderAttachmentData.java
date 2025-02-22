@@ -13,8 +13,8 @@ import java.util.UUID;
 @SuppressWarnings("UnstableApiUsage")
 public class WayfinderAttachmentData {
 
-    public static final AttachmentType<UUID> WAYFINDER = AttachmentRegistry.create(Wayfinder.id("wayfinder"), uuidBuilder -> uuidBuilder.copyOnDeath().persistent(UUIDUtil.CODEC).initializer(() -> Util.NIL_UUID));
-    public static final AttachmentType<Integer> WAYFINDER_DEATHS = AttachmentRegistry.create(Wayfinder.id("wayfinder_deaths"), integerBuilder -> integerBuilder.copyOnDeath().persistent(Codec.INT).initializer(() -> 0));
+    private static final AttachmentType<UUID> WAYFINDER = AttachmentRegistry.create(Wayfinder.id("wayfinder"), uuidBuilder -> uuidBuilder.copyOnDeath().persistent(UUIDUtil.CODEC).initializer(() -> Util.NIL_UUID));
+    private static final AttachmentType<Integer> WAYFINDER_DEATHS = AttachmentRegistry.create(Wayfinder.id("wayfinder_deaths"), integerBuilder -> integerBuilder.copyOnDeath().persistent(Codec.INT).initializer(() -> 0));
 
     public static void setWayfinder(Player player, UUID wayfinder) {
         player.setAttached(WAYFINDER, wayfinder);
