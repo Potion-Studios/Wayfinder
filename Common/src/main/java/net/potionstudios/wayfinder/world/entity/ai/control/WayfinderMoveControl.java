@@ -18,8 +18,7 @@ public class WayfinderMoveControl extends FlyingMoveControl {
     public void tick() {
         if (wayfinder.isSitting()) { // When sitting the wayfinder should not fly
             wayfinder.setNoGravity(false);
-            return;
-        } /* else if (wayfinder.getOwner() != null && wayfinder.getOwner().distanceToSqr(wayfinder) < 10 && wayfinder.gettargetBiomeBlockPos().isEmpty() && !wayfinder.isScared()) {
+        } else if (wayfinder.getOwner() != null && wayfinder.getOwner().distanceToSqr(wayfinder) < 10 && wayfinder.gettargetBiomeBlockPos().isEmpty() && !wayfinder.isScared()) {
             //wayfinder.setNoGravity(true);
             double currentY = wayfinder.getY();
             double ownerY = wayfinder.getOwner().getY();
@@ -40,11 +39,6 @@ public class WayfinderMoveControl extends FlyingMoveControl {
 
             // Adjust Y position while maintaining fluidity
             wayfinder.setPos(mob.getX(), targetY, mob.getZ());
-            //operation = Operation.MOVE_TO;
-            return;
-        } else if (wayfinder.onGround()) {
-          setWantedPosition(mob.getX(), mob.getY() + 0.1, mob.getZ(), this.speedModifier);
-        } */
-        super.tick();
+        } else super.tick();
     }
 }
