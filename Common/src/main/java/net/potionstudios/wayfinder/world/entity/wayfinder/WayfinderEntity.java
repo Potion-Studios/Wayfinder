@@ -24,6 +24,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -37,6 +38,7 @@ import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
 import net.potionstudios.wayfinder.world.entity.ai.goal.FollowOwnerGoal;
 import net.potionstudios.wayfinder.world.entity.ai.goal.GoToPosGoal;
+import net.potionstudios.wayfinder.world.entity.ai.goal.ScaredWayfinderGoal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoAnimatable;
@@ -203,7 +205,7 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
             return InteractionResult.FAIL;
         } else if (getOwner() == null) {
             setOwner(player);
-            return InteractionResult.SUCCESS;
+            return mobInteract(player, hand);
         }
         return super.mobInteract(player, hand);
     }
@@ -329,6 +331,8 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         goalSelector.addGoal(1, new FollowOwnerGoal(this, getOwner(), 1.2f, 2, 100));
         goalSelector.addGoal(1, new GoToPosGoal(this, getOwner(), gettargetBiomeBlockPos(), 3, 2));
         goalSelector.addGoal(2, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        goalSelector.addGoal(2, new ScaredWayfinderGoal(this));
+        goalSelector.addGoal(8, new RandomLookAroundGoal(this));
     }
 
     @Override
