@@ -10,7 +10,8 @@
   ],
   "contact": {
     "homepage": "https://potionstudios.net/",
-    "sources": "https://github.com/Potion-Studios/Wayfinder"
+    "sources": "https://github.com/Potion-Studios/Wayfinder",
+    "issues": "https://github.com/Potion-Studios/Wayfinder/issues"
   },
   "license": "All Rights Reserved",
   "icon": "wayfinder.png",
@@ -27,5 +28,12 @@
     "fabric": "*",
     "minecraft": ">=1.21.1",
     "geckolib": ">=4.7.3"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.com/invite/vP3PBGvgdW"
+      }
+    }
   }
 }
