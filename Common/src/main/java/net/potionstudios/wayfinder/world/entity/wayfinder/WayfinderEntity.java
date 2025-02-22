@@ -150,7 +150,7 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "controller", 0, this::predicate)
-                .triggerableAnim("no", NO).triggerableAnim("sit", SIT).triggerableAnim("searching_start", SEARCHING_START)
+                .triggerableAnim("no", NO).triggerableAnim("sit", SIT).triggerableAnim("searching_start", SEARCHING_START).triggerableAnim("searching_end", SEARCHING_END)
                 .triggerableAnim("idle", IDLE_1).triggerableAnim("idle2", IDLE_2).triggerableAnim("idle3", IDLE_3));
     }
 
@@ -292,8 +292,9 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 20)
                 .add(Attributes.FLYING_SPEED, 2D)
+                .add(Attributes.MOVEMENT_SPEED, 2D)
                 .add(Attributes.FALL_DAMAGE_MULTIPLIER, 0)
-                .add(Attributes.GRAVITY, 0.1f);
+                .add(Attributes.GRAVITY, 0.05f);
     }
 
     @Override

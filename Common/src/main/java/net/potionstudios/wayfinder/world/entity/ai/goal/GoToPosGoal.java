@@ -1,9 +1,11 @@
 package net.potionstudios.wayfinder.world.entity.ai.goal;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.phys.Vec3;
+import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,6 +47,11 @@ public class GoToPosGoal extends Goal {
                 Vec3 direction = new Vec3(target.getX() - wayfinder.getX(), target.getY() - wayfinder.getY(), target.getZ() - wayfinder.getZ()).normalize();
                 Vec3 newPos = new Vec3(target.getX() - direction.x * minDistance, target.getY() - direction.y * minDistance, target.getZ() - direction.z * minDistance);
                 wayfinder.getMoveControl().setWantedPosition(newPos.x, newPos.y + .25F, newPos.z, speed);
+            }
+            if (target.get().getX() == wayfinder.blockPosition().getX() && target.get().getZ() == wayfinder.blockPosition().getZ()) {
+                wayfinder.setSearching(false);
+                wayfinder.triggerAnim("controller", "Searching_end");
+                WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get().trigger((ServerPlayer) wayfinder.getOwner());
             }
         } else {
             target = wayfinder.gettargetBiomeBlockPos();
