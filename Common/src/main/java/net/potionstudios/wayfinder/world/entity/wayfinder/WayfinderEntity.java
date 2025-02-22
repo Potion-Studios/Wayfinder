@@ -32,6 +32,7 @@ import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
+import net.potionstudios.wayfinder.tags.WayfinderBiomeTags;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
 import net.potionstudios.wayfinder.world.entity.ai.goal.FollowOwnerGoal;
@@ -191,7 +192,10 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
             if (player.getUUID().equals(getOwnerUUID())) {
                 List<ResourceLocation> biomeList = new ArrayList<>();
                 for (Holder<Biome> key : ((ServerLevel) level()).getChunkSource().getGenerator().getBiomeSource().possibleBiomes())
-                    key.unwrapKey().ifPresent(biome -> biomeList.add(biome.location()));
+                    key.unwrapKey().ifPresent(biome -> {
+                        if (!WayfinderBiomeTags.WAYFINDER_EXCLUDED.isFor(biome.registryKey()))
+                            biomeList.add(biome.location());
+                    });
                 ResourceLocation current;
                 if (gettargetBiomeBlockPos().isEmpty()) current = Wayfinder.id("clear_packet");
                 else current = level().getBiome(gettargetBiomeBlockPos().get()).unwrapKey().get().location();

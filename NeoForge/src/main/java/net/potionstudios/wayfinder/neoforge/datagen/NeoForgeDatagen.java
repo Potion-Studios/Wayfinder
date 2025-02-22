@@ -12,6 +12,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.EntityLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -34,6 +35,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderOwnerKilledTrigger;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
+import net.potionstudios.wayfinder.tags.WayfinderBiomeTags;
 import net.potionstudios.wayfinder.tags.WayfinderEntityTypeTags;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
@@ -70,11 +72,11 @@ class NeoForgeDatagen {
         generator.addProvider(event.includeServer(), new LootGenerator(output, lookupProvider));
         generator.addProvider(event.includeServer(), new AdvancementProvider(output, lookupProvider, existingFileHelper, ImmutableList.of(new AdvancementGenerator())));
         generator.addProvider(event.includeServer(), new EntityTypeTagsGenerator(output, lookupProvider, existingFileHelper));
+        generator.addProvider(event.includeServer(), new BiomeTagsGenerator(output, lookupProvider, existingFileHelper));
     }
 
 
     private static class LangGenerator extends LanguageProvider {
-
         private LangGenerator(PackOutput output, String locale) {
             super(output, Wayfinder.MOD_ID, locale);
         }
@@ -108,7 +110,6 @@ class NeoForgeDatagen {
     }
 
     private static class SoundDefinitionsGenerator extends SoundDefinitionsProvider {
-
         private SoundDefinitionsGenerator(PackOutput output, ExistingFileHelper helper) {
             super(output, Wayfinder.MOD_ID, helper);
         }
@@ -203,7 +204,6 @@ class NeoForgeDatagen {
     }
 
     private static class AdvancementGenerator implements AdvancementProvider.AdvancementGenerator {
-
         @Override
         public void generate(HolderLookup.@NotNull Provider arg, @NotNull Consumer<AdvancementHolder> consumer, @NotNull ExistingFileHelper existingFileHelper) {
             AdvancementHolder root = Advancement.Builder.advancement()
@@ -236,7 +236,6 @@ class NeoForgeDatagen {
     }
 
     private static class EntityTypeTagsGenerator extends EntityTypeTagsProvider {
-
         private EntityTypeTagsGenerator(PackOutput arg, CompletableFuture<HolderLookup.Provider> completableFuture, @Nullable ExistingFileHelper existingFileHelper) {
             super(arg, completableFuture, Wayfinder.MOD_ID, existingFileHelper);
         }
@@ -246,6 +245,17 @@ class NeoForgeDatagen {
             tag(WayfinderEntityTypeTags.SCARES_WAYFINDER).add(EntityType.WITCH, EntityType.GHAST, EntityType.BLAZE, EntityType.WITHER).addTag(EntityTypeTags.SKELETONS);
             tag(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(WayfinderEntities.WAYFINDER.get());
             tag(EntityTypeTags.NOT_SCARY_FOR_PUFFERFISH).add(WayfinderEntities.WAYFINDER.get());
+        }
+    }
+
+    private static class BiomeTagsGenerator extends BiomeTagsProvider {
+        private BiomeTagsGenerator(PackOutput arg, CompletableFuture<HolderLookup.Provider> completableFuture, @Nullable ExistingFileHelper existingFileHelper) {
+            super(arg, completableFuture, Wayfinder.MOD_ID, existingFileHelper);
+        }
+
+        @Override
+        protected void addTags(HolderLookup.@NotNull Provider provider) {
+            tag(WayfinderBiomeTags.WAYFINDER_EXCLUDED);
         }
     }
 
