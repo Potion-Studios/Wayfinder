@@ -1,5 +1,6 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -17,17 +18,22 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
@@ -35,7 +41,6 @@ import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.tags.WayfinderBiomeTags;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
-import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
 import net.potionstudios.wayfinder.world.entity.ai.goal.FollowOwnerGoal;
 import net.potionstudios.wayfinder.world.entity.ai.goal.GoToPosGoal;
 import net.potionstudios.wayfinder.world.entity.ai.goal.ScaredWayfinderGoal;
@@ -45,6 +50,7 @@ import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.ArrayList;
@@ -52,7 +58,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
+public class WayfinderEntity extends PathfinderMob implements GeoEntity, OwnableEntity {
 
     private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
 
@@ -87,7 +93,8 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
     public WayfinderEntity(EntityType<? extends WayfinderEntity> entityType, Level level) {
         super(entityType, level);
         phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
-        moveControl = new WayfinderMoveControl(this, phaseOffset);
+        moveControl = new FlyingMoveControl(this, 20, true);
+        //moveControl = new WayfinderMoveControl(this, phaseOffset);
         searching = false;
         setPersistenceRequired();
     }
@@ -134,6 +141,23 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         phaseOffset = compound.getFloat("Offset");
         if (compound.contains("BlockPos"))
             setTargetBlockPos(Optional.of(BlockPos.of(compound.getLong("BlockPos"))));
+    }
+
+    @Override
+    protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
+        FlyingPathNavigation navigation = new FlyingPathNavigation(this, level);
+        navigation.setCanOpenDoors(false);
+        navigation.setCanFloat(true);
+        return navigation;
+    }
+
+    protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(
+            MemoryModuleType.PATH
+    );
+
+    @Override
+    protected Brain.@NotNull Provider<WayfinderEntity> brainProvider() {
+        return Brain.provider(MEMORY_TYPES, ImmutableList.of());
     }
 
     @Override
@@ -328,8 +352,8 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
     @Override
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
-        goalSelector.addGoal(1, new FollowOwnerGoal(this, getOwner(), 1.2f, 2, 100));
-        goalSelector.addGoal(1, new GoToPosGoal(this, getOwner(), gettargetBiomeBlockPos(), 3, 2));
+        goalSelector.addGoal(1, new FollowOwnerGoal(this, 1.0, 5.0F, 1.0F));
+        //goalSelector.addGoal(1, new GoToPosGoal(this, getOwner(), gettargetBiomeBlockPos(), 3, 2));
         goalSelector.addGoal(2, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(2, new ScaredWayfinderGoal(this));
         goalSelector.addGoal(8, new RandomLookAroundGoal(this));
@@ -363,6 +387,51 @@ public class WayfinderEntity extends Mob implements GeoEntity, OwnableEntity {
         }
 
         return hurt;
+    }
+
+    public boolean shouldTryTeleportToOwner() {
+        LivingEntity livingEntity = this.getOwner();
+        return livingEntity != null && this.distanceToSqr(this.getOwner()) >= 144.0;
+    }
+
+    public void tryToTeleportToOwner() {
+        LivingEntity livingEntity = this.getOwner();
+        if (livingEntity != null) {
+            this.teleportToAroundBlockPos(livingEntity.blockPosition());
+        }
+    }
+
+    private void teleportToAroundBlockPos(BlockPos pos) {
+        for (int i = 0; i < 10; i++) {
+            int j = this.random.nextIntBetweenInclusive(-3, 3);
+            int k = this.random.nextIntBetweenInclusive(-3, 3);
+            if (Math.abs(j) >= 2 || Math.abs(k) >= 2) {
+                int l = this.random.nextIntBetweenInclusive(-1, 1);
+                if (this.maybeTeleportTo(pos.getX() + j, pos.getY() + l, pos.getZ() + k)) {
+                    return;
+                }
+            }
+        }
+    }
+
+    private boolean maybeTeleportTo(int x, int y, int z) {
+        if (!this.canTeleportTo(new BlockPos(x, y, z))) {
+            return false;
+        } else {
+            this.moveTo((double)x + 0.5, y, (double)z + 0.5, this.getYRot(), this.getXRot());
+            this.navigation.stop();
+            return true;
+        }
+    }
+
+    private boolean canTeleportTo(BlockPos pos) {
+        PathType pathType = WalkNodeEvaluator.getPathTypeStatic(this, pos);
+        if (pathType != PathType.WALKABLE) {
+            return false;
+        } else {
+            BlockPos blockPos = pos.subtract(this.blockPosition());
+            return this.level().noCollision(this, this.getBoundingBox().move(blockPos));
+        }
     }
 
     public enum SHIELD {

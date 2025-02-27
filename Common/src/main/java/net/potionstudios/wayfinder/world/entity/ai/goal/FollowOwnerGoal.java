@@ -1,59 +1,80 @@
 package net.potionstudios.wayfinder.world.entity.ai.goal;
 
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
 public class FollowOwnerGoal extends Goal {
-    private final WayfinderEntity mob;
-    private @Nullable Entity target;
-    private final double speed;
-    private final float minDistance;
-    private final float maxDistance;
+    private final WayfinderEntity wayfinder;
+    @Nullable private LivingEntity owner;
+    private final double speedModifier;
+    private final PathNavigation navigation;
+    private int timeToRecalcPath;
+    private final float startDistance;
+    private final float stopDistance;
 
-    public FollowOwnerGoal(WayfinderEntity mob, @Nullable Entity target, double speed, float minDistance, float maxDistance) {
-        this.mob = mob;
-        this.target = target;
-        this.speed = speed;
-        this.minDistance = minDistance;
-        this.maxDistance = maxDistance;
-        this.setFlags(EnumSet.of(Goal.Flag.MOVE));
+    public FollowOwnerGoal(WayfinderEntity wayfinder, double speedModifier, float startDistance, float stopDistance) {
+        this.wayfinder = wayfinder;
+        this.speedModifier = speedModifier;
+        this.navigation = wayfinder.getNavigation();
+        this.startDistance = startDistance;
+        this.stopDistance = stopDistance;
+        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }
 
     @Override
     public boolean canUse() {
-        if (target == null) {
-            return true;
+        LivingEntity livingEntity = wayfinder.getOwner();
+        if (livingEntity == null) {
+            return false;
+        } else if (this.wayfinder.unableToMoveToOwner()) {
+            return false;
+        } else if (this.wayfinder.distanceToSqr(livingEntity) < (this.startDistance * this.startDistance)){
+            return false;
         } else {
-            return target.isAlive() && mob.distanceToSqr(target) > minDistance * minDistance;
+            this.owner = livingEntity;
+            return true;
         }
     }
 
     @Override
     public boolean canContinueToUse() {
-        if (target == null) {
-            return true;
+        if (this.navigation.isDone()) {
+            return false;
         } else {
-            return target.isAlive() && mob.distanceToSqr(target) > minDistance * minDistance && mob.distanceToSqr(target) < maxDistance * maxDistance;
+            return !this.wayfinder.unableToMoveToOwner() && !(this.wayfinder.distanceToSqr(this.owner) <= (double) (this.stopDistance * this.stopDistance));
         }
     }
 
     @Override
+    public void start() {
+        this.timeToRecalcPath = 0;
+    }
+
+    @Override
+    public void stop() {
+        this.owner = null;
+        this.navigation.stop();
+    }
+
+    @Override
     public void tick() {
-        if (target != null) {
-            if (mob.isSitting() || mob.hasTargetBiome()) return;
-            double distance = mob.distanceToSqr(target);
-            if (distance > minDistance * minDistance) {
-                Vec3 direction = new Vec3(target.getX() - mob.getX(), target.getY() - mob.getY(), target.getZ() - mob.getZ()).normalize();
-                Vec3 newPos = new Vec3(target.getX() - direction.x * minDistance, target.getY() - direction.y * minDistance, target.getZ() - direction.z * minDistance);
-                mob.getMoveControl().setWantedPosition(newPos.x, newPos.y + .25F, newPos.z, speed);
+        boolean bl = this.wayfinder.shouldTryTeleportToOwner();
+        if (!bl) {
+            this.wayfinder.getLookControl().setLookAt(this.owner, 10.0F, (float)this.wayfinder.getMaxHeadXRot());
+        }
+
+        if (--this.timeToRecalcPath <= 0) {
+            this.timeToRecalcPath = this.adjustedTickDelay(10);
+            if (bl) {
+                this.wayfinder.tryToTeleportToOwner();
+            } else {
+                this.navigation.moveTo(this.owner, this.speedModifier);
             }
-        } else {
-            target = mob.getOwner();
         }
     }
 }
