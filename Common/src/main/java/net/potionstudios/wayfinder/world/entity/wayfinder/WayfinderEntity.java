@@ -41,6 +41,7 @@ import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.tags.WayfinderBiomeTags;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
+import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
 import net.potionstudios.wayfinder.world.entity.ai.goal.FollowOwnerGoal;
 import net.potionstudios.wayfinder.world.entity.ai.goal.GoToPosGoal;
 import net.potionstudios.wayfinder.world.entity.ai.goal.ScaredWayfinderGoal;
@@ -93,8 +94,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     public WayfinderEntity(EntityType<? extends WayfinderEntity> entityType, Level level) {
         super(entityType, level);
         phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
-        moveControl = new FlyingMoveControl(this, 20, true);
-        //moveControl = new WayfinderMoveControl(this, phaseOffset);
+        //moveControl = new FlyingMoveControl(this, 20, true);
+        moveControl = new WayfinderMoveControl(this, phaseOffset);
         searching = false;
         setPersistenceRequired();
     }
@@ -196,7 +197,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                 case 1 -> event.setAndContinue(SIT_IDLE_2);
                 default -> event.setAndContinue(SIT_IDLE_1);
             };
-            else return switch (getRandom().nextInt(10)) {
+            else return switch (getRandom().nextInt(15)) {
                 case 0 -> event.setAndContinue(IDLE_3);
                 case 1, 2 -> event.setAndContinue(IDLE_2);
                 default -> event.setAndContinue(IDLE_1);
@@ -313,7 +314,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public final boolean unableToMoveToOwner() {
-        return isSitting() || isPassenger() || getOwner() == null || getOwner().isSpectator() || getOwner().isDeadOrDying();
+        return isSitting() || isPassenger() || getOwner() == null || getOwner().isSpectator() || getOwner().isDeadOrDying() || gettargetBiomeBlockPos().isEmpty();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -353,7 +354,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
         goalSelector.addGoal(1, new FollowOwnerGoal(this, 1.0, 5.0F, 1.0F));
-        //goalSelector.addGoal(1, new GoToPosGoal(this, getOwner(), gettargetBiomeBlockPos(), 3, 2));
+        goalSelector.addGoal(1, new GoToPosGoal(this, getOwner(), gettargetBiomeBlockPos(), 3, 2));
         goalSelector.addGoal(2, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(2, new ScaredWayfinderGoal(this));
         goalSelector.addGoal(8, new RandomLookAroundGoal(this));
@@ -377,21 +378,27 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
         if (hurt) {
             setScared(true);
-            if (isDeadOrDying() && getOwner() != null) {
-                Player owner = (Player) getOwner();
-                PlatformHandler.PLATFORM_HANDLER.setWayfinder(owner, Util.NIL_UUID);
-                PlatformHandler.PLATFORM_HANDLER.incrementWayfinderDeaths(owner);
-                if (source.getEntity() != null && source.getEntity() instanceof ServerPlayer player && owner.is(player))
+            if (isDeadOrDying() && getOwner() != null)
+                if (source.getEntity() != null && source.getEntity() instanceof ServerPlayer player && getOwner().is(player))
                     WayfinderCriteriaTriggers.WAYFINDER_OWNER_KILLED.get().trigger(player);
-            }
         }
 
         return hurt;
     }
 
+    @Override
+    public void handleEntityEvent(byte id) {
+        super.handleEntityEvent(id);
+        if (id == 60 && !level().isClientSide() && getOwner() != null) {
+            Player owner = (Player) getOwner();
+            PlatformHandler.PLATFORM_HANDLER.setWayfinder(owner, Util.NIL_UUID);
+            PlatformHandler.PLATFORM_HANDLER.incrementWayfinderDeaths(owner);
+        }
+    }
+
     public boolean shouldTryTeleportToOwner() {
         LivingEntity livingEntity = this.getOwner();
-        return livingEntity != null && this.distanceToSqr(this.getOwner()) >= 144.0;
+        return livingEntity != null && this.distanceToSqr(this.getOwner()) >= 288.0;
     }
 
     public void tryToTeleportToOwner() {
