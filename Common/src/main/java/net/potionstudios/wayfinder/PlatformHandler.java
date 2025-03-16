@@ -58,6 +58,8 @@ public interface PlatformHandler {
 
 	void incrementWayfinderDeaths(Player player);
 
+	void resetWayfinderDeaths(Player player);
+
 	void sendToPlayer(MultiloaderPacket packet, Player player);
 
 	void sendToServer(MultiloaderPacket packet);

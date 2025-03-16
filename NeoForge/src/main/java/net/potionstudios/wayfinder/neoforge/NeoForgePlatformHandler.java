@@ -68,6 +68,11 @@ public final class NeoForgePlatformHandler implements PlatformHandler {
 	}
 
 	@Override
+	public void resetWayfinderDeaths(Player player) {
+		player.getPersistentData().putInt("wayfinder_deaths", 0);
+	}
+
+	@Override
 	public void sendToPlayer(MultiloaderPacket packet, Player player) {
 		PacketDistributor.sendToPlayer((ServerPlayer) player, packet);
 	}

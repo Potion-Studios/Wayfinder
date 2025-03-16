@@ -13,7 +13,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.minecraftforge.fml.common.Mod;
-import net.potionstudios.wayfinder.commands.WayfinderReloadCommand;
+import net.potionstudios.wayfinder.commands.WayfinderCommands;
 import net.potionstudios.wayfinder.forge.client.WayfinderClientForge;
 import net.potionstudios.wayfinder.forge.networking.ForgeNetworking;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
@@ -31,7 +31,7 @@ public class WayfinderForge {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> WayfinderClientForge.init(MOD_BUS));
         ForgePlatformHandler.register(MOD_BUS);
         MOD_BUS.addListener((EntityAttributeCreationEvent event) -> Wayfinder.registerEntityAttributes(event::put));
-        EVENT_BUS.addListener((RegisterCommandsEvent event) -> WayfinderReloadCommand.register(event.getDispatcher()::register));
+        EVENT_BUS.addListener((RegisterCommandsEvent event) -> WayfinderCommands.register(event.getDispatcher()::register));
         MOD_BUS.addListener((BuildCreativeModeTabContentsEvent event) -> {
             if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS)
                 event.accept(WayfinderItems.WAYFINDER_SPAWN_EGG.get());

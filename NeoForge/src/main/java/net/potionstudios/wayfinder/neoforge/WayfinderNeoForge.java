@@ -13,7 +13,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.potionstudios.wayfinder.commands.WayfinderReloadCommand;
+import net.potionstudios.wayfinder.commands.WayfinderCommands;
 import net.potionstudios.wayfinder.network.protocol.WayfinderNetworking;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
@@ -28,7 +28,7 @@ public class WayfinderNeoForge {
         Wayfinder.init();
         NeoForgePlatformHandler.register(eventBus);
         eventBus.addListener((EntityAttributeCreationEvent event) -> Wayfinder.registerEntityAttributes(event::put));
-        EVENT_BUS.addListener((RegisterCommandsEvent event) -> WayfinderReloadCommand.register(event.getDispatcher()::register));
+        EVENT_BUS.addListener((RegisterCommandsEvent event) -> WayfinderCommands.register(event.getDispatcher()::register));
         eventBus.addListener((BuildCreativeModeTabContentsEvent event) -> {
             if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS)
                 event.accept(WayfinderItems.WAYFINDER_SPAWN_EGG.get());

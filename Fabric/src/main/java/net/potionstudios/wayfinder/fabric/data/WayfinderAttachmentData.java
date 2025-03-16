@@ -28,6 +28,10 @@ public class WayfinderAttachmentData {
         return player.getAttachedOrCreate(WAYFINDER_DEATHS);
     }
 
+    public static void resetWayfinderDeaths(Player player) {
+        player.setAttached(WAYFINDER_DEATHS, 0);
+    }
+
     public static void incrementWayfinderDeaths(Player player) {
         player.setAttached(WAYFINDER_DEATHS, getWayfinderDeaths(player) + 1);
     }

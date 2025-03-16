@@ -95,6 +95,13 @@ class NeoForgeDatagen {
             add(WayfinderBlocks.WAYFINER_HEART.get(), "Wayfinder Heart");
 
             add("wayfinder.commands.reload.success", "Wayfinder config reloaded");
+            add("wayfinder.commands.deaths", "%s has %s Wayfinder deaths");
+            add("wayfinder.commands.deaths.reset", "Wayfinder deaths reset for %s");
+            add("wayfinder.commands.deaths.list.start", "Wayfinder deaths for all players:");
+            add("wayfinder.commands.deaths.list.player", "%s : %s");
+            add("wayfinder.commands.deaths.show.other", "%s has %s Wayfinder deaths");
+            add("wayfinder.commands.deaths.show.self", "You have %s Wayfinder deaths");
+
 
             add("advancements.wayfinder.so_it_begins.title", "So it begins..");
             add("advancements.wayfinder.so_it_begins.description", "Summon your first Wayfinder");

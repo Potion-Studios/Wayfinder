@@ -57,6 +57,11 @@ public final class FabricPlatformHandler implements PlatformHandler {
 	}
 
 	@Override
+	public void resetWayfinderDeaths(Player player) {
+		WayfinderAttachmentData.resetWayfinderDeaths(player);
+	}
+
+	@Override
 	public void sendToPlayer(MultiloaderPacket packet, Player player) {
 		ServerPlayNetworking.send((ServerPlayer) player, packet);
 	}

@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import net.minecraft.world.item.CreativeModeTabs;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.fabricmc.api.ModInitializer;
-import net.potionstudios.wayfinder.commands.WayfinderReloadCommand;
+import net.potionstudios.wayfinder.commands.WayfinderCommands;
 import net.potionstudios.wayfinder.fabric.data.WayfinderAttachmentData;
 import net.potionstudios.wayfinder.network.protocol.WayfinderNetworking;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
@@ -26,7 +26,7 @@ public class WayfinderFabric implements ModInitializer {
         Wayfinder.init();
         WayfinderAttachmentData.init();
         Wayfinder.registerEntityAttributes(FabricDefaultAttributeRegistry::register);
-        CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> WayfinderReloadCommand.register(dispatcher::register)));
+        CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> WayfinderCommands.register(dispatcher::register)));
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(group -> group.accept(WayfinderItems.WAYFINDER_SPAWN_EGG.get()));
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(group -> group.accept(WayfinderBlocks.WAYFINER_HEART.get()));
         ServerLifecycleEvents.SERVER_STARTING.register(Wayfinder::serverStart);

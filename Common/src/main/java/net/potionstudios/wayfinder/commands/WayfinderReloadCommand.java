@@ -8,13 +8,8 @@ import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.config.Config;
 import net.potionstudios.wayfinder.config.ConfigLoader;
 
-import java.util.function.Consumer;
-
-public class WayfinderReloadCommand {
-
-	public static void register(Consumer<LiteralArgumentBuilder<CommandSourceStack>> dispatcher) {
-		LiteralArgumentBuilder<CommandSourceStack> root = LiteralArgumentBuilder.literal("wayfinder");
-
+class WayfinderReloadCommand {
+	static LiteralArgumentBuilder<CommandSourceStack> register() {
 		LiteralArgumentBuilder<CommandSourceStack> command = LiteralArgumentBuilder.literal("reload");
 		command.requires(commandSourceStack -> commandSourceStack.hasPermission(2));
 		command.executes(context -> {
@@ -23,6 +18,6 @@ public class WayfinderReloadCommand {
 			return 1;
 		});
 
-		dispatcher.accept(root.then(command));
+		return command;
 	}
 }

@@ -23,7 +23,7 @@ public class FollowOwnerGoal extends Goal {
         this.navigation = wayfinder.getNavigation();
         this.startDistance = startDistance;
         this.stopDistance = stopDistance;
-        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
+        this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.JUMP, Goal.Flag.LOOK));
     }
 
     @Override
