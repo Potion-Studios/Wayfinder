@@ -11,6 +11,7 @@ public class WayfinderCommands {
         LiteralArgumentBuilder<CommandSourceStack> base = LiteralArgumentBuilder.literal(Wayfinder.MOD_ID);
         base.then(WayfinderDeathsCommand.register());
         base.then(WayfinderReloadCommand.register());
+        base.then(WayfinderRemoveCommand.register());
         dispatcher.accept(base);
     }
 }
