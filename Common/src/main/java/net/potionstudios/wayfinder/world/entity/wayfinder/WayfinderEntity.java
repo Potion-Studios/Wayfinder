@@ -32,6 +32,7 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.potionstudios.wayfinder.PlatformHandler;
@@ -387,9 +388,9 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
-    public void handleEntityEvent(byte id) {
-        super.handleEntityEvent(id);
-        if (id == 60 && !level().isClientSide() && getOwner() != null) {
+    public void gameEvent(@NotNull Holder<GameEvent> gameEvent, @Nullable Entity entity) {
+        super.gameEvent(gameEvent, entity);
+        if (entity != null && entity.is(this) && gameEvent.is(GameEvent.ENTITY_DIE.key())) {
             Player owner = (Player) getOwner();
             PlatformHandler.PLATFORM_HANDLER.setWayfinder(owner, Util.NIL_UUID);
             PlatformHandler.PLATFORM_HANDLER.incrementWayfinderDeaths(owner);
