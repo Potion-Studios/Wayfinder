@@ -22,8 +22,8 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -95,7 +95,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     public WayfinderEntity(EntityType<? extends WayfinderEntity> entityType, Level level) {
         super(entityType, level);
         phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
-        //moveControl = new FlyingMoveControl(this, 20, true);
         moveControl = new WayfinderMoveControl(this, phaseOffset);
         searching = false;
         setPersistenceRequired();
@@ -315,7 +314,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public final boolean unableToMoveToOwner() {
-        return isSitting() || isPassenger() || getOwner() == null || getOwner().isSpectator() || getOwner().isDeadOrDying() || gettargetBiomeBlockPos().isEmpty();
+        return isSitting() || isPassenger() || getOwner() == null || getOwner().isSpectator() || getOwner().isDeadOrDying() || gettargetBiomeBlockPos().isPresent();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -323,8 +322,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                 .add(Attributes.MAX_HEALTH, 20)
                 .add(Attributes.FLYING_SPEED, 2D)
                 .add(Attributes.MOVEMENT_SPEED, 2D)
-                .add(Attributes.FALL_DAMAGE_MULTIPLIER, 0)
-                .add(Attributes.GRAVITY, 0.05f);
+                .add(Attributes.FALL_DAMAGE_MULTIPLIER, 0);
     }
 
     @Override
@@ -359,6 +357,14 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         goalSelector.addGoal(2, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(2, new ScaredWayfinderGoal(this));
         goalSelector.addGoal(8, new RandomLookAroundGoal(this));
+    }
+
+    @Override
+    protected void updateControlFlags() {
+        boolean b = isSearching() || isScared() || isSitting();
+        goalSelector.setControlFlag(Goal.Flag.MOVE, !b);
+        goalSelector.setControlFlag(Goal.Flag.JUMP, !b);
+        goalSelector.setControlFlag(Goal.Flag.LOOK, !isScared());
     }
 
     @Override
