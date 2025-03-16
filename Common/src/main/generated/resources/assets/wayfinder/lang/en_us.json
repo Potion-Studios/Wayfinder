@@ -19,7 +19,8 @@
   "wayfinder.commands.deaths": "%s has %s Wayfinder deaths",
   "wayfinder.commands.deaths.list.player": "%s : %s",
   "wayfinder.commands.deaths.list.start": "Wayfinder deaths for all players:",
-  "wayfinder.commands.deaths.reset": "Wayfinder deaths reset for %s",
+  "wayfinder.commands.deaths.reset.other": "Wayfinder deaths reset for %s",
+  "wayfinder.commands.deaths.reset.self": "Reset your Wayfinder deaths",
   "wayfinder.commands.deaths.show.other": "%s has %s Wayfinder deaths",
   "wayfinder.commands.deaths.show.self": "You have %s Wayfinder deaths",
   "wayfinder.commands.reload.success": "Wayfinder config reloaded"

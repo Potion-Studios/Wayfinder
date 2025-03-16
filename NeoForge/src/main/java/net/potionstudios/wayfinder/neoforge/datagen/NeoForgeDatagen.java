@@ -96,7 +96,8 @@ class NeoForgeDatagen {
 
             add("wayfinder.commands.reload.success", "Wayfinder config reloaded");
             add("wayfinder.commands.deaths", "%s has %s Wayfinder deaths");
-            add("wayfinder.commands.deaths.reset", "Wayfinder deaths reset for %s");
+            add("wayfinder.commands.deaths.reset.other", "Wayfinder deaths reset for %s");
+            add("wayfinder.commands.deaths.reset.self", "Reset your Wayfinder deaths");
             add("wayfinder.commands.deaths.list.start", "Wayfinder deaths for all players:");
             add("wayfinder.commands.deaths.list.player", "%s : %s");
             add("wayfinder.commands.deaths.show.other", "%s has %s Wayfinder deaths");

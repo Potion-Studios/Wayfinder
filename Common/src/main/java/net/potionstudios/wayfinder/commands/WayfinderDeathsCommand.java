@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
@@ -16,16 +17,20 @@ class WayfinderDeathsCommand {
     static LiteralArgumentBuilder<CommandSourceStack> register() {
         LiteralArgumentBuilder<CommandSourceStack> deathsCommand = LiteralArgumentBuilder.literal("deaths");
 
-        deathsCommand.then(LiteralArgumentBuilder.<CommandSourceStack>literal("list")
+        deathsCommand.requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+                .then(LiteralArgumentBuilder.<CommandSourceStack>literal("list")
                 .executes(WayfinderDeathsCommand::listDeaths));
 
         deathsCommand.executes(WayfinderDeathsCommand::showPlayerDeaths)
+                .requires(commandSourceStack -> commandSourceStack.hasPermission(2))
                 .then(RequiredArgumentBuilder.<CommandSourceStack, EntitySelector>argument("player", EntityArgument.player())
                 .executes(WayfinderDeathsCommand::showSelectedPlayerDeaths));
 
-        deathsCommand.then(LiteralArgumentBuilder.<CommandSourceStack>literal("reset")
+        deathsCommand.requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+                .then(LiteralArgumentBuilder.<CommandSourceStack>literal("reset")
+                .executes(WayfinderDeathsCommand::resetPlayerDeaths)
                 .then(RequiredArgumentBuilder.<CommandSourceStack, EntitySelector>argument("player", EntityArgument.player())
-                        .executes(WayfinderDeathsCommand::resetPlayerDeaths)));
+                        .executes(WayfinderDeathsCommand::resetSelectedPlayerDeaths)));
 
         return deathsCommand;
     }
@@ -55,11 +60,17 @@ class WayfinderDeathsCommand {
         return 1;
     }
 
-    private static int resetPlayerDeaths(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    private static int resetSelectedPlayerDeaths(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = EntityArgument.getPlayer(context, "player");
-        // Example logic for resetting a player's deaths
         PlatformHandler.PLATFORM_HANDLER.resetWayfinderDeaths(player);
-        context.getSource().sendSuccess(() -> Component.translatable("wayfinder.commands.deaths.reset", player.getDisplayName()), true);
+        context.getSource().sendSuccess(() -> Component.translatable("wayfinder.commands.deaths.reset.other", player.getDisplayName()).withStyle(ChatFormatting.GREEN), true);
+        return 1;
+    }
+
+    private static int resetPlayerDeaths(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = context.getSource().getPlayerOrException();
+        PlatformHandler.PLATFORM_HANDLER.resetWayfinderDeaths(player);
+        context.getSource().sendSuccess(() -> Component.translatable("wayfinder.commands.deaths.reset.self", player.getDisplayName()).withStyle(ChatFormatting.GREEN), true);
         return 1;
     }
 }
