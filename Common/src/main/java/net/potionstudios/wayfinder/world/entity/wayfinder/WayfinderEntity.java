@@ -226,11 +226,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                 else current = level().getBiome(gettargetBiomeBlockPos().get()).unwrapKey().get().location();
                 PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderOpenScreenPacket(biomeList, current, isSitting()), player);
                 return InteractionResult.SUCCESS;
+            } else if (getOwner() == null && !PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
+                setOwner(player);
+                return mobInteract(player, hand);
             } else triggerAnim("controller", "no");
             return InteractionResult.FAIL;
-        } else if (getOwner() == null) {
-            setOwner(player);
-            return mobInteract(player, hand);
         }
         return super.mobInteract(player, hand);
     }
