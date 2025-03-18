@@ -30,12 +30,12 @@ public class GoToPosGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        return true;
+        return target.isPresent();
     }
 
     @Override
     public boolean canContinueToUse() {
-        return !target.isPresent() || wayfinder.distanceToSqr(target.get().getX(), target.get().getY(), target.get().getZ()) > 10;
+        return canUse() && wayfinder.distanceToSqr(target.get().getX(), target.get().getY(), target.get().getZ()) > 10;
     }
 
     @Override
@@ -52,6 +52,7 @@ public class GoToPosGoal extends Goal {
                 wayfinder.setSearching(false);
                 wayfinder.triggerAnim("controller", "Searching_end");
                 WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get().trigger((ServerPlayer) wayfinder.getOwner());
+                wayfinder.setTargetBlockPos(Optional.empty());
             }
         } else {
             target = wayfinder.gettargetBiomeBlockPos();
