@@ -23,5 +23,8 @@
   "wayfinder.commands.deaths.reset.self": "Reset your Wayfinder deaths",
   "wayfinder.commands.deaths.show.other": "%s has %s Wayfinder deaths",
   "wayfinder.commands.deaths.show.self": "You have %s Wayfinder deaths",
-  "wayfinder.commands.reload.success": "Wayfinder config reloaded"
+  "wayfinder.commands.reload.success": "Wayfinder config reloaded",
+  "wayfinder.commands.remove.fail": "%s does not have a Wayfinder",
+  "wayfinder.commands.remove.kill.success": "%s's Wayfinder has been removed and killed",
+  "wayfinder.commands.remove.success": "%s's Wayfinder has been removed"
 }

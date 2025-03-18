@@ -102,6 +102,9 @@ class NeoForgeDatagen {
             add("wayfinder.commands.deaths.list.player", "%s : %s");
             add("wayfinder.commands.deaths.show.other", "%s has %s Wayfinder deaths");
             add("wayfinder.commands.deaths.show.self", "You have %s Wayfinder deaths");
+            add("wayfinder.commands.remove.success", "%s's Wayfinder has been removed");
+            add("wayfinder.commands.remove.fail", "%s does not have a Wayfinder");
+            add("wayfinder.commands.remove.kill.success", "%s's Wayfinder has been removed and killed");
 
 
             add("advancements.wayfinder.so_it_begins.title", "So it begins..");
