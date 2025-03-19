@@ -12,6 +12,7 @@ public class WayfinderCommands {
         base.then(WayfinderDeathsCommand.register());
         base.then(WayfinderReloadCommand.register());
         base.then(WayfinderRemoveCommand.register());
+        base.then(WayfinderLocateCommand.register());
         dispatcher.accept(base);
     }
 }

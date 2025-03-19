@@ -25,6 +25,6 @@ public class ScaredWayfinderGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        return entity.getRandom().nextInt(10) == 0;
+        return !entity.isScared() ;
     }
 }
