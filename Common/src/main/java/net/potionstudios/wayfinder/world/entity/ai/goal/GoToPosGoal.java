@@ -55,7 +55,7 @@ public class GoToPosGoal extends Goal {
                 wayfinder.setTargetBlockPos(Optional.empty());
             }
         } else {
-            target = wayfinder.gettargetBiomeBlockPos();
+            target = wayfinder.getTargetBiomeBlockPos();
             owner = wayfinder.getOwner();
         }
     }

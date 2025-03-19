@@ -119,8 +119,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         compound.putFloat("Offset", phaseOffset);
         compound.putBoolean("Searching", searching);
         compound.putInt("Shield", entityData.get(DATA_SHIELD));
-        if (gettargetBiomeBlockPos().isPresent())
-            compound.putLong("BlockPos", gettargetBiomeBlockPos().get().asLong());
+        if (getTargetBiomeBlockPos().isPresent())
+            compound.putLong("BlockPos", getTargetBiomeBlockPos().get().asLong());
     }
 
     @Override
@@ -222,8 +222,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                     if (!key.is(WayfinderBiomeTags.WAYFINDER_EXCLUDED))
                         key.unwrapKey().ifPresent(biome -> biomeList.add(biome.location()));
                 ResourceLocation current;
-                if (gettargetBiomeBlockPos().isEmpty()) current = Wayfinder.id("clear_packet");
-                else current = level().getBiome(gettargetBiomeBlockPos().get()).unwrapKey().get().location();
+                if (getTargetBiomeBlockPos().isEmpty()) current = Wayfinder.id("clear_packet");
+                else current = level().getBiome(getTargetBiomeBlockPos().get()).unwrapKey().get().location();
                 PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderOpenScreenPacket(biomeList, current, isSitting()), player);
                 return InteractionResult.SUCCESS;
             } else if (getOwner() == null && !PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
@@ -301,11 +301,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         return this.shield() != SHIELD.NONE;
     }
 
-    public boolean hasTargetBiome() {
-        return gettargetBiomeBlockPos().isPresent();
-    }
-
-    public Optional<BlockPos> gettargetBiomeBlockPos() {
+    public Optional<BlockPos> getTargetBiomeBlockPos() {
         return entityData.get(BLOCK_POS);
     }
 
@@ -314,7 +310,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public final boolean unableToMoveToOwner() {
-        return isSitting() || isPassenger() || getOwner() == null || getOwner().isSpectator() || getOwner().isDeadOrDying() || gettargetBiomeBlockPos().isPresent();
+        return isSitting() || isPassenger() || getOwner() == null || getOwner().isSpectator() || getOwner().isDeadOrDying() || getTargetBiomeBlockPos().isPresent();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -353,7 +349,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
         goalSelector.addGoal(1, new FollowOwnerGoal(this, 1.0, 5.0F, 1.0F));
-        goalSelector.addGoal(1, new GoToPosGoal(this, getOwner(), gettargetBiomeBlockPos(), 3, 2));
+        goalSelector.addGoal(1, new GoToPosGoal(this, getOwner(), getTargetBiomeBlockPos(), 3, 2));
         goalSelector.addGoal(2, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(2, new ScaredWayfinderGoal(this));
         goalSelector.addGoal(8, new RandomLookAroundGoal(this));

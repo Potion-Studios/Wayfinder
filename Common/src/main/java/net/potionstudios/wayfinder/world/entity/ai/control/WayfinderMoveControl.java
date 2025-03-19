@@ -19,7 +19,7 @@ public class WayfinderMoveControl extends FlyingMoveControl {
     public void tick() {
         if (wayfinder.isSitting()) { // When sitting the wayfinder should not fly
             wayfinder.setNoGravity(false);
-        } else if (wayfinder.getOwner() != null && wayfinder.getOwner().distanceToSqr(wayfinder) < 10 && wayfinder.gettargetBiomeBlockPos().isEmpty() && !wayfinder.isScared()) {
+        } else if (wayfinder.getOwner() != null && wayfinder.getOwner().distanceToSqr(wayfinder) < 10 && wayfinder.getTargetBiomeBlockPos().isEmpty() && !wayfinder.isScared()) {
             double currentY = wayfinder.getY();
             double ownerY = wayfinder.getOwner().getY();
 
