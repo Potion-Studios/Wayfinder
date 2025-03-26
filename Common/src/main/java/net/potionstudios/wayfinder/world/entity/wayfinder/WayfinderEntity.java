@@ -349,7 +349,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
         goalSelector.addGoal(1, new FollowOwnerGoal(this, 1.0, 5.0F, 1.0F));
-        goalSelector.addGoal(1, new GoToPosGoal(this, getOwner(), getTargetBiomeBlockPos(), 2));
+        goalSelector.addGoal(1, new GoToPosGoal(this, getOwner(), getTargetBiomeBlockPos(), 2.5));
         goalSelector.addGoal(2, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(2, new ScaredWayfinderGoal(this));
         goalSelector.addGoal(8, new RandomLookAroundGoal(this));
