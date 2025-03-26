@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import org.jetbrains.annotations.Nullable;
@@ -17,20 +17,29 @@ public class GoToPosGoal extends Goal {
     private Optional<BlockPos> target;
     private @Nullable LivingEntity owner;
     private final double speed;
-    private final float minDistance;
+    private final PathNavigation navigation;
+    private int timeToRecalcPath;
 
-    public GoToPosGoal(WayfinderEntity wayfinder, @Nullable LivingEntity owner, Optional<BlockPos> target, double speed, float minDistance) {
+    public GoToPosGoal(WayfinderEntity wayfinder, @Nullable LivingEntity owner, Optional<BlockPos> target, double speed) {
         this.wayfinder = wayfinder;
         this.target = target;
         this.owner = owner;
         this.speed = speed;
-        this.minDistance = minDistance;
+        this.navigation = wayfinder.getNavigation();
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.JUMP));
     }
 
     @Override
     public boolean canUse() {
-        return target.isPresent();
+        LivingEntity livingEntity = wayfinder.getOwner();
+        Optional<BlockPos> target = wayfinder.getTargetBiomeBlockPos();
+        if (livingEntity == null || target.isEmpty()) {
+            return false;
+        } else {
+            this.owner = livingEntity;
+            this.target = target;
+            return true;
+        }
     }
 
     @Override
@@ -39,24 +48,29 @@ public class GoToPosGoal extends Goal {
     }
 
     @Override
+    public void start() {
+        this.timeToRecalcPath = 0;
+    }
+
+    @Override
+    public void stop() {
+        this.owner = null;
+        this.navigation.stop();
+    }
+
+    @Override
     public void tick() {
-        if (target.isPresent() && !wayfinder.unableToMoveToOwner()) {
-            double distanceFromOwner = wayfinder.distanceToSqr(owner);
-            if (distanceFromOwner <= 200) {
-                BlockPos target = this.target.get();
-                Vec3 direction = new Vec3(target.getX() - wayfinder.getX(), target.getY() - wayfinder.getY(), target.getZ() - wayfinder.getZ()).normalize();
-                Vec3 newPos = new Vec3(target.getX() - direction.x * minDistance, target.getY() - direction.y * minDistance, target.getZ() - direction.z * minDistance);
-                wayfinder.getMoveControl().setWantedPosition(newPos.x, newPos.y + .25F, newPos.z, speed);
-            }
-            if (target.get().getX() == wayfinder.blockPosition().getX() && target.get().getZ() == wayfinder.blockPosition().getZ()) {
-                wayfinder.setSearching(false);
-                wayfinder.triggerAnim("controller", "Searching_end");
-                WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get().trigger((ServerPlayer) wayfinder.getOwner());
-                wayfinder.setTargetBlockPos(Optional.empty());
-            }
-        } else {
-            target = wayfinder.getTargetBiomeBlockPos();
-            owner = wayfinder.getOwner();
+        if (owner.distanceToSqr(wayfinder) >= 200) {
+            navigation.stop();
+            timeToRecalcPath = 0;
+        } else if (--this.timeToRecalcPath <= 0) {
+            this.timeToRecalcPath = this.adjustedTickDelay(10);
+            this.navigation.moveTo(target.get().getX(), target.get().getY(), target.get().getZ(), speed);
+        }
+
+        if (wayfinder.distanceToSqr(target.get().getX(), target.get().getY(), target.get().getZ()) < 3) {
+            WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get().trigger((ServerPlayer) owner);
+            stop();
         }
     }
 }
