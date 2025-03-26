@@ -136,4 +136,9 @@ public class WayfinderHeartBlock extends BaseEntityBlock {
     ) {
         return level.isClientSide() ? null : createTickerHelper(serverType, clientType, WayfinderHeartBlockEntity::serverTick);
     }
+
+    @Override
+    protected @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
+        return RenderShape.MODEL;
+    }
 }
