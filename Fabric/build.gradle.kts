@@ -37,6 +37,7 @@ dependencies {
     modLocalRuntime("me.djtheredstoner:DevAuth-fabric:${project.properties["devauth_version"]}")
 
     modApi("software.bernie.geckolib:geckolib-fabric-$minecraftVersion:${project.properties["geckolib_version"]}")
+    modApi("me.lucko:fabric-permissions-api:0.3.1")
 }
 
 tasks {

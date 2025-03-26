@@ -1,8 +1,10 @@
 package net.potionstudios.wayfinder.neoforge.datagen;
 
 import com.google.common.collect.ImmutableList;
+import it.unimi.dsi.fastutil.doubles.DoublePredicate;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.HolderLookup;
@@ -33,6 +35,7 @@ import net.potionstudios.wayfinder.Wayfinder;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.potionstudios.wayfinder.advancements.critereon.WayfinderHeartBlockTrigger;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderOwnerKilledTrigger;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.tags.WayfinderBiomeTags;
@@ -111,6 +114,8 @@ class NeoForgeDatagen {
             add("wayfinder.commands.locate.other.nowayfinder", "%s does not have a Wayfinder");
 
 
+            add("advancements.wayfinder.a_tale_as_old_as_time.title", "A Tale As Old As Time");
+            add("advancements.wayfinder.a_tale_as_old_as_time.description", "Approach a Wayfinder Shrine");
             add("advancements.wayfinder.so_it_begins.title", "So it begins..");
             add("advancements.wayfinder.so_it_begins.description", "Summon your first Wayfinder");
             add("advancements.wayfinder.ultimate_betrayal.title", "Ultimate Betrayal");
@@ -222,6 +227,16 @@ class NeoForgeDatagen {
         @Override
         public void generate(HolderLookup.@NotNull Provider arg, @NotNull Consumer<AdvancementHolder> consumer, @NotNull ExistingFileHelper existingFileHelper) {
             AdvancementHolder root = Advancement.Builder.advancement()
+                    .addCriterion("near_heartblock", WayfinderHeartBlockTrigger.TriggerInstance.wayFinderHeartBlock())
+                    .display(
+                            Items.WRITTEN_BOOK,
+                            translateAble("a_tale_as_old_as_time.title"),
+                            translateAble("a_tale_as_old_as_time.description"),
+                            ResourceLocation.withDefaultNamespace("textures/block/moss_block.png"), AdvancementType.TASK, true, false, true
+                    )
+                    .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/a_tale_as_old_as_time"), existingFileHelper);
+
+            AdvancementHolder soItBegins = Advancement.Builder.advancement()
                     .addCriterion("summon_wayfinder", ItemUsedOnLocationTrigger.TriggerInstance.itemUsedOnBlock(LocationPredicate.Builder.location().setBlock(
                             BlockPredicate.Builder.block().of(WayfinderBlocks.WAYFINER_HEART.get())
                     ), ItemPredicate.Builder.item().of(Tags.Items.GEMS_EMERALD)))
@@ -229,8 +244,9 @@ class NeoForgeDatagen {
                             Items.EMERALD,
                             translateAble("so_it_begins.title"),
                             translateAble("so_it_begins.description"),
-                            ResourceLocation.withDefaultNamespace("textures/block/moss_block.png"), AdvancementType.TASK, true, true, false
+                            null, AdvancementType.TASK, true, true, true
                     )
+                    .parent(root)
                     .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/so_it_begins"), existingFileHelper);
 
             Advancement.Builder.advancement()
@@ -241,7 +257,7 @@ class NeoForgeDatagen {
                             translateAble("ultimate_betrayal.description"),
                             null, AdvancementType.CHALLENGE, true, true, true
                     )
-                    .parent(root)
+                    .parent(soItBegins)
                     .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/ultimate_betrayal"), existingFileHelper);
         }
 

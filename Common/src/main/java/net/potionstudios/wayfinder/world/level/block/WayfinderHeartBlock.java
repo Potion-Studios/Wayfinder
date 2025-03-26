@@ -17,29 +17,40 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
+import net.potionstudios.wayfinder.world.entity.block.WayfinderBlockEntities;
+import net.potionstudios.wayfinder.world.entity.block.WayfinderHeartBlockEntity;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
+public class WayfinderHeartBlock extends BaseEntityBlock {
 
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     private static final TagKey<Item> EMERALD_TAG = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "gems/emerald"));
 
-    public static final MapCodec<WayfinderHeartBlock> CODEC = simpleCodec(WayfinderHeartBlock::new);
     public static final BooleanProperty ACTIVATED = BooleanProperty.create("activated");
 
     public WayfinderHeartBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any().setValue(ACTIVATED, false).setValue(FACING, Direction.NORTH));
+    }
+
+    @Override
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
+        return null;
     }
 
     @Override
@@ -91,11 +102,6 @@ public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    protected @NotNull MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return CODEC;
-    }
-
-    @Override
     public @Nullable BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
@@ -103,5 +109,31 @@ public class WayfinderHeartBlock extends HorizontalDirectionalBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> builder) {
         builder.add(ACTIVATED).add(FACING);
+    }
+
+    @Override
+    protected @NotNull BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    }
+
+    @Override
+    protected @NotNull BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
+    }
+
+    @Override
+    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
+        return WayfinderBlockEntities.WAYFINDER_HEART.get().create(pos, state);
+    }
+
+    @Override
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType) {
+        return createTickerHelper(level, blockEntityType, WayfinderBlockEntities.WAYFINDER_HEART.get());
+    }
+
+    public static <T extends BlockEntity> BlockEntityTicker<T> createTickerHelper(
+            Level level, BlockEntityType<T> serverType, BlockEntityType<? extends WayfinderHeartBlockEntity> clientType
+    ) {
+        return level.isClientSide() ? null : createTickerHelper(serverType, clientType, WayfinderHeartBlockEntity::serverTick);
     }
 }

@@ -1,4 +1,5 @@
 {
+  "parent": "wayfinder:wayfinder/a_tale_as_old_as_time",
   "criteria": {
     "summon_wayfinder": {
       "conditions": {
@@ -23,10 +24,10 @@
     }
   },
   "display": {
-    "background": "minecraft:textures/block/moss_block.png",
     "description": {
       "translate": "advancements.wayfinder.so_it_begins.description"
     },
+    "hidden": true,
     "icon": {
       "count": 1,
       "id": "minecraft:emerald"

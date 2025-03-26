@@ -1,0 +1,28 @@
+{
+  "criteria": {
+    "near_heartblock": {
+      "trigger": "wayfinder:wayfinder_heart_block"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/block/moss_block.png",
+    "description": {
+      "translate": "advancements.wayfinder.a_tale_as_old_as_time.description"
+    },
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "minecraft:written_book"
+    },
+    "title": {
+      "translate": "advancements.wayfinder.a_tale_as_old_as_time.title"
+    }
+  },
+  "requirements": [
+    [
+      "near_heartblock"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
