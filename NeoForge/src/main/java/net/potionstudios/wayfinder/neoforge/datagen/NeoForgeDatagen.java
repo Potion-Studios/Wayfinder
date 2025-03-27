@@ -1,7 +1,6 @@
 package net.potionstudios.wayfinder.neoforge.datagen;
 
 import com.google.common.collect.ImmutableList;
-import it.unimi.dsi.fastutil.doubles.DoublePredicate;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRewards;
@@ -14,11 +13,14 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.EntityLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.network.Filterable;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
@@ -26,6 +28,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.ListOperation;
+import net.minecraft.world.level.storage.loot.functions.SetWrittenBookPagesFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.neoforged.neoforge.client.model.generators.*;
@@ -48,10 +52,9 @@ import net.potionstudios.wayfinder.world.level.levelgen.structure.processor.Wayf
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -126,6 +129,12 @@ class NeoForgeDatagen {
             add("gui.wayfinder.search", "Search Biomes");
             add("gui.wayfinder.button.select", "Select");
             add("gui.wayfinder.button.clear", "Clear");
+
+            add("wayfinder.book.story.page1", "I've never seen this before.. I stumbled upon an ancient shrine hidden in the back of this small village. It was covered in vines and moss like no one had touched it for a long time. I was able to make out a faded engraving on the statue.. 'When a soul is lost, look to a wayfinder to guide it home'");
+            add("wayfinder.book.story.page2", "I asked the locals about it and one of the librarians directed me to a small corner of the library that looked untouched for decades. It took ages to clean off the spider webs and dust but then I finally saw it! This shrine belonged to a deity that was worshipped over a thousand years ago.");
+            add("wayfinder.book.story.page3", "It says here in the text that if you offered it Emeralds then the deity would appear. I asked the Librarian about this and she told me that long ago, the locals use to be nomads and thats when they found it, the 'Wayfinder' it would guide their people across countless continents and oceans providing a clear path to safety.");
+            add("wayfinder.book.story.page4", "I'm running out of ink so I will finish up my thoughts, I plan on trying to summon this deity with some Emeralds tomorrow morning and I hope that this isn't just some folklore..");
+
         }
     }
 
@@ -195,7 +204,8 @@ class NeoForgeDatagen {
     private static class LootGenerator extends LootTableProvider {
         private LootGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
             super(output, Collections.emptySet(), ImmutableList.of(
-                    new SubProviderEntry(EntityLootGenerator::new, LootContextParamSets.ENTITY)
+                    new SubProviderEntry(EntityLootGenerator::new, LootContextParamSets.ENTITY),
+                    new SubProviderEntry(AdvancementLootGenerator::new, LootContextParamSets.ADVANCEMENT_REWARD)
             ), registries);
         }
     }
@@ -223,6 +233,27 @@ class NeoForgeDatagen {
         }
     }
 
+    private static final ResourceKey<LootTable> bookTable = Wayfinder.key(Registries.LOOT_TABLE, "book");
+
+    private static class AdvancementLootGenerator implements LootTableSubProvider {
+
+        private AdvancementLootGenerator(HolderLookup.Provider registries) {}
+
+        @Override
+        public void generate(@NotNull BiConsumer<ResourceKey<LootTable>, LootTable.Builder> output) {
+            output.accept(bookTable, LootTable.lootTable().withPool(LootPool.lootPool()
+                    .add(LootItem.lootTableItem(Items.WRITTEN_BOOK)
+                            .apply(SetWrittenBookPagesFunction.simpleBuilder(list ->
+                                    new SetWrittenBookPagesFunction(List.of(),
+                                            List.of(
+                                                    Filterable.passThrough(Component.translatable("wayfinder.book.story.page1")),
+                                                    Filterable.passThrough(Component.translatable("wayfinder.book.story.page2")),
+                                                    Filterable.passThrough(Component.translatable("wayfinder.book.story.page3")),
+                                                    Filterable.passThrough(Component.translatable("wayfinder.book.story.page4"))),
+                                            ListOperation.Append.INSTANCE))))));
+        }
+    }
+
     private static class AdvancementGenerator implements AdvancementProvider.AdvancementGenerator {
         @Override
         public void generate(HolderLookup.@NotNull Provider arg, @NotNull Consumer<AdvancementHolder> consumer, @NotNull ExistingFileHelper existingFileHelper) {
@@ -234,6 +265,7 @@ class NeoForgeDatagen {
                             translateAble("a_tale_as_old_as_time.description"),
                             ResourceLocation.withDefaultNamespace("textures/block/moss_block.png"), AdvancementType.TASK, true, false, true
                     )
+                    .rewards(AdvancementRewards.Builder.loot(bookTable))
                     .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/a_tale_as_old_as_time"), existingFileHelper);
 
             AdvancementHolder soItBegins = Advancement.Builder.advancement()

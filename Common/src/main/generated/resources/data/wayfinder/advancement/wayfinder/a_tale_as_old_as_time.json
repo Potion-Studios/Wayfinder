@@ -24,5 +24,10 @@
       "near_heartblock"
     ]
   ],
+  "rewards": {
+    "loot": [
+      "wayfinder:book"
+    ]
+  },
   "sends_telemetry_event": true
 }

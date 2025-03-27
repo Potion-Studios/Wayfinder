@@ -1,0 +1,44 @@
+{
+  "type": "minecraft:advancement_reward",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_written_book_pages",
+              "mode": "append",
+              "pages": [
+                {
+                  "raw": {
+                    "translate": "wayfinder.book.story.page1"
+                  }
+                },
+                {
+                  "raw": {
+                    "translate": "wayfinder.book.story.page2"
+                  }
+                },
+                {
+                  "raw": {
+                    "translate": "wayfinder.book.story.page3"
+                  }
+                },
+                {
+                  "raw": {
+                    "translate": "wayfinder.book.story.page4"
+                  }
+                }
+              ]
+            }
+          ],
+          "name": "minecraft:written_book"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "wayfinder:book"
+}
