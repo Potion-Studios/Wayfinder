@@ -38,6 +38,7 @@ import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
+import net.potionstudios.wayfinder.network.packets.WayfinderCloseScreenPacket;
 import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.tags.WayfinderBiomeTags;
@@ -142,6 +143,14 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         phaseOffset = compound.getFloat("Offset");
         if (compound.contains("BlockPos"))
             setTargetBlockPos(Optional.of(BlockPos.of(compound.getLong("BlockPos"))));
+    }
+
+    @Override
+    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> dataAccessor) {
+        super.onSyncedDataUpdated(dataAccessor);
+        if (!level().isClientSide() && dataAccessor.equals(DATA_SCARED) && getOwner() != null)
+            if (entityData.get(DATA_SCARED))
+                PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderCloseScreenPacket(), (Player) getOwner());
     }
 
     @Override
@@ -365,6 +374,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
         if (level().isClientSide()) return false;
+
         if (isScared())
             if (this.shield() == SHIELD.FULL) {
                 this.setShield(SHIELD.HALF);
@@ -393,6 +403,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         super.gameEvent(gameEvent, entity);
         if (entity != null && entity.is(this) && gameEvent.is(GameEvent.ENTITY_DIE.key())) {
             Player owner = (Player) getOwner();
+            PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderCloseScreenPacket(), owner);
             PlatformHandler.PLATFORM_HANDLER.setWayfinder(owner, Util.NIL_UUID);
             PlatformHandler.PLATFORM_HANDLER.incrementWayfinderDeaths(owner);
         }
