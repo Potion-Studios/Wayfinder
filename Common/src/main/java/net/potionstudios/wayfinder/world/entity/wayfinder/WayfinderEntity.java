@@ -357,9 +357,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     protected void updateControlFlags() {
-        boolean b = isScared() || isSitting();
-        goalSelector.setControlFlag(Goal.Flag.MOVE, !b);
-        goalSelector.setControlFlag(Goal.Flag.JUMP, !b);
+        super.updateControlFlags();
+        goalSelector.setControlFlag(Goal.Flag.MOVE, !(isScared() || isSitting()));
         goalSelector.setControlFlag(Goal.Flag.LOOK, !isScared());
     }
 
