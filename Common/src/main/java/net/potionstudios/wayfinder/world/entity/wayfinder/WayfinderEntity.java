@@ -47,6 +47,7 @@ import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
 import net.potionstudios.wayfinder.world.entity.ai.goal.FollowOwnerGoal;
 import net.potionstudios.wayfinder.world.entity.ai.goal.GoToPosGoal;
 import net.potionstudios.wayfinder.world.entity.ai.goal.ScaredWayfinderGoal;
+import net.potionstudios.wayfinder.world.entity.ai.goal.ShieldRegenGoal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoAnimatable;
@@ -361,6 +362,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         goalSelector.addGoal(1, new GoToPosGoal(this, getOwner(), getTargetBiomeBlockPos(), 2.5));
         goalSelector.addGoal(2, new LookAtPlayerGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(2, new ScaredWayfinderGoal(this));
+        goalSelector.addGoal(5, new ShieldRegenGoal(this));
         goalSelector.addGoal(8, new RandomLookAroundGoal(this));
     }
 

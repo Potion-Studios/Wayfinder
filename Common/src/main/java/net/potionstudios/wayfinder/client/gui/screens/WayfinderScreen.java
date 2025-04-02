@@ -92,17 +92,13 @@ public class WayfinderScreen extends Screen {
         int buttonXLeft = leftPos + 20;
         int buttonXRight = leftPos + (IMAGE_WIDTH / 2) - 60;
 
-        Button sitButton = new Button(buttonXLeft, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.sit"), button -> {
-            isSitting = true;
-        }, Button.DEFAULT_NARRATION);
+        Button sitButton = new Button(buttonXLeft, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.sit"), button -> isSitting = true, Button.DEFAULT_NARRATION);
 
         sitButton.active = !isSitting;
 
         addRenderableWidget(sitButton);
 
-        Button walkButton = new Button(buttonXRight, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.follow"), button -> {
-            isSitting = false;
-        }, Button.DEFAULT_NARRATION);
+        Button walkButton = new Button(buttonXRight, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.follow"), button -> isSitting = false, Button.DEFAULT_NARRATION);
 
         walkButton.active = isSitting;
 
