@@ -1,6 +1,5 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -19,14 +18,12 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
@@ -160,15 +157,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         navigation.setCanOpenDoors(false);
         navigation.setCanFloat(true);
         return navigation;
-    }
-
-    protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(
-            MemoryModuleType.PATH
-    );
-
-    @Override
-    protected Brain.@NotNull Provider<WayfinderEntity> brainProvider() {
-        return Brain.provider(MEMORY_TYPES, ImmutableList.of());
     }
 
     @Override
