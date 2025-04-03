@@ -8,6 +8,7 @@ public class Config {
         public int MAX_SEARCH_DISTANCE_IN_BLOCKS = 10000;
         public int COOLDOWN_IN_SECONDS = 60;
         public int SCARED_PROJECTILE_MOB_DISTANCE_IN_BLOCKS = 10;
+        public int TELEPORT_TO_OWNER_SECONDS = 30;
     }
 
     public WayfinderHeartBlock wayfinderHeartBlock = new WayfinderHeartBlock();

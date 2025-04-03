@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import org.jetbrains.annotations.Nullable;
@@ -19,6 +20,7 @@ public class GoToPosGoal extends Goal {
     private final double speed;
     private final PathNavigation navigation;
     private int timeToRecalcPath;
+    private int teleportWaitTime;
 
     public GoToPosGoal(WayfinderEntity wayfinder, @Nullable LivingEntity owner, Optional<BlockPos> target, double speed) {
         this.wayfinder = wayfinder;
@@ -50,6 +52,7 @@ public class GoToPosGoal extends Goal {
     @Override
     public void start() {
         this.timeToRecalcPath = 0;
+        this.teleportWaitTime = Wayfinder.CONFIG.wayfinder.TELEPORT_TO_OWNER_SECONDS * 20;
     }
 
     @Override
@@ -63,9 +66,12 @@ public class GoToPosGoal extends Goal {
         if (owner.distanceToSqr(wayfinder) >= 200) {
             navigation.stop();
             timeToRecalcPath = 0;
+            teleportWaitTime--;
+            if (teleportWaitTime <= 0) wayfinder.tryToTeleportToOwner();
         } else if (--this.timeToRecalcPath <= 0) {
             this.timeToRecalcPath = this.adjustedTickDelay(10);
             this.navigation.moveTo(target.get().getX(), target.get().getY(), target.get().getZ(), speed);
+            teleportWaitTime = Wayfinder.CONFIG.wayfinder.TELEPORT_TO_OWNER_SECONDS * 20;
         }
 
         if (wayfinder.distanceToSqr(target.get().getX(), target.get().getY(), target.get().getZ()) < 3) {
