@@ -243,7 +243,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         setSearching(true);
         Pair<BlockPos, Holder<Biome>> value = ((ServerLevel) level()).
                 findClosestBiome3d(biomeHolder -> biomeHolder.is(biome), blockPosition(),
-                        Wayfinder.CONFIG.wayfinder.MAX_SEARCH_DISTANCE_IN_BLOCKS, 32, 64);
+                        Wayfinder.CONFIG.wayfinder.MAX_SEARCH_DISTANCE.value(), 32, 64);
         if (value != null) setTargetBlockPos(Optional.of(value.getFirst()));
         else triggerAnim("controller", "no");
     }

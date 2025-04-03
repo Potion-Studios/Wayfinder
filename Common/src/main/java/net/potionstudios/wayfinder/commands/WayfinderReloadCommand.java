@@ -6,14 +6,14 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.config.Config;
-import net.potionstudios.wayfinder.config.ConfigLoader;
+import net.potionstudios.wayfinder.config.ConfigUtils;
 
 class WayfinderReloadCommand {
 	static LiteralArgumentBuilder<CommandSourceStack> register() {
 		LiteralArgumentBuilder<CommandSourceStack> command = LiteralArgumentBuilder.literal("reload");
 		command.requires(commandSourceStack -> commandSourceStack.hasPermission(2));
 		command.executes(context -> {
-			Wayfinder.CONFIG = ConfigLoader.loadConfig(Config.class);
+			Wayfinder.CONFIG = ConfigUtils.loadConfig(Config.class);
 			context.getSource().sendSuccess(() -> Component.translatable("wayfinder.commands.reload.success").withStyle(ChatFormatting.GREEN), true);
 			return 1;
 		});

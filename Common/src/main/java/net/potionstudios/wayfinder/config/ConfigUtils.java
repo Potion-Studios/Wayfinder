@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public final class ConfigLoader {
+public final class ConfigUtils {
 
     /** The Gson instance for the Config Loader. */
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -34,4 +34,9 @@ public final class ConfigLoader {
         }
     }
 
+    public record CommentValue<T>(String comment, T value) {
+        public static <T> CommentValue<T> of(String comment, T value) {
+            return new CommentValue<>(comment, value);
+        }
+    }
 }

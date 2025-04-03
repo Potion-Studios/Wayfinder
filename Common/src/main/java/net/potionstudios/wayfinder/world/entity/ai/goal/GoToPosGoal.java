@@ -52,7 +52,7 @@ public class GoToPosGoal extends Goal {
     @Override
     public void start() {
         this.timeToRecalcPath = 0;
-        this.teleportWaitTime = Wayfinder.CONFIG.wayfinder.TELEPORT_TO_OWNER_SECONDS * 20;
+        this.teleportWaitTime = Wayfinder.CONFIG.wayfinder.TELEPORT_TO_OWNER.value() * 20;
     }
 
     @Override
@@ -71,7 +71,7 @@ public class GoToPosGoal extends Goal {
         } else if (--this.timeToRecalcPath <= 0) {
             this.timeToRecalcPath = this.adjustedTickDelay(10);
             this.navigation.moveTo(target.get().getX(), target.get().getY(), target.get().getZ(), speed);
-            teleportWaitTime = Wayfinder.CONFIG.wayfinder.TELEPORT_TO_OWNER_SECONDS * 20;
+            teleportWaitTime = Wayfinder.CONFIG.wayfinder.TELEPORT_TO_OWNER.value() * 20;
         }
 
         if (wayfinder.distanceToSqr(target.get().getX(), target.get().getY(), target.get().getZ()) < 3) {

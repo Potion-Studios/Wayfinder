@@ -72,6 +72,6 @@ public class ScaredWayfinderGoal extends Goal {
         targets = entity.level().getNearbyEntities(Monster.class,
                 TargetingConditions.forNonCombat()
                         .selector(livingEntity -> livingEntity.getType().is(WayfinderEntityTypeTags.SCARES_WAYFINDER)),
-                entity, entity.getBoundingBox().inflate(Wayfinder.CONFIG.wayfinder.SCARED_PROJECTILE_MOB_DISTANCE_IN_BLOCKS));
+                entity, entity.getBoundingBox().inflate(Wayfinder.CONFIG.wayfinder.SCARED_PROJECTILE_MOB_DISTANCE.value()));
     }
 }

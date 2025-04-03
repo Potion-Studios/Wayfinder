@@ -4,6 +4,7 @@
     "minecraft:ghast",
     "minecraft:blaze",
     "minecraft:wither",
+    "minecraft:pillager",
     "#minecraft:skeletons"
   ]
 }

@@ -59,7 +59,7 @@ public class WayfinderHeartBlock extends BaseEntityBlock {
         if (!state.getValue(ACTIVATED) && stack.is(EMERALD_TAG) && !PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
             int cost = getCost(player);
             if (stack.getCount() >= cost) {
-                level.scheduleTick(pos, this, 20 * Wayfinder.CONFIG.wayfinderHeartBlock.ACTIVATION_COOLDOWN_IN_SECONDS);
+                level.scheduleTick(pos, this, 20 * Wayfinder.CONFIG.wayfinderHeartBlock.ACTIVATION_COOLDOWN.value());
                 level.setBlockAndUpdate(pos, state.setValue(ACTIVATED, true));
                 if (!player.isCreative()) stack.shrink(cost);
                 level.playSound(null, pos, WayfinderSounds.WAYFINDER_SUMMON.get(), SoundSource.BLOCKS);
@@ -98,7 +98,7 @@ public class WayfinderHeartBlock extends BaseEntityBlock {
     private static int getCost(@NotNull Player player) {
         int deaths = PlatformHandler.PLATFORM_HANDLER.getWayfinderDeaths(player);
         if (deaths == 0) return 1;
-        else return deaths * Math.abs(Wayfinder.CONFIG.wayfinderHeartBlock.EMERALD_DEATH_COST_MULTIPLIER);
+        else return deaths * Math.abs(Wayfinder.CONFIG.wayfinderHeartBlock.EMERALD_DEATH_COST_MULTIPLIER.value());
     }
 
     @Override

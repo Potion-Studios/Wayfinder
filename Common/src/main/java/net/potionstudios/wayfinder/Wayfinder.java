@@ -13,7 +13,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.config.Config;
-import net.potionstudios.wayfinder.config.ConfigLoader;
+import net.potionstudios.wayfinder.config.ConfigUtils;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.tags.WayfinderEntityTypeTags;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
@@ -35,7 +35,7 @@ public class Wayfinder {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     /** The config for wayfinder. */
-    public static Config CONFIG = ConfigLoader.loadConfig(Config.class);
+    public static Config CONFIG = ConfigUtils.loadConfig(Config.class);
 
     /**
      * Initializes the mod.
