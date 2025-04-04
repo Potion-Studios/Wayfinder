@@ -66,6 +66,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private static final RawAnimation IDLE_1 = RawAnimation.begin().then("idle1", Animation.LoopType.PLAY_ONCE);
     private static final RawAnimation IDLE_2 = RawAnimation.begin().then("idle2", Animation.LoopType.PLAY_ONCE);
     private static final RawAnimation IDLE_3 = RawAnimation.begin().then("idle3", Animation.LoopType.PLAY_ONCE);
+    private static final RawAnimation IDLE_4 = RawAnimation.begin().then("idle4", Animation.LoopType.PLAY_ONCE);
     private static final RawAnimation DEATH = RawAnimation.begin().then("death", Animation.LoopType.HOLD_ON_LAST_FRAME);
     private static final RawAnimation SEARCHING_START = RawAnimation.begin().thenPlay("searching_start");
     private static final RawAnimation SEARCHING_END = RawAnimation.begin().thenPlay("searching_end");
@@ -195,9 +196,10 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                 case 1 -> event.setAndContinue(SIT_IDLE_2);
                 default -> event.setAndContinue(SIT_IDLE_1);
             };
-            else return switch (getRandom().nextInt(15)) {
+            else return switch (getRandom().nextInt(35)) {
                 case 0 -> event.setAndContinue(IDLE_3);
-                case 1, 2 -> event.setAndContinue(IDLE_2);
+                case 1, 2, 3, 4, 5 -> event.setAndContinue(IDLE_4);
+                case 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 -> event.setAndContinue(IDLE_2);
                 default -> event.setAndContinue(IDLE_1);
             };
         }
