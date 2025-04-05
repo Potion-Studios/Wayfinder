@@ -298,7 +298,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public boolean hasShield() {
-        return this.shield() != SHIELD.NONE;
+        return shield() != SHIELD.NONE;
     }
 
     public Optional<BlockPos> getTargetBiomeBlockPos() {
@@ -368,13 +368,13 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         if (level().isClientSide()) return false;
 
         if (isScared())
-            if (this.shield() == SHIELD.FULL) {
-                this.setShield(SHIELD.HALF);
-                this.playSound(WayfinderSounds.WAYFINDER_SHIELD_HIT.get());
+            if (shield() == SHIELD.FULL) {
+                setShield(SHIELD.HALF);
+                playSound(WayfinderSounds.WAYFINDER_SHIELD_HIT.get());
                 return false;
-            } else if (this.shield() == SHIELD.HALF) {
-                this.setShield(SHIELD.NONE);
-                this.playSound(WayfinderSounds.WAYFINDER_SHIELD_BREAK.get());
+            } else if (shield() == SHIELD.HALF) {
+                setShield(SHIELD.NONE);
+                playSound(WayfinderSounds.WAYFINDER_SHIELD_BREAK.get());
                 return false;
             }
 
@@ -402,48 +402,41 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public boolean shouldTryTeleportToOwner() {
-        LivingEntity livingEntity = this.getOwner();
-        return livingEntity != null && this.distanceToSqr(this.getOwner()) >= 288.0;
+        LivingEntity livingEntity = getOwner();
+        return livingEntity != null && distanceToSqr(livingEntity) >= 288.0;
     }
 
     public void tryToTeleportToOwner() {
-        LivingEntity livingEntity = this.getOwner();
-        if (livingEntity != null) {
-            this.teleportToAroundBlockPos(livingEntity.blockPosition());
-        }
+        LivingEntity livingEntity = getOwner();
+        if (livingEntity != null)
+            teleportToAroundBlockPos(livingEntity.blockPosition());
     }
 
     private void teleportToAroundBlockPos(BlockPos pos) {
         for (int i = 0; i < 10; i++) {
-            int j = this.random.nextIntBetweenInclusive(-3, 3);
-            int k = this.random.nextIntBetweenInclusive(-3, 3);
+            int j = getRandom().nextIntBetweenInclusive(-3, 3);
+            int k = getRandom().nextIntBetweenInclusive(-3, 3);
             if (Math.abs(j) >= 2 || Math.abs(k) >= 2) {
-                int l = this.random.nextIntBetweenInclusive(-1, 1);
-                if (this.maybeTeleportTo(pos.getX() + j, pos.getY() + l, pos.getZ() + k)) {
+                int l = getRandom().nextIntBetweenInclusive(-1, 1);
+                if (maybeTeleportTo(pos.getX() + j, pos.getY() + l, pos.getZ() + k))
                     return;
-                }
             }
         }
     }
 
     private boolean maybeTeleportTo(int x, int y, int z) {
-        if (!this.canTeleportTo(new BlockPos(x, y, z))) {
+        if (!canTeleportTo(new BlockPos(x, y, z))) {
             return false;
         } else {
-            this.moveTo((double)x + 0.5, y, (double)z + 0.5, this.getYRot(), this.getXRot());
-            this.navigation.stop();
+            moveTo((double)x + 0.5, y, (double)z + 0.5, getYRot(), getXRot());
+            navigation.stop();
             return true;
         }
     }
 
     private boolean canTeleportTo(BlockPos pos) {
-        PathType pathType = WalkNodeEvaluator.getPathTypeStatic(this, pos);
-        if (pathType != PathType.WALKABLE) {
-            return false;
-        } else {
-            BlockPos blockPos = pos.subtract(this.blockPosition());
-            return this.level().noCollision(this, this.getBoundingBox().move(blockPos));
-        }
+        if (WalkNodeEvaluator.getPathTypeStatic(this, pos) != PathType.WALKABLE) return false;
+        else return level().noCollision(this, getBoundingBox().move(pos.subtract(blockPosition())));
     }
 
     public enum SHIELD {

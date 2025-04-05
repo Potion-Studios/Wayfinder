@@ -7,6 +7,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.network.packets.WayfinderBiomePacket;
@@ -101,6 +102,16 @@ public class WayfinderScreen extends Screen {
         Button walkButton = new Button(buttonXRight, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.follow"), button -> isSitting = false, Button.DEFAULT_NARRATION);
 
         walkButton.active = isSitting;
+
+        int textX = leftPos + 10;
+        int textY = centerY + 40;
+        int textWidth = IMAGE_WIDTH / 2 - 40;
+
+        List<FormattedCharSequence> wrappedText = font.split(Component.translatable("gui.wayfinder.description"), textWidth);
+        for (FormattedCharSequence line : wrappedText) {
+            guiGraphics.drawString(font, line, textX, textY, 0, false);
+            textY += 9;
+        }
 
         addRenderableWidget(walkButton);
     }

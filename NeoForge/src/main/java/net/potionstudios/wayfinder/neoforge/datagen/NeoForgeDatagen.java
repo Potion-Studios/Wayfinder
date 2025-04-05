@@ -129,12 +129,13 @@ class NeoForgeDatagen {
             add("gui.wayfinder.search", "Search Biomes");
             add("gui.wayfinder.button.select", "Select");
             add("gui.wayfinder.button.clear", "Clear");
+            add("gui.wayfinder.description", "Congrats on summoning a Wayfinder! This mod aims in providing the player was a unique lore friendly way to explore! Simply select the biome you want to find and follow the Wayfinder! Be careful though, projectile mobs will try to attack him so you will have to defend him! If you're Wayfinder dies, you'll need to go find another shrine and summon him with more emeralds!");
+
 
             add("wayfinder.book.story.page1", "I've never seen this before.. I stumbled upon an ancient shrine hidden in the back of this small village. It was covered in vines and moss like no one had touched it for a long time. I was able to make out a faded engraving on the statue.. 'When a soul is lost, look to a wayfinder to guide it home'");
             add("wayfinder.book.story.page2", "I asked the locals about it and one of the librarians directed me to a small corner of the library that looked untouched for decades. It took ages to clean off the spider webs and dust but then I finally saw it! This shrine belonged to a deity that was worshipped over a thousand years ago.");
             add("wayfinder.book.story.page3", "It says here in the text that if you offered it Emeralds then the deity would appear. I asked the Librarian about this and she told me that long ago, the locals use to be nomads and thats when they found it, the 'Wayfinder' it would guide their people across countless continents and oceans providing a clear path to safety.");
             add("wayfinder.book.story.page4", "I'm running out of ink so I will finish up my thoughts, I plan on trying to summon this deity with some Emeralds tomorrow morning and I hope that this isn't just some folklore..");
-
         }
     }
 
