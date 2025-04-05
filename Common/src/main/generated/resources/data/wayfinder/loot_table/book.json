@@ -30,6 +30,11 @@
                   "raw": {
                     "translate": "wayfinder.book.story.page4"
                   }
+                },
+                {
+                  "raw": {
+                    "translate": "wayfinder.book.story.page5"
+                  }
                 }
               ]
             }
