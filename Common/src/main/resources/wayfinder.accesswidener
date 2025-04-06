@@ -14,5 +14,4 @@ accessible field net/minecraft/world/entity/Mob goalSelector Lnet/minecraft/worl
 
 accessible field net/minecraft/client/gui/components/Button DEFAULT_NARRATION Lnet/minecraft/client/gui/components/Button$CreateNarration;
 
-accessible method net/minecraft/world/level/storage/loot/functions/SetWrittenBookPagesFunction <init> (Ljava/util/List;Ljava/util/List;Lnet/minecraft/world/level/storage/loot/functions/ListOperation;)V
 accessible method net/minecraft/world/level/storage/loot/functions/LootItemConditionalFunction simpleBuilder (Ljava/util/function/Function;)Lnet/minecraft/world/level/storage/loot/functions/LootItemConditionalFunction$Builder;
