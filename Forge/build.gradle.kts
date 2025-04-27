@@ -1,3 +1,5 @@
+import com.hypherionmc.modpublisher.properties.ModLoader
+
 plugins {
     id("com.gradleup.shadow")
 }
@@ -64,4 +66,10 @@ tasks {
         inputFile.set(shadowJar.get().archiveFile)
         dependsOn(shadowJar)
     }
+}
+
+publisher {
+    setLoaders(ModLoader.FORGE)
+    curseDepends.required.set(mutableListOf("geckolib"))
+    modrinthDepends.required.set(mutableListOf("geckolib"))
 }

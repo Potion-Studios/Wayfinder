@@ -1,3 +1,5 @@
+import com.hypherionmc.modpublisher.properties.ModLoader
+
 plugins {
     id("com.gradleup.shadow")
 }
@@ -70,4 +72,10 @@ tasks {
         dependsOn(shadowJar)
         atAccessWideners.add("wayfinder.accesswidener")
     }
+}
+
+publisher {
+    setLoaders(ModLoader.NEOFORGE)
+    curseDepends.required.set(mutableListOf("geckolib"))
+    modrinthDepends.required.set(mutableListOf("geckolib"))
 }
