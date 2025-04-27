@@ -16,8 +16,8 @@ import net.potionstudios.wayfinder.config.Config;
 import net.potionstudios.wayfinder.config.ConfigUtils;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.tags.WayfinderEntityTypeTags;
-import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
-import net.potionstudios.wayfinder.world.entity.block.WayfinderBlockEntities;
+import net.potionstudios.wayfinder.world.entity.WayfinderEntityType;
+import net.potionstudios.wayfinder.world.entity.block.WayfinderBlockEntityType;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
@@ -43,9 +43,9 @@ public class Wayfinder {
     public static void init() {
         WayfinderItems.items();
         WayfinderBlocks.blocks();
-        WayfinderBlockEntities.blockEntities();
+        WayfinderBlockEntityType.blockEntities();
         WayfinderSounds.sounds();
-        WayfinderEntities.entities();
+        WayfinderEntityType.entities();
         WayfinderCriteriaTriggers.criteriaTriggers();
     }
 
@@ -71,7 +71,7 @@ public class Wayfinder {
      * Registers Entity Attributes
      */
     public static void registerEntityAttributes(BiConsumer<EntityType<? extends LivingEntity>, AttributeSupplier> consumer) {
-        consumer.accept(WayfinderEntities.WAYFINDER.get(), WayfinderEntity.createAttributes().build());
+        consumer.accept(WayfinderEntityType.WAYFINDER.get(), WayfinderEntity.createAttributes().build());
     }
 
     /**

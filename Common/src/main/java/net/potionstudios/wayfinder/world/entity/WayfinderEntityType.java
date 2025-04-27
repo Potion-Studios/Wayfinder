@@ -9,7 +9,7 @@ import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 
 import java.util.function.Supplier;
 
-public class WayfinderEntities {
+public class WayfinderEntityType {
 
     public static final Supplier<EntityType<WayfinderEntity>> WAYFINDER = PlatformHandler.PLATFORM_HANDLER.register(BuiltInRegistries.ENTITY_TYPE, "wayfinder", ()-> EntityType.Builder.<WayfinderEntity>of(WayfinderEntity::new, MobCategory.AMBIENT).sized(0.6F, 1.09F).eyeHeight(0.36F).build("wayfinder"));
 

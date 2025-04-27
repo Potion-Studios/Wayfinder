@@ -31,7 +31,7 @@ public class WayfinderScreen extends Screen {
     protected int startXLeftPage;
     private final List<ResourceLocation> biomes;
     private boolean isSitting;
-    private boolean wasSitting;
+    private final boolean wasSitting;
     private BiomeList biomeList;
     private ResourceLocation current;
 

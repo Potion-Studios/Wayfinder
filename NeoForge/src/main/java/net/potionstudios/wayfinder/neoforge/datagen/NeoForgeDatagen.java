@@ -44,7 +44,7 @@ import net.potionstudios.wayfinder.advancements.critereon.WayfinderOwnerKilledTr
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.tags.WayfinderBiomeTags;
 import net.potionstudios.wayfinder.tags.WayfinderEntityTypeTags;
-import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
+import net.potionstudios.wayfinder.world.entity.WayfinderEntityType;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
 import net.potionstudios.wayfinder.world.level.block.WayfinderHeartBlock;
@@ -89,7 +89,7 @@ class NeoForgeDatagen {
 
         @Override
         protected void addTranslations() {
-            add(WayfinderEntities.WAYFINDER.get(), "Wayfinder");
+            add(WayfinderEntityType.WAYFINDER.get(), "Wayfinder");
             add("subtitles.entity.wayfinder.death", "Wayfinder dies");
             add("subtitles.entity.wayfinder.hurt0", "Wayfinder hurts");
             add("subtitles.entity.wayfinder.hurt1", "Wayfinder hurts");
@@ -220,7 +220,7 @@ class NeoForgeDatagen {
 
         @Override
         public void generate() {
-            add(WayfinderEntities.WAYFINDER.get(), LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(LootItem.lootTableItem(Items.BOOK))));
+            add(WayfinderEntityType.WAYFINDER.get(), LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(LootItem.lootTableItem(Items.BOOK))));
         }
 
         @Override
@@ -308,8 +308,8 @@ class NeoForgeDatagen {
         @Override
         protected void addTags(HolderLookup.@NotNull Provider provider) {
             tag(WayfinderEntityTypeTags.SCARES_WAYFINDER).add(EntityType.WITCH, EntityType.GHAST, EntityType.BLAZE, EntityType.WITHER, EntityType.PILLAGER).addTag(EntityTypeTags.SKELETONS);
-            tag(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(WayfinderEntities.WAYFINDER.get());
-            tag(EntityTypeTags.NOT_SCARY_FOR_PUFFERFISH).add(WayfinderEntities.WAYFINDER.get());
+            tag(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(WayfinderEntityType.WAYFINDER.get());
+            tag(EntityTypeTags.NOT_SCARY_FOR_PUFFERFISH).add(WayfinderEntityType.WAYFINDER.get());
         }
     }
 

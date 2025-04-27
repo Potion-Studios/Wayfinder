@@ -6,13 +6,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
-import net.potionstudios.wayfinder.world.entity.WayfinderEntities;
+import net.potionstudios.wayfinder.world.entity.WayfinderEntityType;
 
 import java.util.function.Supplier;
 
 public class WayfinderItems {
 
-    public static final Supplier<SpawnEggItem> WAYFINDER_SPAWN_EGG = register("wayfinder_spawn_egg", PlatformHandler.PLATFORM_HANDLER.createSpawnEgg(WayfinderEntities.WAYFINDER::get, FastColor.ARGB32.color(84, 71, 63), FastColor.ARGB32.color(108, 128, 49)));
+    public static final Supplier<SpawnEggItem> WAYFINDER_SPAWN_EGG = register("wayfinder_spawn_egg", PlatformHandler.PLATFORM_HANDLER.createSpawnEgg(WayfinderEntityType.WAYFINDER::get, FastColor.ARGB32.color(84, 71, 63), FastColor.ARGB32.color(108, 128, 49)));
 
     public static <I extends Item> Supplier<I> register(String id, Supplier<I> item) {
         return PlatformHandler.PLATFORM_HANDLER.register(BuiltInRegistries.ITEM, id, item);

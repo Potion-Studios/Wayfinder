@@ -30,7 +30,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
-import net.potionstudios.wayfinder.world.entity.block.WayfinderBlockEntities;
+import net.potionstudios.wayfinder.world.entity.block.WayfinderBlockEntityType;
 import net.potionstudios.wayfinder.world.entity.block.WayfinderHeartBlockEntity;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import org.jetbrains.annotations.NotNull;
@@ -123,12 +123,12 @@ public class WayfinderHeartBlock extends BaseEntityBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
-        return WayfinderBlockEntities.WAYFINDER_HEART.get().create(pos, state);
+        return WayfinderBlockEntityType.WAYFINDER_HEART.get().create(pos, state);
     }
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(level, blockEntityType, WayfinderBlockEntities.WAYFINDER_HEART.get());
+        return createTickerHelper(level, blockEntityType, WayfinderBlockEntityType.WAYFINDER_HEART.get());
     }
 
     public static <T extends BlockEntity> BlockEntityTicker<T> createTickerHelper(

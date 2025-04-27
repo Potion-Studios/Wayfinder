@@ -11,7 +11,7 @@ import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
 
 import java.util.function.Supplier;
 
-public class WayfinderBlockEntities {
+public class WayfinderBlockEntityType {
 
 	public static final Supplier<BlockEntityType<WayfinderHeartBlockEntity>> WAYFINDER_HEART = register("wayfinder_heart", () -> BlockEntityType.Builder.of(
 			WayfinderHeartBlockEntity::new, WayfinderBlocks.WAYFINER_HEART.get()

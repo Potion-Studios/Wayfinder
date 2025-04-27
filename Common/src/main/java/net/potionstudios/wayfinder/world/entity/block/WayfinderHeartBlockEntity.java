@@ -11,7 +11,7 @@ import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTrigg
 
 public class WayfinderHeartBlockEntity extends BlockEntity {
 	public WayfinderHeartBlockEntity(BlockPos pos, BlockState blockState) {
-		super(WayfinderBlockEntities.WAYFINDER_HEART.get(), pos, blockState);
+		super(WayfinderBlockEntityType.WAYFINDER_HEART.get(), pos, blockState);
 	}
 
 	public static void serverTick(Level level, BlockPos pos, BlockState state, WayfinderHeartBlockEntity blockEntity) {
