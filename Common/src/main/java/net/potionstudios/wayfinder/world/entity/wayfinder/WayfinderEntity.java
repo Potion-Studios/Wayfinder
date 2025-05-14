@@ -14,6 +14,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -58,8 +60,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.IntFunction;
 
-public class WayfinderEntity extends PathfinderMob implements GeoEntity, OwnableEntity {
+public class WayfinderEntity extends PathfinderMob implements GeoEntity, OwnableEntity, VariantHolder<WayfinderEntity.Type> {
+    private static final EntityDataAccessor<Integer> DATA_TYPE_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.INT);
 
     private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
 
@@ -103,6 +107,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
+        builder.define(DATA_TYPE_ID, 0);
         builder.define(DATA_OWNERUUID_ID, Optional.empty());
         builder.define(DATA_SCARED, false);
         builder.define(DATA_SITTING, false);
@@ -115,6 +120,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         super.addAdditionalSaveData(compound);
         if (getOwnerUUID() != null)
             compound.putUUID("Owner", getOwnerUUID());
+        compound.putString("Type", getVariant().getSerializedName());
         compound.putBoolean("Sitting", entityData.get(DATA_SITTING));
         compound.putFloat("Offset", phaseOffset);
         compound.putBoolean("Searching", searching);
@@ -136,6 +142,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
         if (uuid != null) setOwnerUUID(uuid);
 
+        setVariant(Type.byName(compound.getString("Type")));
         entityData.set(DATA_SITTING, compound.getBoolean("Sitting"));
         entityData.set(DATA_SHIELD, compound.getInt("Shield"));
         searching = compound.getBoolean("Searching");
@@ -437,6 +444,47 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private boolean canTeleportTo(BlockPos pos) {
         if (WalkNodeEvaluator.getPathTypeStatic(this, pos) != PathType.WALKABLE) return false;
         else return level().noCollision(this, getBoundingBox().move(pos.subtract(blockPosition())));
+    }
+
+    @Override
+    public void setVariant(@NotNull Type variant) {
+        this.entityData.set(DATA_TYPE_ID, variant.getId());
+    }
+
+    @Override
+    public @NotNull Type getVariant() {
+        return Type.byId(this.entityData.get(DATA_TYPE_ID));
+    }
+
+    public enum Type implements StringRepresentable {
+        DEFAULT(0, "default");
+
+        public static final StringRepresentable.EnumCodec<Type> CODEC = StringRepresentable.fromEnum(Type::values);
+        private static final IntFunction<Type> BY_ID = ByIdMap.continuous(Type::getId, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
+        private final int id;
+        private final String name;
+
+        Type(final int id, final String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return this.name;
+        }
+
+        public int getId() {
+            return this.id;
+        }
+
+        public static Type byName(String name) {
+            return CODEC.byName(name, DEFAULT);
+        }
+
+        public static Type byId(int index) {
+            return BY_ID.apply(index);
+        }
     }
 
     public enum SHIELD {
