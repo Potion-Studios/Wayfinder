@@ -18,9 +18,9 @@ class WayfinderModel<T extends WayfinderEntity> extends GeoModel<T> {
     public ResourceLocation getTextureResource(@NotNull T animatable) {
         if (animatable.isScared() && animatable.hasShield())
             if (animatable.shield() == WayfinderEntity.SHIELD.FULL)
-                return Wayfinder.id("textures/entity/wayfinder/wayfinder_shield.png");
-            else return Wayfinder.id("textures/entity/wayfinder/wayfinder_shield_broken.png");
-        return Wayfinder.id("textures/entity/wayfinder/wayfinder.png");
+                return Wayfinder.id("textures/entity/wayfinder/" + animatable.getVariant().getSerializedName() + "/wayfinder_shield.png");
+            else return Wayfinder.id("textures/entity/wayfinder/" + animatable.getVariant().getSerializedName() + "/wayfinder_shield_broken.png");
+        return Wayfinder.id("textures/entity/wayfinder/" + animatable.getVariant().getSerializedName() + "/wayfinder.png");
     }
 
     @Override
