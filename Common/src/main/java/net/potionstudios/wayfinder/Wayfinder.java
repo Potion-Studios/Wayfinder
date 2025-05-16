@@ -12,6 +12,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
+import net.potionstudios.wayfinder.advancements.critereon.WayfinderEntitySubPredicates;
 import net.potionstudios.wayfinder.config.Config;
 import net.potionstudios.wayfinder.config.ConfigUtils;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
@@ -47,6 +48,7 @@ public class Wayfinder {
         WayfinderSounds.sounds();
         WayfinderEntityType.entities();
         WayfinderCriteriaTriggers.criteriaTriggers();
+        WayfinderEntitySubPredicates.entitySubPredicates();
     }
 
     /**

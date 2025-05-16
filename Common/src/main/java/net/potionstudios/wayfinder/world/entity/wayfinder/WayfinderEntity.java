@@ -62,7 +62,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.IntFunction;
 
-public class WayfinderEntity extends PathfinderMob implements GeoEntity, OwnableEntity, VariantHolder<WayfinderEntity.Type> {
+public class WayfinderEntity extends PathfinderMob implements GeoEntity, OwnableEntity, VariantHolder<WayfinderEntity.Variant> {
     private static final EntityDataAccessor<Integer> DATA_TYPE_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.INT);
 
     private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
@@ -142,7 +142,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
         if (uuid != null) setOwnerUUID(uuid);
 
-        setVariant(Type.byName(compound.getString("Type")));
+        setVariant(Variant.byName(compound.getString("Type")));
         entityData.set(DATA_SITTING, compound.getBoolean("Sitting"));
         entityData.set(DATA_SHIELD, compound.getInt("Shield"));
         searching = compound.getBoolean("Searching");
@@ -447,24 +447,24 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
-    public void setVariant(@NotNull Type variant) {
+    public void setVariant(@NotNull WayfinderEntity.Variant variant) {
         this.entityData.set(DATA_TYPE_ID, variant.getId());
     }
 
     @Override
-    public @NotNull Type getVariant() {
-        return Type.byId(this.entityData.get(DATA_TYPE_ID));
+    public @NotNull WayfinderEntity.Variant getVariant() {
+        return Variant.byId(this.entityData.get(DATA_TYPE_ID));
     }
 
-    public enum Type implements StringRepresentable {
+    public enum Variant implements StringRepresentable {
         DEFAULT(0, "default");
 
-        public static final StringRepresentable.EnumCodec<Type> CODEC = StringRepresentable.fromEnum(Type::values);
-        private static final IntFunction<Type> BY_ID = ByIdMap.continuous(Type::getId, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
+        public static final StringRepresentable.EnumCodec<Variant> CODEC = StringRepresentable.fromEnum(Variant::values);
+        private static final IntFunction<Variant> BY_ID = ByIdMap.continuous(Variant::getId, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
         private final int id;
         private final String name;
 
-        Type(final int id, final String name) {
+        Variant(final int id, final String name) {
             this.id = id;
             this.name = name;
         }
@@ -478,11 +478,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
             return this.id;
         }
 
-        public static Type byName(String name) {
+        public static Variant byName(String name) {
             return CODEC.byName(name, DEFAULT);
         }
 
-        public static Type byId(int index) {
+        public static Variant byId(int index) {
             return BY_ID.apply(index);
         }
     }
