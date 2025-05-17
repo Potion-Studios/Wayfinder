@@ -103,14 +103,14 @@ public class WayfinderScreen extends Screen {
 
         walkButton.active = isSitting;
 
-        int textX = leftPos + 10;
-        int textY = centerY + 40;
-        int textWidth = IMAGE_WIDTH / 2 - 40;
+        int textY = logoHeight + centerY - 23;
+        int textX = leftPos + 15;
+        int textWidth = IMAGE_WIDTH / 2 - 16;
 
         List<FormattedCharSequence> wrappedText = font.split(Component.translatable("gui.wayfinder.description"), textWidth);
         for (FormattedCharSequence line : wrappedText) {
             guiGraphics.drawString(font, line, textX, textY, 0, false);
-            textY += 9;
+            textY += 8;
         }
 
         addRenderableWidget(walkButton);
