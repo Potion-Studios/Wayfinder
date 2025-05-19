@@ -129,6 +129,30 @@ public class WayfinderScreen extends Screen {
             PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderSitPacket(isSitting));
     }
 
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (super.mouseClicked(mouseX, mouseY, button)) return true;
+        return biomeList.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (super.mouseReleased(mouseX, mouseY, button)) return true;
+        return biomeList.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (super.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true;
+        return biomeList.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (super.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true;
+        return biomeList.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
     public static void openScreen(List<ResourceLocation> biomeRegistry, ResourceLocation current, boolean isSitting) {
         Minecraft.getInstance().setScreen(new WayfinderScreen(biomeRegistry, current, isSitting));
     }
