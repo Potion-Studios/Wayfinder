@@ -1,9 +1,11 @@
 package net.potionstudios.wayfinder.fabric;
 
 import com.google.auto.service.AutoService;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerPlayer;
@@ -11,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.fabric.data.WayfinderAttachmentData;
+import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.network.packet.MultiloaderPacket;
 
 import java.nio.file.Path;
@@ -22,6 +25,13 @@ public final class FabricPlatformHandler implements PlatformHandler {
 	@Override
 	public Path configPath() {
 		return FabricLoader.getInstance().getConfigDir().resolve(Wayfinder.MOD_ID);
+	}
+
+	private static final boolean fabricPermissionsApi = FabricLoader.getInstance().isModLoaded("fabric-permissions-api-v0");
+
+	@Override
+	public boolean hasPermission(@NotNull CommandSourceStack sourceStack, @NotNull String permission) {
+		return PlatformHandler.super.hasPermission(sourceStack, permission) || (fabricPermissionsApi && Permissions.check(sourceStack, permission));
 	}
 
 	@Override

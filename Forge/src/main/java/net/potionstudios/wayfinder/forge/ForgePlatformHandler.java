@@ -2,6 +2,8 @@ package net.potionstudios.wayfinder.forge;
 
 import com.google.auto.service.AutoService;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import net.luckperms.api.LuckPermsProvider;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -13,12 +15,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.forge.networking.ForgeNetworking;
+import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.network.packet.MultiloaderPacket;
 
 import java.nio.file.Path;
@@ -31,6 +35,13 @@ public final class ForgePlatformHandler implements PlatformHandler {
 	@Override
 	public Path configPath() {
 		return FMLPaths.CONFIGDIR.get().resolve(Wayfinder.MOD_ID);
+	}
+
+	private static final boolean luckPerms = ModList.get().isLoaded("luckperms");
+
+	@Override
+	public boolean hasPermission(@NotNull CommandSourceStack sourceStack, @NotNull String permission) {
+		return PlatformHandler.super.hasPermission(sourceStack, permission) || (luckPerms && LuckPermsProvider.get().getUserManager().getUser(sourceStack.getPlayer().getUUID()).getCachedData().getPermissionData().checkPermission(permission).asBoolean());
 	}
 
 	private static final Map<ResourceKey<?>, DeferredRegister> CACHED = new Reference2ObjectOpenHashMap<>();

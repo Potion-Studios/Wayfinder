@@ -20,7 +20,7 @@ import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 class WayfinderLocateCommand {
     static LiteralArgumentBuilder<CommandSourceStack> register() {
         LiteralArgumentBuilder<CommandSourceStack> command = LiteralArgumentBuilder.literal("locate");
-        command.requires(commandSourceStack -> commandSourceStack.hasPermission(2));
+        command.requires(commandSourceStack -> PlatformHandler.PLATFORM_HANDLER.hasPermission(commandSourceStack, "wayfinder.commands.locate"));
 
         command.executes(context -> {
             ServerPlayer player = context.getSource().getPlayerOrException();

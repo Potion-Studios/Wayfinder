@@ -21,7 +21,7 @@ import java.util.UUID;
 class WayfinderRemoveCommand {
 	static LiteralArgumentBuilder<CommandSourceStack> register() {
 		LiteralArgumentBuilder<CommandSourceStack> removeCommand = LiteralArgumentBuilder.literal("remove");
-		removeCommand.requires(commandSourceStack -> commandSourceStack.hasPermission(2));
+		removeCommand.requires(commandSourceStack -> PlatformHandler.PLATFORM_HANDLER.hasPermission(commandSourceStack, "wayfinder.commands.remove"));
 
 		removeCommand.executes(WayfinderRemoveCommand::removeWayfinder)
 				.then(RequiredArgumentBuilder.<CommandSourceStack, EntitySelector>argument("player", EntityArgument.player())

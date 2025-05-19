@@ -1,6 +1,7 @@
 package net.potionstudios.wayfinder;
 
 import net.minecraft.Util;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.EntityType;
@@ -8,6 +9,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SpawnEggItem;
+import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.network.packet.MultiloaderPacket;
 
 import java.nio.file.Path;
@@ -29,6 +31,16 @@ public interface PlatformHandler {
 	 * @return The path to the config directory
 	 */
 	Path configPath();
+
+	/**
+	 * Checks if the player has the specified permission
+	 * @param sourceStack The command source stack to check the permission for
+	 * @param permission The permission to check
+	 * @return True if the player has the permission, false otherwise
+	 */
+	default boolean hasPermission(@NotNull CommandSourceStack sourceStack, @NotNull String permission) {
+		return sourceStack.hasPermission(4);
+	}
 
 	/**
 	 * Creates a spawn egg with the specified parameters

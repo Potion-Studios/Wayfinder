@@ -17,16 +17,16 @@ class WayfinderDeathsCommand {
     static LiteralArgumentBuilder<CommandSourceStack> register() {
         LiteralArgumentBuilder<CommandSourceStack> deathsCommand = LiteralArgumentBuilder.literal("deaths");
 
-        deathsCommand.requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+        deathsCommand.requires(commandSourceStack -> PlatformHandler.PLATFORM_HANDLER.hasPermission(commandSourceStack, "wayfinder.commands.deaths.list"))
                 .then(LiteralArgumentBuilder.<CommandSourceStack>literal("list")
                 .executes(WayfinderDeathsCommand::listDeaths));
 
         deathsCommand.executes(WayfinderDeathsCommand::showPlayerDeaths)
-                .requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+                .requires(commandSourceStack -> PlatformHandler.PLATFORM_HANDLER.hasPermission(commandSourceStack, "wayfinder.commands.deaths.player"))
                 .then(RequiredArgumentBuilder.<CommandSourceStack, EntitySelector>argument("player", EntityArgument.player())
                 .executes(WayfinderDeathsCommand::showSelectedPlayerDeaths));
 
-        deathsCommand.requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+        deathsCommand.requires(commandSourceStack -> PlatformHandler.PLATFORM_HANDLER.hasPermission(commandSourceStack, "wayfinder.commands.deaths.reset"))
                 .then(LiteralArgumentBuilder.<CommandSourceStack>literal("reset")
                 .executes(WayfinderDeathsCommand::resetPlayerDeaths)
                 .then(RequiredArgumentBuilder.<CommandSourceStack, EntitySelector>argument("player", EntityArgument.player())
