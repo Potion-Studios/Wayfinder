@@ -457,7 +457,10 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public enum Variant implements StringRepresentable {
-        DEFAULT(0, "default");
+        DEFAULT(0, "default"),
+        LUSH(1, "lush"),
+        MUSHROOM(2, "mushroom"),
+        BWG(3, "bwg");
 
         public static final StringRepresentable.EnumCodec<Variant> CODEC = StringRepresentable.fromEnum(Variant::values);
         private static final IntFunction<Variant> BY_ID = ByIdMap.continuous(Variant::getId, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
