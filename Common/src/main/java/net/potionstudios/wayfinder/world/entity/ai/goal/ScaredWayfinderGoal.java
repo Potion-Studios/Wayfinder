@@ -24,7 +24,6 @@ public class ScaredWayfinderGoal extends Goal {
 
     @Override
     public void tick() {
-        Wayfinder.LOGGER.info("Scared wayfinder goal tick");
         if (entity.isScared()) {
             if (wasScaredByEntity) {
                 // If scared by a monster, stop being scared immediately if all threats are gone
