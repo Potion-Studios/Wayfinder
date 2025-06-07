@@ -21,7 +21,7 @@ public final class ConfigUtils {
      */
     public static <T> T loadConfig(@NotNull Class<T> clazz) {
         try {
-            Path configPath = PlatformHandler.PLATFORM_HANDLER.configPath().resolve("wayfiinder.json");
+            Path configPath = PlatformHandler.PLATFORM_HANDLER.configPath().resolve("wayfinder.json");
             T value = clazz.getConstructor().newInstance();
 
             if (Files.notExists(configPath)) Files.createDirectories(configPath.getParent());
