@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.IntFunction;
 
 public class WayfinderEntity extends PathfinderMob implements GeoEntity, OwnableEntity, VariantHolder<WayfinderEntity.Variant> {
@@ -250,11 +251,14 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
         triggerAnim("controller", "searching_start");
         setSearching(true);
-        Pair<BlockPos, Holder<Biome>> value = ((ServerLevel) level()).
-                findClosestBiome3d(biomeHolder -> biomeHolder.is(biome), blockPosition(),
-                        Wayfinder.CONFIG.wayfinder.MAX_SEARCH_DISTANCE.value(), 32, 64);
-        if (value != null) setTargetBlockPos(Optional.of(value.getFirst()));
-        else triggerAnim("controller", "no");
+        CompletableFuture.runAsync(() -> {
+            Pair<BlockPos, Holder<Biome>> value = ((ServerLevel) level())
+                    .findClosestBiome3d(biomeHolder -> biomeHolder.is(biome), blockPosition(),
+                            Wayfinder.CONFIG.wayfinder.MAX_SEARCH_DISTANCE.value(), 32, 64);
+
+            if (value != null) setTargetBlockPos(Optional.of(value.getFirst()));
+            else triggerAnim("controller", "no");
+        });
     }
 
     @Override
