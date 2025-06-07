@@ -3,7 +3,6 @@ package net.potionstudios.wayfinder.neoforge;
 import com.google.auto.service.AutoService;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.luckperms.api.LuckPermsProvider;
-import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;

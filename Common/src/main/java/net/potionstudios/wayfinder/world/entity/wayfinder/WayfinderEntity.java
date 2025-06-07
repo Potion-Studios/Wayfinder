@@ -402,6 +402,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         super.gameEvent(gameEvent, entity);
         if (entity != null && entity.is(this) && gameEvent.is(GameEvent.ENTITY_DIE.key())) {
             Player owner = (Player) getOwner();
+            if (owner == null) return;
             PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderCloseScreenPacket(), owner);
             PlatformHandler.PLATFORM_HANDLER.setWayfinder(owner, Util.NIL_UUID);
             PlatformHandler.PLATFORM_HANDLER.incrementWayfinderDeaths(owner);
