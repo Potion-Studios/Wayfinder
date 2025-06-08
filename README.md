@@ -3,6 +3,10 @@
 
 ![img.png](Common/src/main/resources/wayfinder.png)
 
+### Official Downloads
+- Curseforge: https://www.curseforge.com/minecraft/mc-mods/wayfinder
+- Modrinth: https://modrinth.com/mod/wayfinder
+
 ### Dependencies
 - GeckoLib
     - Github: https://github.com/bernie-g/geckolib
