@@ -12,6 +12,10 @@ public class Config {
                 ConfigUtils.CommentValue.of("Block distance around the Wayfinder as a radius to which they wayfinder will become scared if a projectile mob is in", 10);
         public ConfigUtils.CommentValue<Integer> TELEPORT_TO_OWNER =
                 ConfigUtils.CommentValue.of("Amount of time in Seconds before the wayfinder attempts to teleport to it's owner if it's out of range",20);
+        public ConfigUtils.CommentValue<Boolean> ENABLE_SOUNDS =
+                ConfigUtils.CommentValue.of("Enable Sounds for the Wayfinder", true);
+        public ConfigUtils.CommentValue<Boolean> DISABLE_SOUNDS_WHEN_SITTING =
+                ConfigUtils.CommentValue.of("Disable Sounds for the Wayfinder when sitting", false);
     }
 
     public WayfinderHeartBlock wayfinderHeartBlock = new WayfinderHeartBlock();

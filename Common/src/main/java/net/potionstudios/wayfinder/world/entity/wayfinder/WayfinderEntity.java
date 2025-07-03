@@ -344,7 +344,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     protected @Nullable SoundEvent getAmbientSound() {
-        if (getRandom().nextBoolean())
+        if (Wayfinder.CONFIG.wayfinder.DISABLE_SOUNDS_WHEN_SITTING.value() || getRandom().nextBoolean())
             return SoundEvents.EMPTY;
         return switch (getRandom().nextInt(6)) {
             case 0 -> WayfinderSounds.WAYFINDER_IDLE0.get();
@@ -354,6 +354,12 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
             case 4 -> WayfinderSounds.WAYFINDER_IDLE4.get();
             default -> WayfinderSounds.WAYFINDER_IDLE5.get();
         };
+    }
+
+    @Override
+    public void playSound(SoundEvent sound, float volume, float pitch) {
+        if (Wayfinder.CONFIG.wayfinder.ENABLE_SOUNDS.value())
+            super.playSound(sound, volume, pitch);
     }
 
     @Override
