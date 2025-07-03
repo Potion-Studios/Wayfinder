@@ -326,6 +326,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
+                .add(Attributes.GRAVITY, 0.06D)
                 .add(Attributes.MAX_HEALTH, 20)
                 .add(Attributes.FLYING_SPEED, 2D)
                 .add(Attributes.MOVEMENT_SPEED, 2D)

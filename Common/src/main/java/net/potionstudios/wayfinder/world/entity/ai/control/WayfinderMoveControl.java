@@ -3,14 +3,12 @@ package net.potionstudios.wayfinder.world.entity.ai.control;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
-import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 
 public class WayfinderMoveControl extends FlyingMoveControl {
 
     private final WayfinderEntity wayfinder;
     private final double phaseOffset;
-    private final boolean hoversInPlace = true;
 
     public WayfinderMoveControl(WayfinderEntity wayfinder, double phaseOffset) {
         super(wayfinder, 30, true);
@@ -20,33 +18,28 @@ public class WayfinderMoveControl extends FlyingMoveControl {
 
     @Override
     public void tick() {
-        if (wayfinder.isSitting()) { // When sitting the wayfinder should not fly
+        if (wayfinder.isSitting()) {
             wayfinder.setNoGravity(false);
-            //Wayfinder.LOGGER.info("Wayfinder is sitting, no gravity applied.");
+            if (wayfinder.onGround()) wayfinder.setDeltaMovement(0, 0, 0);
         } else if (wayfinder.getOwner() != null && wayfinder.getOwner().distanceToSqr(wayfinder) < 10 && wayfinder.getTargetBiomeBlockPos().isEmpty() && !wayfinder.isScared()) {
             double currentY = wayfinder.getY();
             double ownerY = wayfinder.getOwner().getY();
 
             if (currentY - ownerY > 3) {
-                //Wayfinder.LOGGER.info("Wayfinder is too high, applying gravity.");
                 wayfinder.setNoGravity(false);
                 wayfinder.applyGravity();
                 return;
             }
-            //Wayfinder.LOGGER.info("Wayfinder is floating by owner, applying no gravity.");
 
             wayfinder.setNoGravity(true);
 
-            // Calculate a smooth floating offset using sine wave
             double floatOffset = Math.sin(mob.tickCount * 0.1 + phaseOffset) * 0.05;
 
-            // Custom Logic from before
             double targetY = Math.max(ownerY, Math.min(currentY + floatOffset, ownerY + 2.0));
 
             if (wayfinder.level().getBlockState(new BlockPos((int) mob.getX(), (int) targetY, (int) mob.getZ())).isAir())
                 wayfinder.setPos(mob.getX(), targetY, mob.getZ());
         } else {
-           // Wayfinder.LOGGER.info("Wayfinder flying normally.");
             if (this.operation == Operation.MOVE_TO) {
                 this.operation = Operation.WAIT;
                 this.mob.setNoGravity(true);
@@ -71,10 +64,6 @@ public class WayfinderMoveControl extends FlyingMoveControl {
                     this.mob.setYya(e > (double)0.0F ? i : -i);
                 }
             } else {
-                if (!this.hoversInPlace) {
-                    this.mob.setNoGravity(false);
-                }
-
                 this.mob.setYya(0.0F);
                 this.mob.setZza(0.0F);
             }

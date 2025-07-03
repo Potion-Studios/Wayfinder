@@ -58,7 +58,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = Wayfinder.MOD_ID)
+@EventBusSubscriber(modid = Wayfinder.MOD_ID)
 class NeoForgeDatagen {
 
     @SubscribeEvent
