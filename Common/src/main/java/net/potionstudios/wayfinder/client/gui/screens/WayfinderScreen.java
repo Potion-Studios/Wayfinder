@@ -7,7 +7,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.network.packets.WayfinderBiomePacket;
@@ -57,6 +56,10 @@ public class WayfinderScreen extends Screen {
         searchBox.setResponder(this::updateBiomeList);
         addRenderableWidget(searchBox);
 
+        ScrollableTextWidget descriptionWidget = new ScrollableTextWidget(leftPos + 10, topPos + 10, 120, 100, Component.translatable("gui.wayfinder.description"));
+        descriptionWidget.setPosition(leftPos + 15, 100 + (bottomPos + (IMAGE_HEIGHT / 4) - (100 / 2))- 23);
+        addRenderableWidget(descriptionWidget);
+
         biomeList = new BiomeList(minecraft, (IMAGE_WIDTH / 2) - 25, IMAGE_HEIGHT - 70, 0, 10);
         biomeList.setPosition(rightPos - (IMAGE_WIDTH / 2) + 10, topPos - IMAGE_HEIGHT + 28);
         biomeList.setBiomes(biomes);
@@ -102,16 +105,6 @@ public class WayfinderScreen extends Screen {
         Button walkButton = new Button(buttonXRight, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.follow"), button -> isSitting = false, Button.DEFAULT_NARRATION);
 
         walkButton.active = isSitting;
-
-        int textY = logoHeight + centerY - 23;
-        int textX = leftPos + 15;
-        int textWidth = IMAGE_WIDTH / 2 - 16;
-
-        List<FormattedCharSequence> wrappedText = font.split(Component.translatable("gui.wayfinder.description"), textWidth);
-        for (FormattedCharSequence line : wrappedText) {
-            guiGraphics.drawString(font, line, textX, textY, 0, false);
-            textY += 8;
-        }
 
         addRenderableWidget(walkButton);
     }
