@@ -362,7 +362,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
-    public void playSound(SoundEvent sound, float volume, float pitch) {
+    public void playSound(@NotNull SoundEvent sound, float volume, float pitch) {
         if (Wayfinder.CONFIG.wayfinder.ENABLE_SOUNDS.value())
             super.playSound(sound, volume, pitch);
     }

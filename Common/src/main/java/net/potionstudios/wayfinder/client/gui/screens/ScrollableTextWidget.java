@@ -1,5 +1,6 @@
 package net.potionstudios.wayfinder.client.gui.screens;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractScrollWidget;
@@ -28,29 +29,35 @@ public class ScrollableTextWidget extends AbstractScrollWidget {
 
     @Override
     protected double scrollRate() {
-        return LINE_HEIGHT;
+        return 4.5;
     }
 
     @Override
-    protected void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        int visibleLines = this.height / LINE_HEIGHT;
-        int scrollLine = (int) (this.scrollAmount() / LINE_HEIGHT);
+    public int scrollbarWidth() {
+        return 6;
+    }
 
-        for (int i = 0; i < visibleLines && scrollLine + i < wrappedLines.size(); i++) {
+    @Override
+    protected void renderContents(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        PoseStack pose = guiGraphics.pose();
+        guiGraphics.enableScissor(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight());
+        pose.pushPose();
+        pose.translate(0, -this.scrollAmount(), 0);
+
+        for (int i = 0; i < wrappedLines.size(); i++) {
             int drawY = this.getY() + i * LINE_HEIGHT + 2;
-            guiGraphics.drawString(Minecraft.getInstance().font, wrappedLines.get(scrollLine + i), this.getX() + 4, drawY, 0x000000, false);
+            guiGraphics.drawString(Minecraft.getInstance().font, wrappedLines.get(i), this.getX() + 4, drawY, 0x000000, false);
         }
+
+        pose.popPose();
+        guiGraphics.disableScissor();
     }
 
     @Override
-    protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {
-
-    }
+    protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {}
 
     @Override
-    protected void renderBackground(@NotNull GuiGraphics guiGraphics) {
-
-    }
+    protected void renderBackground(@NotNull GuiGraphics guiGraphics) {}
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {

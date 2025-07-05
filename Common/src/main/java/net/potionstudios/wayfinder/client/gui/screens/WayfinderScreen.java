@@ -56,7 +56,7 @@ public class WayfinderScreen extends Screen {
         searchBox.setResponder(this::updateBiomeList);
         addRenderableWidget(searchBox);
 
-        ScrollableTextWidget descriptionWidget = new ScrollableTextWidget(leftPos + 10, topPos + 10, 120, 100, Component.translatable("gui.wayfinder.description"));
+        ScrollableTextWidget descriptionWidget = new ScrollableTextWidget(leftPos + 10, topPos + 10, 116, 86, Component.translatable("gui.wayfinder.description"));
         descriptionWidget.setPosition(leftPos + 15, 100 + (bottomPos + (IMAGE_HEIGHT / 4) - (100 / 2))- 23);
         addRenderableWidget(descriptionWidget);
 
