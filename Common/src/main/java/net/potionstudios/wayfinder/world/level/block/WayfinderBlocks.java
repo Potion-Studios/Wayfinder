@@ -17,13 +17,9 @@ public class WayfinderBlocks {
     public static final Supplier<WayfinderHeartBlock> WAYFINER_HEART = registerBlockItem("wayfinder_heart", () -> new WayfinderHeartBlock(Block.Properties.ofFullCopy(Blocks.STONE).noLootTable().pushReaction(PushReaction.BLOCK)));
 
     private static <B extends Block> Supplier<B> registerBlockItem(String key, Supplier<B> blockSupplier) {
-        Supplier<B> block = register(key, blockSupplier);
+        Supplier<B> block = PlatformHandler.PLATFORM_HANDLER.register(BuiltInRegistries.BLOCK, key, blockSupplier);
         WayfinderItems.register(key, () -> new BlockItem(block.get(), new Item.Properties()));
         return block;
-    }
-
-    private static <B extends Block> Supplier<B> register(String id, Supplier<B> block) {
-        return PlatformHandler.PLATFORM_HANDLER.register(BuiltInRegistries.BLOCK, id, block);
     }
 
     public static void blocks() {
