@@ -60,7 +60,7 @@ public interface PlatformHandler {
 
 	default boolean hasWayfinder(Player player) {
 		return !getWayfinder(player).equals(Util.NIL_UUID);
-	};
+	}
 
 	void setWayfinder(Player player, UUID wayfinder);
 

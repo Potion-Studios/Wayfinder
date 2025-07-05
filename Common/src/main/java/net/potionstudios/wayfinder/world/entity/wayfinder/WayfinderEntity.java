@@ -91,6 +91,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     private float phaseOffset;
     private boolean searching;
+    private int foundBiomeTick = 0;
 
     public WayfinderEntity(Level level, Player owner) {
         this(WayfinderEntityType.WAYFINDER.get(), level);
@@ -244,7 +245,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public void startBiomeSearch(ResourceLocation biome) {
-        if (level().getBiome(blockPosition()).is(biome)) {
+        ServerLevel serverLevel = (ServerLevel) level();
+        if (serverLevel.getBiome(blockPosition()).is(biome) || (foundBiomeTick + (Wayfinder.CONFIG.wayfinder.COOLDOWN.value() * 20)) > getServer().getTickCount()) {
             triggerAnim("controller", "no");
             return;
         }
@@ -252,12 +254,14 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         triggerAnim("controller", "searching_start");
         setSearching(true);
         CompletableFuture.runAsync(() -> {
-            Pair<BlockPos, Holder<Biome>> value = ((ServerLevel) level())
+            Pair<BlockPos, Holder<Biome>> value = serverLevel
                     .findClosestBiome3d(biomeHolder -> biomeHolder.is(biome), blockPosition(),
                             Wayfinder.CONFIG.wayfinder.MAX_SEARCH_DISTANCE.value(), 32, 64);
 
-            if (value != null) setTargetBlockPos(Optional.of(value.getFirst()));
-            else triggerAnim("controller", "no");
+            if (value != null) {
+                setTargetBlockPos(Optional.of(value.getFirst()));
+                foundBiomeTick = getServer().getTickCount();
+            } else triggerAnim("controller", "no");
         });
     }
 
