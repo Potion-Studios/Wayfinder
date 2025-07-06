@@ -125,8 +125,8 @@ class NeoForgeDatagen {
             add("gui.wayfinder.button.sit", "Sit");
             add("gui.wayfinder.button.follow", "Follow");
             add("gui.wayfinder.search", "Search Biomes");
-            add("gui.wayfinder.button.select", "Select");
-            add("gui.wayfinder.button.clear", "Clear");
+            add("gui.wayfinder.button.search", "Search");
+            add("gui.wayfinder.button.stop", "Stop");
             add("gui.wayfinder.description", "Congrats on summoning a Wayfinder! This mod aims in providing the player was a unique lore friendly way to explore! Simply select the biome you want to find and follow the Wayfinder! Be careful though, projectile mobs will try to attack him so you will have to defend him! If your Wayfinder dies, you'll need to go find another shrine and summon him with more emeralds!");
 
             add("wayfinder.book.story.page1", "Entry 2307,\n" + "I've never seen this before.. I stumbled upon an ancient shrine hidden in the back of this small village. It was covered in vines and moss like no one had touched it for a long time. I was able to make out a faded engraving on the statue..");

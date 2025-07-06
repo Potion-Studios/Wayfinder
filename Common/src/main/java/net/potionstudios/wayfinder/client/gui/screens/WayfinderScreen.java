@@ -77,20 +77,20 @@ public class WayfinderScreen extends Screen {
 
         int buttonY = bottomPos + IMAGE_HEIGHT - 40;
 
-        Button selectButton = new Button(rightPos - (IMAGE_WIDTH / 2) + 10, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.select"), button -> {
+        Button submitButton = new Button(rightPos - (IMAGE_WIDTH / 2) + 10, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.search"), button -> {
             PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderBiomePacket(biomeList.getFocused().getBiome()));
             this.onClose();
         }, Button.DEFAULT_NARRATION);
-        selectButton.active = biomeList.getFocused() != null;
-        addRenderableWidget(selectButton);
+        submitButton.active = biomeList.getFocused() != null;
+        addRenderableWidget(submitButton);
 
-        Button clearButton = new Button(rightPos - 70, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.clear"), button -> {
+        Button stopButton = new Button(rightPos - 70, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.stop"), button -> {
             PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderBiomePacket(Wayfinder.id("clear_packet")));
             current = Wayfinder.id("clear_packet");
         }, Button.DEFAULT_NARRATION);
 
-        clearButton.active = !current.equals(Wayfinder.id("clear_packet"));
-        addRenderableWidget(clearButton);
+        stopButton.active = !current.equals(Wayfinder.id("clear_packet"));
+        addRenderableWidget(stopButton);
 
         // X positions for left and right buttons on the left page
         int buttonXLeft = leftPos + 20;
