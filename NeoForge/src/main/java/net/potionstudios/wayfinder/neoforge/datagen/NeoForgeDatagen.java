@@ -89,16 +89,15 @@ class NeoForgeDatagen {
 
         @Override
         protected void addTranslations() {
-            add(WayfinderEntityType.WAYFINDER.get(), "Wayfinder");
+            addEntityType(WayfinderEntityType.WAYFINDER, "Wayfinder");
             add("subtitles.entity.wayfinder.death", "Wayfinder dies");
             add("subtitles.entity.wayfinder.hurt0", "Wayfinder hurts");
             add("subtitles.entity.wayfinder.hurt1", "Wayfinder hurts");
             add("subtitles.entity.wayfinder.shield_hit", "Wayfinder shield hit");
             add("subtitles.entity.wayfinder.shield_break", "Wayfinder shield breaks");
 
-
-            add(WayfinderItems.WAYFINDER_SPAWN_EGG.get(), "Wayfinder Spawn Egg");
-            add(WayfinderBlocks.WAYFINER_HEART.get(), "Wayfinder Heart");
+            addItem(WayfinderItems.WAYFINDER_SPAWN_EGG, "Wayfinder Spawn Egg");
+            addBlock(WayfinderBlocks.WAYFINER_HEART, "Wayfinder Heart");
 
             add("wayfinder.commands.reload.success", "Wayfinder config reloaded");
             add("wayfinder.commands.deaths", "%s has %s Wayfinder deaths");
@@ -116,7 +115,6 @@ class NeoForgeDatagen {
             add("wayfinder.commands.locate.other.success", "%s's Wayfinder is at %s");
             add("wayfinder.commands.locate.other.nowayfinder", "%s does not have a Wayfinder");
 
-
             add("advancements.wayfinder.a_tale_as_old_as_time.title", "A Tale As Old As Time");
             add("advancements.wayfinder.a_tale_as_old_as_time.description", "Approach a Wayfinder Shrine");
             add("advancements.wayfinder.so_it_begins.title", "So it begins..");
@@ -129,8 +127,7 @@ class NeoForgeDatagen {
             add("gui.wayfinder.search", "Search Biomes");
             add("gui.wayfinder.button.select", "Select");
             add("gui.wayfinder.button.clear", "Clear");
-            add("gui.wayfinder.description", "Congrats on summoning a Wayfinder! This mod aims in providing the player was a unique lore friendly way to explore! Simply select the biome you want to find and follow the Wayfinder! Be careful though, projectile mobs will try to attack him so you will have to defend him! If you're Wayfinder dies, you'll need to go find another shrine and summon him with more emeralds!");
-
+            add("gui.wayfinder.description", "Congrats on summoning a Wayfinder! This mod aims in providing the player was a unique lore friendly way to explore! Simply select the biome you want to find and follow the Wayfinder! Be careful though, projectile mobs will try to attack him so you will have to defend him! If your Wayfinder dies, you'll need to go find another shrine and summon him with more emeralds!");
 
             add("wayfinder.book.story.page1", "Entry 2307,\n" + "I've never seen this before.. I stumbled upon an ancient shrine hidden in the back of this small village. It was covered in vines and moss like no one had touched it for a long time. I was able to make out a faded engraving on the statue..");
             add("wayfinder.book.story.page2", "'When a soul is lost, look to a wayfinder to guide it home'" + "\n" + "I asked the locals about it and one of the librarians directed me to a small corner of the library that looked untouched for decades. It took ages to clean off the spider webs and dust but then");
@@ -147,18 +144,18 @@ class NeoForgeDatagen {
 
         @Override
         public void registerSounds() {
-            add(WayfinderSounds.WAYFINDER_IDLE0.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle0"))).subtitle(subtitle("entity.wayfinder.idle0")));
-            add(WayfinderSounds.WAYFINDER_IDLE1.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle1"))).subtitle(subtitle("entity.wayfinder.idle1")));
-            add(WayfinderSounds.WAYFINDER_IDLE2.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle2"))).subtitle(subtitle("entity.wayfinder.idle2")));
-            add(WayfinderSounds.WAYFINDER_IDLE3.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle3"))).subtitle(subtitle("entity.wayfinder.idle3")));
-            add(WayfinderSounds.WAYFINDER_IDLE4.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle4"))).subtitle(subtitle("entity.wayfinder.idle4")));
-            add(WayfinderSounds.WAYFINDER_IDLE5.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle5"))).subtitle(subtitle("entity.wayfinder.idle5")));
-            add(WayfinderSounds.WAYFINDER_DEATH.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/death"))).subtitle(subtitle("entity.wayfinder.death")));
-            add(WayfinderSounds.WAYFINDER_HURT0.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/hurt0"))).subtitle(subtitle("entity.wayfinder.hurt0")));
-            add(WayfinderSounds.WAYFINDER_HURT1.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/hurt1"))).subtitle(subtitle("entity.wayfinder.hurt1")));
-            add(WayfinderSounds.WAYFINDER_SHIELD_HIT.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/shield_hit"))).subtitle(subtitle("entity.wayfinder.shield_hit")));
-            add(WayfinderSounds.WAYFINDER_SHIELD_BREAK.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/shield_break"))).subtitle(subtitle("entity.wayfinder.shield_break")));
-            add(WayfinderSounds.WAYFINDER_SUMMON.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/summon"))).subtitle(subtitle("entity.wayfinder.summon")));
+            add(WayfinderSounds.WAYFINDER_IDLE0, definition().with(sound(Wayfinder.id("entity/wayfinder/idle0"))).subtitle(subtitle("entity.wayfinder.idle0")));
+            add(WayfinderSounds.WAYFINDER_IDLE1, definition().with(sound(Wayfinder.id("entity/wayfinder/idle1"))).subtitle(subtitle("entity.wayfinder.idle1")));
+            add(WayfinderSounds.WAYFINDER_IDLE2, definition().with(sound(Wayfinder.id("entity/wayfinder/idle2"))).subtitle(subtitle("entity.wayfinder.idle2")));
+            add(WayfinderSounds.WAYFINDER_IDLE3, definition().with(sound(Wayfinder.id("entity/wayfinder/idle3"))).subtitle(subtitle("entity.wayfinder.idle3")));
+            add(WayfinderSounds.WAYFINDER_IDLE4, definition().with(sound(Wayfinder.id("entity/wayfinder/idle4"))).subtitle(subtitle("entity.wayfinder.idle4")));
+            add(WayfinderSounds.WAYFINDER_IDLE5, definition().with(sound(Wayfinder.id("entity/wayfinder/idle5"))).subtitle(subtitle("entity.wayfinder.idle5")));
+            add(WayfinderSounds.WAYFINDER_DEATH, definition().with(sound(Wayfinder.id("entity/wayfinder/death"))).subtitle(subtitle("entity.wayfinder.death")));
+            add(WayfinderSounds.WAYFINDER_HURT0, definition().with(sound(Wayfinder.id("entity/wayfinder/hurt0"))).subtitle(subtitle("entity.wayfinder.hurt0")));
+            add(WayfinderSounds.WAYFINDER_HURT1, definition().with(sound(Wayfinder.id("entity/wayfinder/hurt1"))).subtitle(subtitle("entity.wayfinder.hurt1")));
+            add(WayfinderSounds.WAYFINDER_SHIELD_HIT, definition().with(sound(Wayfinder.id("entity/wayfinder/shield_hit"))).subtitle(subtitle("entity.wayfinder.shield_hit")));
+            add(WayfinderSounds.WAYFINDER_SHIELD_BREAK, definition().with(sound(Wayfinder.id("entity/wayfinder/shield_break"))).subtitle(subtitle("entity.wayfinder.shield_break")));
+            add(WayfinderSounds.WAYFINDER_SUMMON, definition().with(sound(Wayfinder.id("entity/wayfinder/summon"))).subtitle(subtitle("entity.wayfinder.summon")));
         }
 
         private String subtitle(String subtitle) {
