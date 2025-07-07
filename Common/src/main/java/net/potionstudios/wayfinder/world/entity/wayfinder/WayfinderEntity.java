@@ -77,7 +77,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private static final RawAnimation SEARCHING_END = RawAnimation.begin().thenPlay("searching_end");
     private static final RawAnimation SEARCHING_LOOP = RawAnimation.begin().thenLoop("searching_loop");
     private static final RawAnimation NO = RawAnimation.begin().then("no", Animation.LoopType.PLAY_ONCE);
-    private static final RawAnimation SIT = RawAnimation.begin().then("sit", Animation.LoopType.PLAY_ONCE);
     private static final RawAnimation SIT_IDLE_1 = RawAnimation.begin().thenLoop("sit_idle1");
     private static final RawAnimation SIT_IDLE_2 = RawAnimation.begin().thenLoop("sit_idle2");
     private static final RawAnimation SIT_IDLE_3 = RawAnimation.begin().thenLoop("sit_idle3");
@@ -186,7 +185,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "controller", 0, this::predicate)
-                .triggerableAnim("no", NO).triggerableAnim("sit", SIT).triggerableAnim("searching_start", SEARCHING_START).triggerableAnim("searching_end", SEARCHING_END)
+                .triggerableAnim("searching_start", SEARCHING_START).triggerableAnim("searching_end", SEARCHING_END)
                 .triggerableAnim("idle", IDLE_1).triggerableAnim("idle2", IDLE_2).triggerableAnim("idle3", IDLE_3));
     }
 
@@ -271,7 +270,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public void sit() {
-        triggerAnim("controller", "sit");
         setSitting(true);
     }
 
