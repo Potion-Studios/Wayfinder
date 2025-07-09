@@ -268,6 +268,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                 setTargetBlockPos(Optional.of(value.getFirst()));
                 foundBiomeTick = getServer().getTickCount();
                 triggerAnim("controller", "searching_end");
+                playSound(SoundEvents.ENCHANTMENT_TABLE_USE);
             } else triggerAnim("controller", "no");
         });
     }
@@ -357,13 +358,14 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     protected @Nullable SoundEvent getAmbientSound() {
         if (Wayfinder.CONFIG.wayfinder.DISABLE_SOUNDS_WHEN_SITTING.value() || getRandom().nextBoolean())
             return SoundEvents.EMPTY;
-        return switch (getRandom().nextInt(6)) {
+        return switch (getRandom().nextInt(7)) {
             case 0 -> WayfinderSounds.WAYFINDER_IDLE0.get();
             case 1 -> WayfinderSounds.WAYFINDER_IDLE1.get();
             case 2 -> WayfinderSounds.WAYFINDER_IDLE2.get();
             case 3 -> WayfinderSounds.WAYFINDER_IDLE3.get();
             case 4 -> WayfinderSounds.WAYFINDER_IDLE4.get();
-            default -> WayfinderSounds.WAYFINDER_IDLE5.get();
+            case 5 -> WayfinderSounds.WAYFINDER_IDLE5.get();
+            default -> SoundEvents.AMETHYST_BLOCK_CHIME;
         };
     }
 
