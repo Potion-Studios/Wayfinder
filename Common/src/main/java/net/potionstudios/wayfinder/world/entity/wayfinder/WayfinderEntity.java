@@ -74,7 +74,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private static final RawAnimation IDLE_4 = RawAnimation.begin().then("idle4", Animation.LoopType.PLAY_ONCE);
     private static final RawAnimation DEATH = RawAnimation.begin().then("death", Animation.LoopType.HOLD_ON_LAST_FRAME);
     private static final RawAnimation SEARCHING_START = RawAnimation.begin().thenPlay("searching_start");
-    private static final RawAnimation SEARCHING_END = RawAnimation.begin().thenPlay("searching_end");
+    private static final RawAnimation SEARCHING_END = RawAnimation.begin().then("searching_end", Animation.LoopType.PLAY_ONCE);
     private static final RawAnimation SEARCHING_LOOP = RawAnimation.begin().thenLoop("searching_loop");
     private static final RawAnimation NO = RawAnimation.begin().then("no", Animation.LoopType.PLAY_ONCE);
     private static final RawAnimation SIT_IDLE_1 = RawAnimation.begin().thenLoop("sit_idle1");
@@ -194,23 +194,30 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
             return event.setAndContinue(DEATH);
         else if (isScared())
             return event.setAndContinue(SCARED);
-        else if (isSearching())
-            return event.setAndContinue(SEARCHING_LOOP);
 
         AnimationController<E> controller = event.getController();
-        if (controller.hasAnimationFinished() || controller.getCurrentRawAnimation() == null) {
-            if (isSitting()) return switch (getRandom().nextInt(3)) {
-                case 0 -> event.setAndContinue(SIT_IDLE_3);
-                case 1 -> event.setAndContinue(SIT_IDLE_2);
-                default -> event.setAndContinue(SIT_IDLE_1);
-            };
-            else return switch (getRandom().nextInt(35)) {
-                case 0 -> event.setAndContinue(IDLE_3);
-                case 1, 2, 3, 4, 5 -> event.setAndContinue(IDLE_4);
-                case 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 -> event.setAndContinue(IDLE_2);
-                default -> event.setAndContinue(IDLE_1);
-            };
-        }
+        RawAnimation currentAnimation = controller.getCurrentRawAnimation();
+        boolean finished = controller.hasAnimationFinished() || currentAnimation == null;
+
+        if (isSitting())
+            if (finished || !currentAnimation.equals(SIT_IDLE_1) && !currentAnimation.equals(SIT_IDLE_2) && !currentAnimation.equals(SIT_IDLE_3))
+                return switch (getRandom().nextInt(3)) {
+                    case 0 -> event.setAndContinue(SIT_IDLE_3);
+                    case 1 -> event.setAndContinue(SIT_IDLE_2);
+                    default -> event.setAndContinue(SIT_IDLE_1);
+                };
+            else return PlayState.CONTINUE;
+
+        if (isSearching() && !currentAnimation.equals(SEARCHING_START))
+          return event.setAndContinue(SEARCHING_LOOP);
+        else if (finished || (!currentAnimation.equals(IDLE_1) && !currentAnimation.equals(IDLE_2) && !currentAnimation.equals(IDLE_3) && !currentAnimation.equals(IDLE_4)))
+            return switch (getRandom().nextInt(35)) {
+            case 0 -> event.setAndContinue(IDLE_3);
+            case 1, 2, 3, 4, 5 -> event.setAndContinue(IDLE_4);
+            case 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 -> event.setAndContinue(IDLE_2);
+            default -> event.setAndContinue(IDLE_1);
+        };
+
         return PlayState.CONTINUE;
     }
 
@@ -251,15 +258,16 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         }
 
         triggerAnim("controller", "searching_start");
-        setSearching(true);
         CompletableFuture.runAsync(() -> {
             Pair<BlockPos, Holder<Biome>> value = serverLevel
                     .findClosestBiome3d(biomeHolder -> biomeHolder.is(biome), blockPosition(),
                             Wayfinder.CONFIG.wayfinder.MAX_SEARCH_DISTANCE.value(), 32, 64);
 
             if (value != null) {
+                setSearching(true);
                 setTargetBlockPos(Optional.of(value.getFirst()));
                 foundBiomeTick = getServer().getTickCount();
+                triggerAnim("controller", "searching_end");
             } else triggerAnim("controller", "no");
         });
     }
