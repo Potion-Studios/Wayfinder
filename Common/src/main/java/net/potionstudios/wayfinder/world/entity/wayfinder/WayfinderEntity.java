@@ -4,6 +4,8 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -370,9 +372,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
-    public void playSound(@NotNull SoundEvent sound, float volume, float pitch) {
-        if (Wayfinder.CONFIG.wayfinder.ENABLE_SOUNDS.value())
-            super.playSound(sound, volume, pitch);
+    public boolean isSilent() {
+        return super.isSilent() || !Wayfinder.CONFIG.wayfinder.ENABLE_SOUNDS.value();
     }
 
     @Override
@@ -429,6 +430,21 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
             PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderCloseScreenPacket(), owner);
             PlatformHandler.PLATFORM_HANDLER.setWayfinder(owner, Util.NIL_UUID);
             PlatformHandler.PLATFORM_HANDLER.incrementWayfinderDeaths(owner);
+        }
+    }
+
+    @Override
+    public void handleEntityEvent(byte id) {
+        if (id == 12) this.addParticlesAroundSelf(ParticleTypes.HAPPY_VILLAGER);
+        else super.handleEntityEvent(id);
+    }
+
+    private void addParticlesAroundSelf(ParticleOptions particleOption) {
+        for (int i = 0; i < 5; i++) {
+            double d = this.random.nextGaussian() * 0.02;
+            double e = this.random.nextGaussian() * 0.02;
+            double f = this.random.nextGaussian() * 0.02;
+            this.level().addParticle(particleOption, this.getRandomX(1.0), this.getRandomY() + 1.0, this.getRandomZ(1.0), d, e, f);
         }
     }
 

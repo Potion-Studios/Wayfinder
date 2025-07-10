@@ -1,14 +1,11 @@
 package net.potionstudios.wayfinder.world.entity.ai.goal;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
@@ -63,6 +60,7 @@ public class GoToPosGoal extends Goal {
     public void stop() {
         this.owner = null;
         this.navigation.stop();
+        wayfinder.setTargetBlockPos(Optional.empty());
     }
 
     @Override
@@ -81,7 +79,7 @@ public class GoToPosGoal extends Goal {
         if (wayfinder.distanceToSqr(target.get().getX(), target.get().getY(), target.get().getZ()) < 3) {
             WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get().trigger((ServerPlayer) owner);
             wayfinder.playSound(SoundEvents.AMETHYST_BLOCK_RESONATE);
-            wayfinder.level().addParticle(ParticleTypes.HAPPY_VILLAGER, target.get().getX(), target.get().getY(), target.get().getZ(), 0, 0, 0);
+            wayfinder.level().broadcastEntityEvent(wayfinder, (byte) 12);
             stop();
         }
     }
