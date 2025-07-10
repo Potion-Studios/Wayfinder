@@ -61,7 +61,6 @@ public class GoToPosGoal extends Goal {
         this.owner = null;
         this.navigation.stop();
         wayfinder.setTargetBlockPos(Optional.empty());
-        wayfinder.setSearching(false);
     }
 
     @Override

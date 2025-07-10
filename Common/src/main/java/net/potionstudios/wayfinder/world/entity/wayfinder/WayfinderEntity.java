@@ -91,7 +91,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private static final EntityDataAccessor<Integer> DATA_SHIELD = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.INT);
 
     private float phaseOffset;
-    private boolean searching;
     private int foundBiomeTick = 0;
 
     public WayfinderEntity(Level level, Player owner) {
@@ -103,7 +102,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         super(entityType, level);
         phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
         moveControl = new WayfinderMoveControl(this, phaseOffset);
-        searching = false;
         setPersistenceRequired();
     }
 
@@ -126,7 +124,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         compound.putString("Type", getVariant().getSerializedName());
         compound.putBoolean("Sitting", entityData.get(DATA_SITTING));
         compound.putFloat("Offset", phaseOffset);
-        compound.putBoolean("Searching", searching);
         compound.putInt("Shield", entityData.get(DATA_SHIELD));
         if (getTargetBiomeBlockPos().isPresent())
             compound.putLong("BlockPos", getTargetBiomeBlockPos().get().asLong());
@@ -148,7 +145,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         setVariant(Variant.byName(compound.getString("Type")));
         entityData.set(DATA_SITTING, compound.getBoolean("Sitting"));
         entityData.set(DATA_SHIELD, compound.getInt("Shield"));
-        searching = compound.getBoolean("Searching");
         phaseOffset = compound.getFloat("Offset");
         if (compound.contains("BlockPos"))
             setTargetBlockPos(Optional.of(BlockPos.of(compound.getLong("BlockPos"))));
@@ -210,7 +206,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                 };
             else return PlayState.CONTINUE;
 
-        if (isSearching() && !currentAnimation.equals(SEARCHING_START))
+        if (isSearching() && currentAnimation != null && !currentAnimation.equals(SEARCHING_START))
           return event.setAndContinue(SEARCHING_LOOP);
         else if (finished || (!currentAnimation.equals(IDLE_1) && !currentAnimation.equals(IDLE_2) && !currentAnimation.equals(IDLE_3) && !currentAnimation.equals(IDLE_4)))
             return switch (getRandom().nextInt(35)) {
@@ -266,7 +262,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                             Wayfinder.CONFIG.wayfinder.MAX_SEARCH_DISTANCE.value(), 32, 64);
 
             if (value != null) {
-                setSearching(true);
                 setTargetBlockPos(Optional.of(value.getFirst()));
                 foundBiomeTick = getServer().getTickCount();
                 triggerAnim("controller", "searching_end");
@@ -298,11 +293,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public boolean isSearching() {
-        return searching;
-    }
-
-    public void setSearching(boolean searching) {
-        this.searching = searching;
+        return getTargetBiomeBlockPos().isPresent();
     }
 
     public boolean isScared() {
