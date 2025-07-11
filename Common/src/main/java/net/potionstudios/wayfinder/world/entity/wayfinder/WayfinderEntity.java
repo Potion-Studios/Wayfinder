@@ -74,6 +74,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private static final RawAnimation IDLE_2 = RawAnimation.begin().then("idle2", Animation.LoopType.PLAY_ONCE);
     private static final RawAnimation IDLE_3 = RawAnimation.begin().then("idle3", Animation.LoopType.PLAY_ONCE);
     private static final RawAnimation IDLE_4 = RawAnimation.begin().then("idle4", Animation.LoopType.PLAY_ONCE);
+    private static final RawAnimation IDLE_5 = RawAnimation.begin().then("idle5", Animation.LoopType.PLAY_ONCE);
     private static final RawAnimation DEATH = RawAnimation.begin().then("death", Animation.LoopType.HOLD_ON_LAST_FRAME);
     private static final RawAnimation SEARCHING_START = RawAnimation.begin().thenPlay("searching_start");
     private static final RawAnimation SEARCHING_END = RawAnimation.begin().then("searching_end", Animation.LoopType.PLAY_ONCE);
@@ -82,6 +83,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private static final RawAnimation SIT_IDLE_1 = RawAnimation.begin().thenLoop("sit_idle1");
     private static final RawAnimation SIT_IDLE_2 = RawAnimation.begin().thenLoop("sit_idle2");
     private static final RawAnimation SIT_IDLE_3 = RawAnimation.begin().thenLoop("sit_idle3");
+    private static final RawAnimation SIT_IDLE_4 = RawAnimation.begin().thenLoop("sit_idle4");
     private static final RawAnimation SCARED = RawAnimation.begin().thenLoop("scared");
 
     private static final EntityDataAccessor<Optional<BlockPos>> BLOCK_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
@@ -198,21 +200,23 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         boolean finished = controller.hasAnimationFinished() || currentAnimation == null;
 
         if (isSitting())
-            if (finished || (!currentAnimation.equals(SIT_IDLE_1) && !currentAnimation.equals(SIT_IDLE_2) && !currentAnimation.equals(SIT_IDLE_3)))
-                return switch (getRandom().nextInt(3)) {
+            if (finished || (!currentAnimation.equals(SIT_IDLE_1) && !currentAnimation.equals(SIT_IDLE_2) && !currentAnimation.equals(SIT_IDLE_3) && !currentAnimation.equals(SIT_IDLE_4)))
+                return switch (getRandom().nextInt(4)) {
                     case 0 -> event.setAndContinue(SIT_IDLE_3);
                     case 1 -> event.setAndContinue(SIT_IDLE_2);
+                    case 2 -> event.setAndContinue(SIT_IDLE_4);
                     default -> event.setAndContinue(SIT_IDLE_1);
                 };
             else return PlayState.CONTINUE;
 
         if (isSearching() && (currentAnimation != null && !currentAnimation.equals(SEARCHING_START) && !currentAnimation.equals(SEARCHING_END)))
           return event.setAndContinue(SEARCHING_LOOP);
-        else if (finished || (!currentAnimation.equals(IDLE_1) && !currentAnimation.equals(IDLE_2) && !currentAnimation.equals(IDLE_3) && !currentAnimation.equals(IDLE_4)))
+        else if (finished || (!currentAnimation.equals(IDLE_1) && !currentAnimation.equals(IDLE_2) && !currentAnimation.equals(IDLE_3) && !currentAnimation.equals(IDLE_4) && !currentAnimation.equals(IDLE_5)))
             return switch (getRandom().nextInt(35)) {
             case 0 -> event.setAndContinue(IDLE_3);
             case 1, 2, 3, 4, 5 -> event.setAndContinue(IDLE_4);
-            case 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 -> event.setAndContinue(IDLE_2);
+            case 6, 7, 8, 9, 10 -> event.setAndContinue(IDLE_5);
+            case 11, 12, 13, 14, 15 -> event.setAndContinue(IDLE_2);
             default -> event.setAndContinue(IDLE_1);
         };
 
