@@ -6,6 +6,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.level.Level;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
@@ -46,11 +47,6 @@ public class GoToPosGoal extends Goal {
     }
 
     @Override
-    public boolean canContinueToUse() {
-        return canUse() && wayfinder.distanceToSqr(target.get().getX(), target.get().getY(), target.get().getZ()) > 10;
-    }
-
-    @Override
     public void start() {
         this.timeToRecalcPath = 0;
         this.teleportWaitTime = Wayfinder.CONFIG.wayfinder.TELEPORT_TO_OWNER.value() * 20;
@@ -76,10 +72,12 @@ public class GoToPosGoal extends Goal {
             teleportWaitTime = Wayfinder.CONFIG.wayfinder.TELEPORT_TO_OWNER.value() * 20;
         }
 
-        if (wayfinder.distanceToSqr(target.get().getX(), target.get().getY(), target.get().getZ()) < 3) {
+        Level level = wayfinder.level();
+
+        if (level.getBiome(wayfinder.blockPosition()).is(level.getBiome(target.get()))) {
             WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get().trigger((ServerPlayer) owner);
             wayfinder.playSound(SoundEvents.AMETHYST_BLOCK_RESONATE);
-            wayfinder.level().broadcastEntityEvent(wayfinder, (byte) 12);
+            level.broadcastEntityEvent(wayfinder, (byte) 12);
             stop();
         }
     }

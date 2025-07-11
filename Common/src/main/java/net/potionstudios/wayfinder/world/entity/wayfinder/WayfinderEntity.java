@@ -91,7 +91,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private static final EntityDataAccessor<Integer> DATA_SHIELD = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.INT);
 
     private float phaseOffset;
-    private int foundBiomeTick = 0;
+    private int foundBiomeTick = -20 * Wayfinder.CONFIG.wayfinder.COOLDOWN.value();
 
     public WayfinderEntity(Level level, Player owner) {
         this(WayfinderEntityType.WAYFINDER.get(), level);
