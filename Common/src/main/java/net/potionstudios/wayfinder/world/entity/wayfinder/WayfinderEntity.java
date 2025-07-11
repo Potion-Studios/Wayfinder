@@ -198,7 +198,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         boolean finished = controller.hasAnimationFinished() || currentAnimation == null;
 
         if (isSitting())
-            if (finished || !currentAnimation.equals(SIT_IDLE_1) && !currentAnimation.equals(SIT_IDLE_2) && !currentAnimation.equals(SIT_IDLE_3))
+            if (finished || (!currentAnimation.equals(SIT_IDLE_1) && !currentAnimation.equals(SIT_IDLE_2) && !currentAnimation.equals(SIT_IDLE_3)))
                 return switch (getRandom().nextInt(3)) {
                     case 0 -> event.setAndContinue(SIT_IDLE_3);
                     case 1 -> event.setAndContinue(SIT_IDLE_2);
@@ -206,7 +206,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                 };
             else return PlayState.CONTINUE;
 
-        if (isSearching() && currentAnimation != null && !currentAnimation.equals(SEARCHING_START))
+        if (isSearching() && (currentAnimation != null && !currentAnimation.equals(SEARCHING_START) && !currentAnimation.equals(SEARCHING_END)))
           return event.setAndContinue(SEARCHING_LOOP);
         else if (finished || (!currentAnimation.equals(IDLE_1) && !currentAnimation.equals(IDLE_2) && !currentAnimation.equals(IDLE_3) && !currentAnimation.equals(IDLE_4)))
             return switch (getRandom().nextInt(35)) {

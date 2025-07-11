@@ -28,12 +28,11 @@ class WayfinderLocateCommand {
                 if (player.serverLevel().getEntity(PlatformHandler.PLATFORM_HANDLER.getWayfinder(player)) instanceof WayfinderEntity wayfinder) {
                     context.getSource().sendSuccess(() -> Component.translatable("wayfinder.commands.locate.self.success", clickTeleport(wayfinder)), false);
                     return 1;
-            }
+                }
             context.getSource().sendFailure(Component.translatable("wayfinder.commands.locate.self.nowayfinder").withStyle(ChatFormatting.RED));
             return 0;
         });
-        command
-                .then(RequiredArgumentBuilder.<CommandSourceStack, EntitySelector>argument("player", EntityArgument.player())
+        command.then(RequiredArgumentBuilder.<CommandSourceStack, EntitySelector>argument("player", EntityArgument.player())
                 .executes(WayfinderLocateCommand::locateWayfinder));
 
         return command;
