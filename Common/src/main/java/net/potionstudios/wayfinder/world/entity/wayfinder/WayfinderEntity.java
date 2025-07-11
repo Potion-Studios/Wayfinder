@@ -227,16 +227,21 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
-        if (!level().isClientSide()) {
+        if (level() instanceof ServerLevel serverLevel) {
             if (isScared()) return InteractionResult.FAIL;
             if (player.getUUID().equals(getOwnerUUID())) {
+                if ((foundBiomeTick + (Wayfinder.CONFIG.wayfinder.COOLDOWN.value() * 20)) > serverLevel.getServer().getTickCount()) {
+                    triggerAnim("controller", "no");
+                    serverLevel.broadcastEntityEvent(this, (byte) 13);
+                    return InteractionResult.FAIL;
+                }
                 List<ResourceLocation> biomeList = new ArrayList<>();
-                for (Holder<Biome> key : ((ServerLevel) level()).getChunkSource().getGenerator().getBiomeSource().possibleBiomes())
+                for (Holder<Biome> key : serverLevel.getChunkSource().getGenerator().getBiomeSource().possibleBiomes())
                     if (!key.is(WayfinderBiomeTags.WAYFINDER_EXCLUDED))
                         key.unwrapKey().ifPresent(biome -> biomeList.add(biome.location()));
                 ResourceLocation current;
                 if (getTargetBiomeBlockPos().isEmpty()) current = Wayfinder.id("clear_packet");
-                else current = level().getBiome(getTargetBiomeBlockPos().get()).unwrapKey().get().location();
+                else current = serverLevel.getBiome(getTargetBiomeBlockPos().get()).unwrapKey().get().location();
                 PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderOpenScreenPacket(biomeList, current, isSitting()), player);
                 return InteractionResult.SUCCESS;
             } else if (getOwner() == null && !PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
@@ -250,7 +255,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     public void startBiomeSearch(ResourceLocation biome) {
         ServerLevel serverLevel = (ServerLevel) level();
-        if (serverLevel.getBiome(blockPosition()).is(biome) || (foundBiomeTick + (Wayfinder.CONFIG.wayfinder.COOLDOWN.value() * 20)) > getServer().getTickCount()) {
+        if (serverLevel.getBiome(blockPosition()).is(biome)) {
             triggerAnim("controller", "no");
             return;
         }
@@ -427,6 +432,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     @Override
     public void handleEntityEvent(byte id) {
         if (id == 12) this.addParticlesAroundSelf(ParticleTypes.HAPPY_VILLAGER);
+        else if (id == 13) this.addParticlesAroundSelf(ParticleTypes.ANGRY_VILLAGER);
         else super.handleEntityEvent(id);
     }
 
