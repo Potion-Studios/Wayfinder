@@ -21,7 +21,8 @@ public class WayfinderSounds {
     public static final Supplier<SoundEvent> WAYFINDER_SHIELD_HIT = createVariableRangeEvent("wayfinder.shield_hit");
     public static final Supplier<SoundEvent> WAYFINDER_SHIELD_BREAK = createVariableRangeEvent("wayfinder.shield_break");
     public static final Supplier<SoundEvent> WAYFINDER_SUMMON = createVariableRangeEvent("wayfinder.summon");
-
+    public static final Supplier<SoundEvent> WAYFINDER_NO = createVariableRangeEvent("wayfinder.no");
+    public static final Supplier<SoundEvent> WAYFINDER_SCARED = createVariableRangeEvent("wayfinder.scared");
 
     private static Supplier<SoundEvent> createVariableRangeEvent(String id) {
         return PlatformHandler.PLATFORM_HANDLER.register(BuiltInRegistries.SOUND_EVENT, id, () -> SoundEvent.createVariableRangeEvent(Wayfinder.id(id)));

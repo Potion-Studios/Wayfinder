@@ -37,8 +37,15 @@ public class WayfinderStructureProcessorLists {
 	public static final ResourceKey<StructureProcessorList> SNOWY_SHRINE = register("snowy_shrine", structureProcessorListHolderGetter -> new StructureProcessorList(
 		ImmutableList.of(
 				createRuleProcessor(
-						createAlwaysTrueRandomBlockMatchTest(Blocks.SNOW_BLOCK, 0.4f, Blocks.PACKED_ICE),
-						createAlwaysTrueRandomBlockMatchTest(Blocks.SNOW_BLOCK, 0.4f, Blocks.BLUE_ICE)
+						createAlwaysTrueRandomBlockMatchTest(Blocks.SNOW_BLOCK, 0.15f, Blocks.PACKED_ICE),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.SNOW_BLOCK, 0.15f, Blocks.BLUE_ICE),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 2)),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 3)),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 4)),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.LIT, true)),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 2).setValue(CandleBlock.LIT, true)),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 3).setValue(CandleBlock.LIT, true)),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 4).setValue(CandleBlock.LIT, true))
 				)
 		)
 	));
@@ -46,19 +53,35 @@ public class WayfinderStructureProcessorLists {
 	public static final ResourceKey<StructureProcessorList> TAIGA_SHRINE = register("taiga_shrine", structureProcessorListHolderGetter -> new StructureProcessorList(
 		ImmutableList.of(
 				createRuleProcessor(
-						createAlwaysTrueRandomBlockMatchTest(Blocks.MOSSY_COBBLESTONE, 0.15f, Blocks.MOSS_BLOCK),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.PODZOL, 0.15f, Blocks.MOSS_BLOCK),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.PODZOL, 0.15f, Blocks.GRASS_BLOCK),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.MOSSY_COBBLESTONE, 0.1f, Blocks.CRACKED_STONE_BRICKS),
 						createAlwaysTrueRandomBlockMatchTest(Blocks.MOSSY_COBBLESTONE, 0.3f, Blocks.MOSSY_STONE_BRICKS),
-						createAlwaysTrueRandomBlockMatchTest(Blocks.MOSSY_COBBLESTONE, 0.3f, Blocks.PODZOL),
-						createAlwaysTrueRandomBlockMatchTest(Blocks.MOSS_CARPET, 0.6f, Blocks.AIR)
+						createAlwaysTrueRandomBlockMatchTest(Blocks.GRASS_BLOCK, 0.15f, Blocks.MOSS_BLOCK),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 2)),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 3)),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 4)),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.LIT, true)),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 2).setValue(CandleBlock.LIT, true)),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 3).setValue(CandleBlock.LIT, true)),
+						createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 4).setValue(CandleBlock.LIT, true))
 				)
 		)
 	));
 
-	public static final ResourceKey<StructureProcessorList> PLAINS_SHRINE = register("plains_shrine", structureProcessorListHolderGetter -> new StructureProcessorList(
+	public static final ResourceKey<StructureProcessorList> GRASSY_SHRINE = register("grassy_shrine", structureProcessorListHolderGetter -> new StructureProcessorList(
 			ImmutableList.of(
 					createRuleProcessor(
-							createAlwaysTrueRandomBlockMatchTest(Blocks.COBBLESTONE, 0.5f, Blocks.STONE_BRICKS)
-					)
+							createAlwaysTrueRandomBlockMatchTest(Blocks.MOSSY_COBBLESTONE, 0.1f, Blocks.CRACKED_STONE_BRICKS),
+							createAlwaysTrueRandomBlockMatchTest(Blocks.MOSSY_COBBLESTONE, 0.3f, Blocks.MOSSY_STONE_BRICKS),
+							createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 2)),
+							createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 3)),
+							createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 4)),
+							createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.LIT, true)),
+							createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 2).setValue(CandleBlock.LIT, true)),
+							createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 3).setValue(CandleBlock.LIT, true)),
+							createAlwaysTrueRandomBlockMatchTest(Blocks.CANDLE, 0.2f, Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, 4).setValue(CandleBlock.LIT, true))
+							)
 			)
 	));
 

@@ -156,6 +156,8 @@ class NeoForgeDatagen {
             add(WayfinderSounds.WAYFINDER_SHIELD_HIT, definition().with(sound(Wayfinder.id("entity/wayfinder/shield_hit"))).subtitle(subtitle("entity.wayfinder.shield_hit")));
             add(WayfinderSounds.WAYFINDER_SHIELD_BREAK, definition().with(sound(Wayfinder.id("entity/wayfinder/shield_break"))).subtitle(subtitle("entity.wayfinder.shield_break")));
             add(WayfinderSounds.WAYFINDER_SUMMON, definition().with(sound(Wayfinder.id("entity/wayfinder/summon"))).subtitle(subtitle("entity.wayfinder.summon")));
+            add(WayfinderSounds.WAYFINDER_NO, definition().with(sound(Wayfinder.id("entity/wayfinder/no"))).subtitle(subtitle("entity.wayfinder.no")));
+            add(WayfinderSounds.WAYFINDER_SCARED, definition().with(sound(Wayfinder.id("entity/wayfinder/scared"))).subtitle(subtitle("entity.wayfinder.scared")));
         }
 
         private String subtitle(String subtitle) {

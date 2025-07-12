@@ -53,6 +53,18 @@
     ],
     "subtitle": "subtitles.entity.wayfinder.idle5"
   },
+  "wayfinder.no": {
+    "sounds": [
+      "wayfinder:entity/wayfinder/no"
+    ],
+    "subtitle": "subtitles.entity.wayfinder.no"
+  },
+  "wayfinder.scared": {
+    "sounds": [
+      "wayfinder:entity/wayfinder/scared"
+    ],
+    "subtitle": "subtitles.entity.wayfinder.scared"
+  },
   "wayfinder.shield_break": {
     "sounds": [
       "wayfinder:entity/wayfinder/shield_break"

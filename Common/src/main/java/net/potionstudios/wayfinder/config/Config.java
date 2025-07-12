@@ -7,11 +7,11 @@ public class Config {
     public static class Wayfinder {
         public ConfigUtils.CommentValue<Integer> MAX_SEARCH_DISTANCE =
                 ConfigUtils.CommentValue.of("Max Biome Search Distance in Blocks as a radius around the Wayfinder's current position",10000);
-        public ConfigUtils.CommentValue<Integer> COOLDOWN = ConfigUtils.CommentValue.of("Cooldown in seconds before the player can use the Wayfinder again", 60);
+        public ConfigUtils.CommentValue<Integer> COOLDOWN = ConfigUtils.CommentValue.of("Cooldown in seconds before the player can use the Wayfinder again", 15);
         public ConfigUtils.CommentValue<Integer> SCARED_PROJECTILE_MOB_DISTANCE =
                 ConfigUtils.CommentValue.of("Block distance around the Wayfinder as a radius to which they wayfinder will become scared if a projectile mob is in", 10);
         public ConfigUtils.CommentValue<Integer> TELEPORT_TO_OWNER =
-                ConfigUtils.CommentValue.of("Amount of time in Seconds before the wayfinder attempts to teleport to it's owner if it's out of range",20);
+                ConfigUtils.CommentValue.of("Amount of time in Seconds before the wayfinder attempts to teleport to it's owner if it's out of range",5);
         public ConfigUtils.CommentValue<Boolean> ENABLE_SOUNDS =
                 ConfigUtils.CommentValue.of("Enable Sounds for the Wayfinder", true);
         public ConfigUtils.CommentValue<Boolean> DISABLE_SOUNDS_WHEN_SITTING =
