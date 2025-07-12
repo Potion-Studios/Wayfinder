@@ -360,6 +360,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     protected @Nullable SoundEvent getAmbientSound() {
         if (Wayfinder.CONFIG.wayfinder.DISABLE_SOUNDS_WHEN_SITTING.value() || getRandom().nextBoolean())
             return SoundEvents.EMPTY;
+        else if (isScared())
+            return WayfinderSounds.WAYFINDER_SCARED.get();
         return switch (getRandom().nextInt(7)) {
             case 0 -> WayfinderSounds.WAYFINDER_IDLE0.get();
             case 1 -> WayfinderSounds.WAYFINDER_IDLE1.get();
