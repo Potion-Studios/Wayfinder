@@ -34,3 +34,6 @@ type = "required"
 versionRange = "[4.7.3,)"
 ordering = "AFTER"
 side = "BOTH"
+
+[[mixins]]
+config = "wayfinder-common.mixins.json"

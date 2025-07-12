@@ -1,0 +1,14 @@
+{
+  "required": false,
+  "package": "net.potionstudios.wayfinder.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "client": [
+  ],
+  "mixins": [
+    "JigsawPlacementMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

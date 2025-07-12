@@ -29,6 +29,9 @@
     "minecraft": ">=1.21.1",
     "geckolib": ">=4.7.3"
   },
+  "mixins": [
+    "wayfinder-common.mixins.json"
+  ],
   "custom": {
     "modmenu": {
       "links": {

@@ -33,6 +33,8 @@ loom {
     forge {
         convertAccessWideners.set(true)
         extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
+
+        mixinConfig("wayfinder-common.mixins.json")
     }
 }
 

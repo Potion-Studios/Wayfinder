@@ -1,0 +1,14 @@
+{
+  "elements": [
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "wayfinder:wayfinder_grassy_shrine",
+        "processors": "wayfinder:grassy_shrine",
+        "projection": "rigid"
+      },
+      "weight": 1
+    }
+  ],
+  "fallback": "minecraft:village/savanna/houses"
+}
