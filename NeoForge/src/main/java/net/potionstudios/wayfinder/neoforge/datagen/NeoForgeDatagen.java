@@ -39,6 +39,7 @@ import net.potionstudios.wayfinder.Wayfinder;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.potionstudios.wayfinder.advancements.critereon.WayfinderGotToBiomeTrigger;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderHeartBlockTrigger;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderOwnerKilledTrigger;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
@@ -119,6 +120,8 @@ class NeoForgeDatagen {
             add("advancements.wayfinder.a_tale_as_old_as_time.description", "Approach a Wayfinder Shrine");
             add("advancements.wayfinder.so_it_begins.title", "So it begins..");
             add("advancements.wayfinder.so_it_begins.description", "Summon your first Wayfinder");
+            add("advancements.wayfinder.first_of_many.title", "First of Many");
+            add("advancements.wayfinder.first_of_many.description", "Complete your first full journey with a Wayfinder!");
             add("advancements.wayfinder.ultimate_betrayal.title", "Ultimate Betrayal");
             add("advancements.wayfinder.ultimate_betrayal.description", "You should be ashamed of yourself..");
 
@@ -281,6 +284,17 @@ class NeoForgeDatagen {
                     )
                     .parent(root)
                     .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/so_it_begins"), existingFileHelper);
+
+            Advancement.Builder.advancement()
+                        .addCriterion("get_to_biome", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome())
+                        .display(
+                                Items.MAP,
+                                translateAble("first_of_many.title"),
+                                translateAble("first_of_many.description"),
+                                null, AdvancementType.TASK, true, true, true
+                        )
+                        .parent(soItBegins)
+                        .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/first_of_many"), existingFileHelper);
 
             Advancement.Builder.advancement()
                     .addCriterion("kill_wayfinder", WayfinderOwnerKilledTrigger.TriggerInstance.ownerKilledWayfinder())

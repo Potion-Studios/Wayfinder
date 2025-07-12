@@ -1,0 +1,27 @@
+{
+  "parent": "wayfinder:wayfinder/so_it_begins",
+  "criteria": {
+    "get_to_biome": {
+      "trigger": "wayfinder:wayfinder_got_to_biome"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.wayfinder.first_of_many.description"
+    },
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "minecraft:map"
+    },
+    "title": {
+      "translate": "advancements.wayfinder.first_of_many.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_to_biome"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
