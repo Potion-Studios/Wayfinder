@@ -112,8 +112,10 @@ class NeoForgeDatagen {
             add("wayfinder.commands.remove.fail", "%s does not have a Wayfinder");
             add("wayfinder.commands.remove.kill.success", "%s's Wayfinder has been removed and killed");
             add("wayfinder.commands.locate.self.success", "Your Wayfinder is at %s");
+            add("wayfinder.commands.locate.self.lost", "Your Wayfinder's location could not be found");
             add("wayfinder.commands.locate.self.nowayfinder", "You do not have a Wayfinder");
             add("wayfinder.commands.locate.other.success", "%s's Wayfinder is at %s");
+            add("wayfinder.commands.locate.other.lost", "%s's Wayfinder's location could not be currently found");
             add("wayfinder.commands.locate.other.nowayfinder", "%s does not have a Wayfinder");
 
             add("advancements.wayfinder.a_tale_as_old_as_time.title", "A Tale As Old As Time");

@@ -24,11 +24,14 @@ class WayfinderLocateCommand {
 
         command.executes(context -> {
             ServerPlayer player = context.getSource().getPlayerOrException();
-            if (PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player))
+            if (PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
                 if (player.serverLevel().getEntity(PlatformHandler.PLATFORM_HANDLER.getWayfinder(player)) instanceof WayfinderEntity wayfinder) {
                     context.getSource().sendSuccess(() -> Component.translatable("wayfinder.commands.locate.self.success", clickTeleport(wayfinder)), false);
                     return 1;
                 }
+                context.getSource().sendFailure(Component.translatable("wayfinder.commands.locate.self.lost").withStyle(ChatFormatting.RED));
+                return 0;
+            }
             context.getSource().sendFailure(Component.translatable("wayfinder.commands.locate.self.nowayfinder").withStyle(ChatFormatting.RED));
             return 0;
         });
@@ -40,11 +43,14 @@ class WayfinderLocateCommand {
 
     private static int locateWayfinder(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = EntityArgument.getPlayer(context, "player");
-        if (PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player))
+        if (PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
             if (player.serverLevel().getEntity(PlatformHandler.PLATFORM_HANDLER.getWayfinder(player)) instanceof WayfinderEntity wayfinder) {
                 context.getSource().sendSuccess(() -> Component.translatable("wayfinder.commands.locate.other.success", player.getDisplayName(), clickTeleport(wayfinder)), false);
                 return 1;
             }
+            context.getSource().sendFailure(Component.translatable("wayfinder.commands.locate.other.lost").withStyle(ChatFormatting.RED));
+            return 0;
+        }
         context.getSource().sendFailure(Component.translatable("wayfinder.commands.locate.other.nowayfinder", player.getDisplayName()).withStyle(ChatFormatting.RED));
         return 0;
     }
