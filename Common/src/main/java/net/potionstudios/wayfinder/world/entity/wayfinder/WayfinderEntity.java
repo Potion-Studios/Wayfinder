@@ -235,7 +235,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
             if (isScared()) return InteractionResult.FAIL;
             if (player.getUUID().equals(getOwnerUUID())) {
                 if ((foundBiomeTick + (Wayfinder.CONFIG.wayfinder.COOLDOWN.value() * 20)) > serverLevel.getServer().getTickCount()) {
-                    triggerAnim("controller", "no");
+                    no();
                     serverLevel.broadcastEntityEvent(this, (byte) 13);
                     return InteractionResult.FAIL;
                 }
@@ -251,7 +251,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
             } else if (getOwner() == null && !PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
                 setOwner(player);
                 return mobInteract(player, hand);
-            } else triggerAnim("controller", "no");
+            } else no();
             return InteractionResult.FAIL;
         }
         return super.mobInteract(player, hand);
@@ -260,7 +260,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     public void startBiomeSearch(ResourceLocation biome) {
         ServerLevel serverLevel = (ServerLevel) level();
         if (serverLevel.getBiome(blockPosition()).is(biome)) {
-            triggerAnim("controller", "no");
+            no();
             return;
         }
 
@@ -275,8 +275,13 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                 foundBiomeTick = getServer().getTickCount();
                 triggerAnim("controller", "searching_end");
                 playSound(SoundEvents.ENCHANTMENT_TABLE_USE);
-            } else triggerAnim("controller", "no");
+            } else no();
         });
+    }
+
+    public void no() {
+        triggerAnim("controller", "no");
+        playSound(WayfinderSounds.WAYFINDER_NO.get());
     }
 
     @Override
