@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.ProcessorLists;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
@@ -50,6 +51,31 @@ public class WayfinderTemplatePools {
             createTemplatePool(
                     getPool(templatePoolFactoryContext, ResourceKey.create(Registries.TEMPLATE_POOL, ResourceLocation.withDefaultNamespace("village/snowy/houses"))),
                     ImmutableList.of(Pair.of(StructurePoolElement.single("wayfinder:wayfinder_snowy_shrine", getProcessor(templatePoolFactoryContext, WayfinderStructureProcessorLists.SNOWY_SHRINE)), 1)), StructureTemplatePool.Projection.RIGID)
+    );
+
+    //Oh The Biomes We've Gone
+    private static final ResourceKey<StructureTemplatePool> RED_ROCK_SHRINE = register("village/red_rock/wayfinder_shrine", templatePoolFactoryContext ->
+            createTemplatePool(
+                    getPool(templatePoolFactoryContext, ResourceKey.create(Registries.TEMPLATE_POOL, ResourceLocation.fromNamespaceAndPath("biomeswevegone", "village/red_rock/houses"))),
+                    ImmutableList.of(Pair.of(StructurePoolElement.single("wayfinder:wayfinder_red_rock_shrine", getProcessor(templatePoolFactoryContext, ProcessorLists.EMPTY)), 1)), StructureTemplatePool.Projection.RIGID)
+    );
+
+    private static final ResourceKey<StructureTemplatePool> SALEM_SHRINE = register("village/salem/wayfinder_shrine", templatePoolFactoryContext ->
+            createTemplatePool(
+                    getPool(templatePoolFactoryContext, ResourceKey.create(Registries.TEMPLATE_POOL, ResourceLocation.fromNamespaceAndPath("biomeswevegone", "village/salem/houses"))),
+                    ImmutableList.of(Pair.of(StructurePoolElement.single("wayfinder:wayfinder_salem_shrine", getProcessor(templatePoolFactoryContext, ProcessorLists.EMPTY)), 1)), StructureTemplatePool.Projection.RIGID)
+    );
+
+    private static final ResourceKey<StructureTemplatePool> SKYRIS_SHRINE = register("village/slyris/wayfinder_shrine", templatePoolFactoryContext ->
+            createTemplatePool(
+                    getPool(templatePoolFactoryContext, ResourceKey.create(Registries.TEMPLATE_POOL, ResourceLocation.fromNamespaceAndPath("biomeswevegone", "village/skyris/houses"))),
+                    ImmutableList.of(Pair.of(StructurePoolElement.single("wayfinder:wayfinder_skyris_shrine", getProcessor(templatePoolFactoryContext, ProcessorLists.EMPTY)), 1)), StructureTemplatePool.Projection.RIGID)
+    );
+
+    private static final ResourceKey<StructureTemplatePool> SWAMPY_SHRINE = register("village/swampy/wayfinder_shrine", templatePoolFactoryContext ->
+            createTemplatePool(
+                    getPool(templatePoolFactoryContext, ResourceKey.create(Registries.TEMPLATE_POOL, ResourceLocation.fromNamespaceAndPath("biomeswevegone", "village/swampy/houses"))),
+                    ImmutableList.of(Pair.of(StructurePoolElement.single("wayfinder:wayfinder_swampy_shrine", getProcessor(templatePoolFactoryContext, ProcessorLists.EMPTY)), 1)), StructureTemplatePool.Projection.RIGID)
     );
 
     private static StructureTemplatePool createTemplatePool(Holder<StructureTemplatePool> fallback, List<Pair<Function<StructureTemplatePool.Projection, ? extends StructurePoolElement>, Integer>> rawTemplateFactories, StructureTemplatePool.Projection projection) {

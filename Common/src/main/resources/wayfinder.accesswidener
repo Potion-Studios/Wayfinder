@@ -14,3 +14,4 @@ accessible field net/minecraft/advancements/critereon/EntitySubPredicates$Entity
 accessible class net/minecraft/advancements/critereon/EntitySubPredicates$EntityVariantPredicateType$Instance
 
 accessible class net/minecraft/world/level/levelgen/structure/pools/JigsawPlacement$Placer
+accessible field net/minecraft/data/worldgen/ProcessorLists EMPTY Lnet/minecraft/resources/ResourceKey;
