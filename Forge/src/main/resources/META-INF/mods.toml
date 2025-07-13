@@ -34,3 +34,10 @@ mandatory = true
 versionRange = "[4.7.3,)"
 ordering = "AFTER"
 side = "BOTH"
+
+[[dependencies.wayfinder]]
+modId = "biomeswevegone"
+mandatory = false
+versionRange = "[2.4.4,)"
+ordering = "AFTER"
+side = "BOTH"
