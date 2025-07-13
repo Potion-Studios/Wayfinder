@@ -4,7 +4,6 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -50,14 +49,6 @@ public class Wayfinder {
         WayfinderCriteriaTriggers.criteriaTriggers();
         WayfinderEntitySubPredicates.entitySubPredicates();
         WayfinderTemplatePools.templatePools();
-    }
-
-    /**
-     * Runs on Server Start.
-     * @param server the server to run on
-     */
-    public static void serverStart(MinecraftServer server) {
-
     }
 
     /**

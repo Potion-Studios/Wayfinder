@@ -6,7 +6,6 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -35,7 +34,6 @@ public class WayfinderNeoForge {
             else if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS)
                 event.accept(WayfinderBlocks.WAYFINER_HEART.get());
         });
-        EVENT_BUS.addListener((ServerAboutToStartEvent event) -> Wayfinder.serverStart(event.getServer()));
         EVENT_BUS.addListener((EntityJoinLevelEvent event) -> Wayfinder.onEntityLoad(event.getEntity()));
         eventBus.addListener((RegisterPayloadHandlersEvent event) -> {
             final PayloadRegistrar registrar = event.registrar(Wayfinder.MOD_ID).executesOn(HandlerThread.NETWORK);

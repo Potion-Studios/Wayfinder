@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.data.worldgen.PlainVillagePools;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
@@ -49,7 +48,7 @@ public class WayfinderTemplatePools {
 
     private static final ResourceKey<StructureTemplatePool> SNOWY_SHRINE = register("village/snowy/wayfinder_shrine", templatePoolFactoryContext ->
             createTemplatePool(
-                    getPool(templatePoolFactoryContext, ResourceKey.create(Registries.TEMPLATE_POOL, ResourceLocation.withDefaultNamespace("village/taiga/houses"))),
+                    getPool(templatePoolFactoryContext, ResourceKey.create(Registries.TEMPLATE_POOL, ResourceLocation.withDefaultNamespace("village/snowy/houses"))),
                     ImmutableList.of(Pair.of(StructurePoolElement.single("wayfinder:wayfinder_snowy_shrine", getProcessor(templatePoolFactoryContext, WayfinderStructureProcessorLists.SNOWY_SHRINE)), 1)), StructureTemplatePool.Projection.RIGID)
     );
 
