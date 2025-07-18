@@ -1,12 +1,14 @@
 package net.potionstudios.wayfinder.world.entity.ai.goal;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
@@ -73,9 +75,10 @@ public class GoToPosGoal extends Goal {
         }
 
         Level level = wayfinder.level();
+        Holder<Biome> biome = level.getBiome(wayfinder.blockPosition());
 
-        if (level.getBiome(wayfinder.blockPosition()).is(level.getBiome(target.get()))) {
-            WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get().trigger((ServerPlayer) owner);
+        if (biome.is(level.getBiome(target.get()))) {
+            WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get().trigger((ServerPlayer) owner, biome.unwrapKey().orElseThrow(), level.dimension());
             wayfinder.playSound(SoundEvents.AMETHYST_BLOCK_RESONATE);
             level.broadcastEntityEvent(wayfinder, (byte) 12);
             wayfinder.incrementCompletedJourneys();
