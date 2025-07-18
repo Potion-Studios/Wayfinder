@@ -78,6 +78,7 @@ public class GoToPosGoal extends Goal {
             WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get().trigger((ServerPlayer) owner);
             wayfinder.playSound(SoundEvents.AMETHYST_BLOCK_RESONATE);
             level.broadcastEntityEvent(wayfinder, (byte) 12);
+            wayfinder.incrementCompletedJourneys();
             stop();
         }
     }

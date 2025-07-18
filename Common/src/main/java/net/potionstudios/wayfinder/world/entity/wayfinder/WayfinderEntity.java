@@ -94,6 +94,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     private float phaseOffset;
     private int foundBiomeTick = -20 * Wayfinder.CONFIG.wayfinder.COOLDOWN.value();
+    private int completedJourneys;
 
     public WayfinderEntity(Level level, Player owner) {
         this(WayfinderEntityType.WAYFINDER.get(), level);
@@ -104,6 +105,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         super(entityType, level);
         phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
         moveControl = new WayfinderMoveControl(this, phaseOffset);
+        completedJourneys = 0;
         setPersistenceRequired();
     }
 
@@ -129,6 +131,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         compound.putInt("Shield", entityData.get(DATA_SHIELD));
         if (getTargetBiomeBlockPos().isPresent())
             compound.putLong("BlockPos", getTargetBiomeBlockPos().get().asLong());
+        compound.putInt("CompletedJourneys", completedJourneys);
     }
 
     @Override
@@ -150,6 +153,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         phaseOffset = compound.getFloat("Offset");
         if (compound.contains("BlockPos"))
             setTargetBlockPos(Optional.of(BlockPos.of(compound.getLong("BlockPos"))));
+        completedJourneys = compound.getInt("CompletedJourneys");
     }
 
     @Override
@@ -296,6 +300,14 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     public void stand() {
         triggerAnim("controller", "idle" + (getRandom().nextInt(3) + 1));
         setSitting(false);
+    }
+
+    public int getCompletedJourneys() {
+        return completedJourneys;
+    }
+
+    public void incrementCompletedJourneys() {
+        completedJourneys++;
     }
 
     public boolean isSitting() {
