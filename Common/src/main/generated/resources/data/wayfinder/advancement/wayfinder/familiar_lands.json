@@ -1,0 +1,30 @@
+{
+  "parent": "wayfinder:wayfinder/first_of_many",
+  "criteria": {
+    "get_to_biome_in_end": {
+      "conditions": {
+        "level": "minecraft:the_end"
+      },
+      "trigger": "wayfinder:wayfinder_got_to_biome"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.wayfinder.familiar_lands.description"
+    },
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "minecraft:end_stone"
+    },
+    "title": {
+      "translate": "advancements.wayfinder.familiar_lands.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_to_biome_in_end"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

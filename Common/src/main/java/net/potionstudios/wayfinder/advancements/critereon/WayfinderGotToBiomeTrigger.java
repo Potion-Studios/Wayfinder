@@ -44,5 +44,10 @@ public class WayfinderGotToBiomeTrigger extends SimpleCriterionTrigger<Wayfinder
             return WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get()
                     .createCriterion(new TriggerInstance(Optional.empty(), Optional.of(biome), Optional.of(level)));
         }
+
+        public static Criterion<TriggerInstance> gotToBiome(ResourceKey<Level> level) {
+            return WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get()
+                    .createCriterion(new TriggerInstance(Optional.empty(), Optional.empty(), Optional.of(level)));
+        }
     }
 }

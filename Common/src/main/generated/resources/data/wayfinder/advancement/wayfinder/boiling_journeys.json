@@ -1,0 +1,30 @@
+{
+  "parent": "wayfinder:wayfinder/first_of_many",
+  "criteria": {
+    "get_to_biome_in_nether": {
+      "conditions": {
+        "level": "minecraft:the_nether"
+      },
+      "trigger": "wayfinder:wayfinder_got_to_biome"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.wayfinder.boiling_journeys.description"
+    },
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "minecraft:netherrack"
+    },
+    "title": {
+      "translate": "advancements.wayfinder.boiling_journeys.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_to_biome_in_nether"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

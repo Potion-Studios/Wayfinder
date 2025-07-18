@@ -25,6 +25,7 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -125,6 +126,10 @@ class NeoForgeDatagen {
             add("advancements.wayfinder.so_it_begins.description", "Summon your first Wayfinder");
             add("advancements.wayfinder.first_of_many.title", "First of Many");
             add("advancements.wayfinder.first_of_many.description", "Complete your first full journey with a Wayfinder!");
+            add("advancements.wayfinder.boiling_journeys", "Boiling Journeys");
+            add("advancements.wayfinder.boiling_journeys.description", "Complete a full journey to a Nether Biome with a Wayfinder!");
+            add("advancements.wayfinder.familiar_lands.title", "Familiar Lands");
+            add("advancements.wayfinder.familiar_lands.description", "Complete a full journey to an End Biome with a Wayfinder!");
             add("advancements.wayfinder.ultimate_betrayal.title", "Ultimate Betrayal");
             add("advancements.wayfinder.ultimate_betrayal.description", "You should be ashamed of yourself..");
 
@@ -288,7 +293,7 @@ class NeoForgeDatagen {
                     .parent(root)
                     .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/so_it_begins"), existingFileHelper);
 
-            Advancement.Builder.advancement()
+            AdvancementHolder firstOfMany = Advancement.Builder.advancement()
                         .addCriterion("get_to_biome", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome())
                         .display(
                                 Items.MAP,
@@ -298,6 +303,28 @@ class NeoForgeDatagen {
                         )
                         .parent(soItBegins)
                         .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/first_of_many"), existingFileHelper);
+
+            Advancement.Builder.advancement()
+                    .addCriterion("get_to_biome_in_nether", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(Level.NETHER))
+                    .display(
+                            Items.NETHERRACK,
+                            translateAble("boiling_journeys.title"),
+                            translateAble("boiling_journeys.description"),
+                            null, AdvancementType.TASK, true, true, true
+                    )
+                    .parent(firstOfMany)
+                    .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/boiling_journeys"), existingFileHelper);
+
+            Advancement.Builder.advancement()
+                    .addCriterion("get_to_biome_in_end", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(Level.END))
+                    .display(
+                            Items.END_STONE,
+                            translateAble("familiar_lands.title"),
+                            translateAble("familiar_lands.description"),
+                            null, AdvancementType.TASK, true, true, true
+                    )
+                    .parent(firstOfMany)
+                    .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/familiar_lands"), existingFileHelper);
 
             Advancement.Builder.advancement()
                     .addCriterion("kill_wayfinder", WayfinderOwnerKilledTrigger.TriggerInstance.ownerKilledWayfinder())
