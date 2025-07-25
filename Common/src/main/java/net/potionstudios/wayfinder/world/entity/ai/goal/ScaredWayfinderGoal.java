@@ -34,17 +34,17 @@ public class ScaredWayfinderGoal extends Goal {
             }
 
             // If scared by an unknown cause (e.g., player hit), wait for the timer
-            if (ticksToNormal > 0) {
+            if (ticksToNormal > 0)
                 ticksToNormal--;
-                if (ticksToNormal == 0) {
-                    entity.setScared(false);
-                }
-            }
-            return;
         }
 
         // If not currently scared, check for nearby monsters
-        refreshTargets();
+        if (ticksToNormal == 0 || entity.getServer().getTickCount() % 20 == 0) {
+            refreshTargets();
+            if (targets.isEmpty())
+                entity.setScared(false);
+        }
+
         if (!targets.isEmpty()) {
             entity.setScared(true);
             wasScaredByEntity = true;
