@@ -1,12 +1,14 @@
 package net.potionstudios.wayfinder.world.level.block;
 
 import com.mojang.serialization.MapCodec;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -63,7 +65,7 @@ public class WayfinderHeartBlock extends BaseEntityBlock {
                 level.setBlockAndUpdate(pos, state.setValue(ACTIVATED, true));
                 if (!player.isCreative()) stack.shrink(cost);
                 level.playSound(null, pos, WayfinderSounds.WAYFINDER_SUMMON.get(), SoundSource.BLOCKS);
-                spawnWayfinder(level, pos.above(), player);
+                spawnWayfinder(level, pos.above(), (ServerPlayer) player);
                 return ItemInteractionResult.SUCCESS;
             }
         }
@@ -89,10 +91,11 @@ public class WayfinderHeartBlock extends BaseEntityBlock {
                 );
     }
 
-    private static void spawnWayfinder(@NotNull Level level , @NotNull BlockPos pos, @NotNull Player player) {
+    private static void spawnWayfinder(@NotNull Level level , @NotNull BlockPos pos, @NotNull ServerPlayer player) {
         WayfinderEntity wayfinder = new WayfinderEntity(level, player);
         wayfinder.setPos(pos.getX(), pos.getY() + 1, pos.getZ());
         level.addFreshEntity(wayfinder);
+        CriteriaTriggers.SUMMONED_ENTITY.trigger(player, wayfinder);
     }
 
     private static int getCost(@NotNull Player player) {
