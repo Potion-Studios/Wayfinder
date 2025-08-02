@@ -3,24 +3,17 @@
   "criteria": {
     "summon_wayfinder": {
       "conditions": {
-        "location": [
+        "entity": [
           {
-            "condition": "minecraft:location_check",
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
             "predicate": {
-              "block": {
-                "blocks": "wayfinder:wayfinder_heart"
-              }
-            }
-          },
-          {
-            "condition": "minecraft:match_tool",
-            "predicate": {
-              "items": "#c:gems/emerald"
+              "type": "wayfinder:wayfinder"
             }
           }
         ]
       },
-      "trigger": "minecraft:item_used_on_block"
+      "trigger": "minecraft:summoned_entity"
     }
   },
   "display": {

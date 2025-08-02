@@ -34,7 +34,6 @@ import net.minecraft.world.level.storage.loot.functions.SetWrittenBookPagesFunct
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.neoforged.neoforge.client.model.generators.*;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.*;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -281,9 +280,7 @@ class NeoForgeDatagen {
                     .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/a_tale_as_old_as_time"), existingFileHelper);
 
             AdvancementHolder soItBegins = Advancement.Builder.advancement()
-                    .addCriterion("summon_wayfinder", ItemUsedOnLocationTrigger.TriggerInstance.itemUsedOnBlock(LocationPredicate.Builder.location().setBlock(
-                            BlockPredicate.Builder.block().of(WayfinderBlocks.WAYFINER_HEART.get())
-                    ), ItemPredicate.Builder.item().of(Tags.Items.GEMS_EMERALD)))
+                    .addCriterion("summon_wayfinder", SummonedEntityTrigger.TriggerInstance.summonedEntity(EntityPredicate.Builder.entity().of(WayfinderEntityType.WAYFINDER.get())))
                     .display(
                             Items.EMERALD,
                             translateAble("so_it_begins.title"),
