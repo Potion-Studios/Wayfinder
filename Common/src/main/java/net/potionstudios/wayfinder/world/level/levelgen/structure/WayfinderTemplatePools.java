@@ -54,6 +54,7 @@ public class WayfinderTemplatePools {
     );
 
     //Oh The Biomes We've Gone
+    /*
     private static final ResourceKey<StructureTemplatePool> RED_ROCK_SHRINE = register("village/red_rock/wayfinder_shrine", templatePoolFactoryContext ->
             createTemplatePool(
                     getPool(templatePoolFactoryContext, ResourceKey.create(Registries.TEMPLATE_POOL, ResourceLocation.fromNamespaceAndPath("biomeswevegone", "village/red_rock/houses"))),
@@ -76,7 +77,7 @@ public class WayfinderTemplatePools {
             createTemplatePool(
                     getPool(templatePoolFactoryContext, ResourceKey.create(Registries.TEMPLATE_POOL, ResourceLocation.fromNamespaceAndPath("biomeswevegone", "village/swampy/houses"))),
                     ImmutableList.of(Pair.of(StructurePoolElement.single("wayfinder:wayfinder_swampy_shrine", getProcessor(templatePoolFactoryContext, ProcessorLists.EMPTY)), 1)), StructureTemplatePool.Projection.RIGID)
-    );
+    );*/
 
     private static StructureTemplatePool createTemplatePool(Holder<StructureTemplatePool> fallback, List<Pair<Function<StructureTemplatePool.Projection, ? extends StructurePoolElement>, Integer>> rawTemplateFactories, StructureTemplatePool.Projection projection) {
         return new StructureTemplatePool(fallback, rawTemplateFactories, projection);

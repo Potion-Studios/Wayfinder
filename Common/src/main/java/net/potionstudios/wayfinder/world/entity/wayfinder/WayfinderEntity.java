@@ -31,6 +31,7 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -237,6 +238,15 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         if (level() instanceof ServerLevel serverLevel) {
             if (isScared()) return InteractionResult.FAIL;
+	        if (player.getItemInHand(hand).is(Items.GLOW_BERRIES)) {
+				this.playSound(SoundEvents.GENERIC_EAT);
+				if (getHealth() < getMaxHealth())
+					setHealth(getHealth() + 1);
+				else level().broadcastEntityEvent(this, (byte) 14);
+
+				player.getItemInHand(hand).shrink(1);
+		        return InteractionResult.SUCCESS;
+	        }
             if (player.getUUID().equals(getOwnerUUID())) {
                 if ((foundBiomeTick + (Wayfinder.CONFIG.wayfinder.COOLDOWN.value() * 20)) > serverLevel.getServer().getTickCount()) {
                     no();
@@ -456,6 +466,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     public void handleEntityEvent(byte id) {
         if (id == 12) this.addParticlesAroundSelf(ParticleTypes.HAPPY_VILLAGER);
         else if (id == 13) this.addParticlesAroundSelf(ParticleTypes.ANGRY_VILLAGER);
+		else if (id == 14) this.addParticlesAroundSelf(ParticleTypes.HEART);
         else super.handleEntityEvent(id);
     }
 
