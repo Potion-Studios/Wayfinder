@@ -17,6 +17,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
+import net.potionstudios.wayfinder.neoforge.data.WayfinderNeoForgeAttachmentData;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.network.packet.MultiloaderPacket;
 
@@ -53,33 +54,28 @@ public final class NeoForgePlatformHandler implements PlatformHandler {
 	}
 
 	@Override
-	public boolean hasWayfinder(Player player) {
-        return player.getPersistentData().hasUUID("wayfinder") && PlatformHandler.super.hasWayfinder(player);
-	}
-
-	@Override
 	public void setWayfinder(Player player, UUID wayfinder) {
-		player.getPersistentData().putUUID("wayfinder", wayfinder);
+		WayfinderNeoForgeAttachmentData.setWayfinder(player, wayfinder);
 	}
 
 	@Override
 	public UUID getWayfinder(Player player) {
-		return player.getPersistentData().getUUID("wayfinder");
+		return WayfinderNeoForgeAttachmentData.getWayfinder(player);
 	}
 
 	@Override
 	public int getWayfinderDeaths(Player player) {
-		return player.getPersistentData().getInt("wayfinder_deaths");
+		return WayfinderNeoForgeAttachmentData.getWayfinderDeaths(player);
 	}
 
 	@Override
 	public void incrementWayfinderDeaths(Player player) {
-		player.getPersistentData().putInt("wayfinder_deaths", getWayfinderDeaths(player) + 1);
+		WayfinderNeoForgeAttachmentData.incrementWayfinderDeaths(player);
 	}
 
 	@Override
 	public void resetWayfinderDeaths(Player player) {
-		player.getPersistentData().putInt("wayfinder_deaths", 0);
+		WayfinderNeoForgeAttachmentData.resetWayfinderDeaths(player);
 	}
 
 	@Override

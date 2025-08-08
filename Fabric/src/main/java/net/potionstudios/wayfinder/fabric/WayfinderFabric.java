@@ -10,7 +10,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.fabricmc.api.ModInitializer;
 import net.potionstudios.wayfinder.commands.WayfinderCommands;
-import net.potionstudios.wayfinder.fabric.data.WayfinderAttachmentData;
+import net.potionstudios.wayfinder.fabric.data.WayfinderFabricAttachmentData;
 import net.potionstudios.wayfinder.network.protocol.WayfinderNetworking;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
@@ -23,7 +23,7 @@ public class WayfinderFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         Wayfinder.init();
-        WayfinderAttachmentData.init();
+        WayfinderFabricAttachmentData.init();
         Wayfinder.registerEntityAttributes(FabricDefaultAttributeRegistry::register);
         CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> WayfinderCommands.register(dispatcher::register)));
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(group -> group.accept(WayfinderItems.WAYFINDER_SPAWN_EGG.get()));

@@ -12,7 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
-import net.potionstudios.wayfinder.fabric.data.WayfinderAttachmentData;
+import net.potionstudios.wayfinder.fabric.data.WayfinderFabricAttachmentData;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.network.packet.MultiloaderPacket;
 
@@ -48,27 +48,27 @@ public final class FabricPlatformHandler implements PlatformHandler {
 
 	@Override
 	public void setWayfinder(Player player, UUID wayfinder) {
-		WayfinderAttachmentData.setWayfinder(player, wayfinder);
+		WayfinderFabricAttachmentData.setWayfinder(player, wayfinder);
 	}
 
 	@Override
 	public UUID getWayfinder(Player player) {
-		return WayfinderAttachmentData.getWayfinder(player);
+		return WayfinderFabricAttachmentData.getWayfinder(player);
 	}
 
 	@Override
 	public int getWayfinderDeaths(Player player) {
-		return WayfinderAttachmentData.getWayfinderDeaths(player);
+		return WayfinderFabricAttachmentData.getWayfinderDeaths(player);
 	}
 
 	@Override
 	public void incrementWayfinderDeaths(Player player) {
-		WayfinderAttachmentData.incrementWayfinderDeaths(player);
+		WayfinderFabricAttachmentData.incrementWayfinderDeaths(player);
 	}
 
 	@Override
 	public void resetWayfinderDeaths(Player player) {
-		WayfinderAttachmentData.resetWayfinderDeaths(player);
+		WayfinderFabricAttachmentData.resetWayfinderDeaths(player);
 	}
 
 	@Override

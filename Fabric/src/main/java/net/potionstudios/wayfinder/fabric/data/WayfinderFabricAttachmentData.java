@@ -11,7 +11,7 @@ import net.potionstudios.wayfinder.Wayfinder;
 import java.util.UUID;
 
 @SuppressWarnings("UnstableApiUsage")
-public class WayfinderAttachmentData {
+public class WayfinderFabricAttachmentData {
 
     private static final AttachmentType<UUID> WAYFINDER = AttachmentRegistry.create(Wayfinder.id("wayfinder"), uuidBuilder -> uuidBuilder.copyOnDeath().persistent(UUIDUtil.CODEC).initializer(() -> Util.NIL_UUID));
     private static final AttachmentType<Integer> WAYFINDER_DEATHS = AttachmentRegistry.create(Wayfinder.id("wayfinder_deaths"), integerBuilder -> integerBuilder.copyOnDeath().persistent(Codec.INT).initializer(() -> 0));

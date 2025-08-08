@@ -17,7 +17,7 @@ logoFile = "wayfinder.png"
 [[dependencies.wayfinder]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.1,)"
+versionRange = "[21.1.197,)"
 ordering = "NONE"
 side = "BOTH"
 

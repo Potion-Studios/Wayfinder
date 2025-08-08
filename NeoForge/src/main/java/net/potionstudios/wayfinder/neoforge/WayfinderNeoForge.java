@@ -13,6 +13,7 @@ import net.potionstudios.wayfinder.Wayfinder;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.potionstudios.wayfinder.commands.WayfinderCommands;
+import net.potionstudios.wayfinder.neoforge.data.WayfinderNeoForgeAttachmentData;
 import net.potionstudios.wayfinder.network.protocol.WayfinderNetworking;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
@@ -40,5 +41,6 @@ public class WayfinderNeoForge {
             WayfinderNetworking.registerS2CPackets((type, codec) -> registrar.playToClient(type, codec, (packet, context) -> packet.receiveMessage(context.player(), context::enqueueWork)));
             WayfinderNetworking.registerC2SPackets((type, codec) -> registrar.playToServer(type, codec, (packet, context) -> packet.receiveMessage(context.player(), context::enqueueWork)));
         });
+        WayfinderNeoForgeAttachmentData.init();
     }
 }
