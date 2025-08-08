@@ -41,6 +41,6 @@ public class WayfinderNeoForge {
             WayfinderNetworking.registerS2CPackets((type, codec) -> registrar.playToClient(type, codec, (packet, context) -> packet.receiveMessage(context.player(), context::enqueueWork)));
             WayfinderNetworking.registerC2SPackets((type, codec) -> registrar.playToServer(type, codec, (packet, context) -> packet.receiveMessage(context.player(), context::enqueueWork)));
         });
-        WayfinderNeoForgeAttachmentData.init();
+        WayfinderNeoForgeAttachmentData.init(eventBus);
     }
 }

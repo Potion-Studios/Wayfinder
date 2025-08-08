@@ -4,15 +4,21 @@ import com.mojang.serialization.Codec;
 import net.minecraft.Util;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.potionstudios.wayfinder.Wayfinder;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class WayfinderNeoForgeAttachmentData {
 
-    private static final AttachmentType<UUID> WAYFINDER = AttachmentType.builder(() -> Util.NIL_UUID).serialize(UUIDUtil.CODEC).copyOnDeath().build();
-    private static final AttachmentType<Integer> WAYFINDER_DEATHS = AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build();
+    private static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, Wayfinder.MOD_ID);
+
+    private static final Supplier<AttachmentType<UUID>> WAYFINDER = ATTACHMENT_TYPES.register("wayfinder", () -> AttachmentType.builder(() -> Util.NIL_UUID).serialize(UUIDUtil.CODEC).copyOnDeath().build());
+    private static final Supplier<AttachmentType<Integer>> WAYFINDER_DEATHS = ATTACHMENT_TYPES.register("wayfinder_deaths", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
 
     public static void setWayfinder(Player player, UUID wayfinder) {
         player.setData(WAYFINDER, wayfinder);
@@ -34,7 +40,8 @@ public class WayfinderNeoForgeAttachmentData {
         player.setData(WAYFINDER_DEATHS, getWayfinderDeaths(player) + 1);
     }
 
-    public static void init() {
+    public static void init(IEventBus eventBus) {
         Wayfinder.LOGGER.info("Registering Wayfinder NeoForge Attachment Data");
+        ATTACHMENT_TYPES.register(eventBus);
     }
 }
