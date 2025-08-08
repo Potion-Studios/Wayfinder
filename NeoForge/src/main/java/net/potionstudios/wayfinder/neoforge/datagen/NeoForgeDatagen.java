@@ -125,7 +125,7 @@ class NeoForgeDatagen {
             add("advancements.wayfinder.so_it_begins.description", "Summon your first Wayfinder");
             add("advancements.wayfinder.first_of_many.title", "First of Many");
             add("advancements.wayfinder.first_of_many.description", "Complete your first full journey with a Wayfinder!");
-            add("advancements.wayfinder.boiling_journeys", "Boiling Journeys");
+            add("advancements.wayfinder.boiling_journeys.title", "Boiling Journeys");
             add("advancements.wayfinder.boiling_journeys.description", "Complete a full journey to a Nether Biome with a Wayfinder!");
             add("advancements.wayfinder.familiar_lands.title", "Familiar Lands");
             add("advancements.wayfinder.familiar_lands.description", "Complete a full journey to an End Biome with a Wayfinder!");

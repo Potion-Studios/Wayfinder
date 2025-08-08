@@ -25,6 +25,7 @@ public class GoToPosGoal extends Goal {
     private final PathNavigation navigation;
     private int timeToRecalcPath;
     private int teleportWaitTime;
+    private int distance;
 
     public GoToPosGoal(WayfinderEntity wayfinder, @Nullable LivingEntity owner, Optional<BlockPos> target, double speed) {
         this.wayfinder = wayfinder;
@@ -52,6 +53,7 @@ public class GoToPosGoal extends Goal {
     public void start() {
         this.timeToRecalcPath = 0;
         this.teleportWaitTime = Wayfinder.CONFIG.wayfinder.TELEPORT_TO_OWNER.value() * 20;
+        this.distance = wayfinder.blockPosition().distManhattan(target.get());
     }
 
     @Override
@@ -78,7 +80,7 @@ public class GoToPosGoal extends Goal {
         Holder<Biome> biome = level.getBiome(wayfinder.blockPosition());
 
         if (biome.is(level.getBiome(target.get()))) {
-            WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get().trigger((ServerPlayer) owner, biome.unwrapKey().orElseThrow(), level.dimension());
+            WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get().trigger((ServerPlayer) owner, biome.unwrapKey().orElseThrow(), level.dimension(), distance);
             wayfinder.playSound(SoundEvents.AMETHYST_BLOCK_RESONATE);
             level.broadcastEntityEvent(wayfinder, (byte) 12);
             wayfinder.incrementCompletedJourneys();
