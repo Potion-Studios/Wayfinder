@@ -72,6 +72,10 @@ public interface PlatformHandler {
 
 	void resetWayfinderDeaths(Player player);
 
+    void increment3kJourneys(Player player);
+
+    int get3kJourneys(Player player);
+
 	void sendToPlayer(MultiloaderPacket packet, Player player);
 
 	void sendToServer(MultiloaderPacket packet);

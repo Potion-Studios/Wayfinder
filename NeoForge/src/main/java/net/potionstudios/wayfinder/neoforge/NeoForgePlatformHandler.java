@@ -78,7 +78,17 @@ public final class NeoForgePlatformHandler implements PlatformHandler {
 		WayfinderNeoForgeAttachmentData.resetWayfinderDeaths(player);
 	}
 
-	@Override
+    @Override
+    public void increment3kJourneys(Player player) {
+        WayfinderNeoForgeAttachmentData.increment3kJourneys(player);
+    }
+
+    @Override
+    public int get3kJourneys(Player player) {
+        return WayfinderNeoForgeAttachmentData.get3kJourneys(player);
+    }
+
+    @Override
 	public void sendToPlayer(MultiloaderPacket packet, Player player) {
 		PacketDistributor.sendToPlayer((ServerPlayer) player, packet);
 	}

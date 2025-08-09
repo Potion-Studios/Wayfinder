@@ -9,6 +9,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
@@ -65,14 +66,15 @@ public class GoToPosGoal extends Goal {
 
     @Override
     public void tick() {
-        if (owner.distanceToSqr(wayfinder) >= 200) {
+        if (owner.blockPosition().distManhattan(wayfinder.blockPosition()) >= 200) {
             navigation.stop();
             timeToRecalcPath = 0;
             teleportWaitTime--;
             if (teleportWaitTime <= 0) wayfinder.tryToTeleportToOwner();
         } else if (--this.timeToRecalcPath <= 0) {
             this.timeToRecalcPath = this.adjustedTickDelay(10);
-            this.navigation.moveTo(target.get().getX(), target.get().getY(), target.get().getZ(), speed);
+            if (this.navigation.isStuck() || this.navigation.isDone())
+                this.navigation.moveTo(target.get().getX(), target.get().getY(), target.get().getZ(), speed);
             teleportWaitTime = Wayfinder.CONFIG.wayfinder.TELEPORT_TO_OWNER.value() * 20;
         }
 
@@ -80,7 +82,9 @@ public class GoToPosGoal extends Goal {
         Holder<Biome> biome = level.getBiome(wayfinder.blockPosition());
 
         if (biome.is(level.getBiome(target.get()))) {
-            WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get().trigger((ServerPlayer) owner, biome.unwrapKey().orElseThrow(), level.dimension(), distance);
+            ServerPlayer owner = (ServerPlayer) this.owner;
+            if (distance >= 3000) PlatformHandler.PLATFORM_HANDLER.increment3kJourneys(owner);
+            WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get().trigger(owner, biome.unwrapKey().orElseThrow(), level.dimension(), distance);
             wayfinder.playSound(SoundEvents.AMETHYST_BLOCK_RESONATE);
             level.broadcastEntityEvent(wayfinder, (byte) 12);
             wayfinder.incrementCompletedJourneys();

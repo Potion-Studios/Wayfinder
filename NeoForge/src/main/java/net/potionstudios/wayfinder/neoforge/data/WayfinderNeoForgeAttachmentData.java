@@ -19,6 +19,7 @@ public class WayfinderNeoForgeAttachmentData {
 
     private static final Supplier<AttachmentType<UUID>> WAYFINDER = ATTACHMENT_TYPES.register("wayfinder", () -> AttachmentType.builder(() -> Util.NIL_UUID).serialize(UUIDUtil.CODEC).copyOnDeath().build());
     private static final Supplier<AttachmentType<Integer>> WAYFINDER_DEATHS = ATTACHMENT_TYPES.register("wayfinder_deaths", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
+    private static final Supplier<AttachmentType<Integer>> THREE_K_JOUNEYS = ATTACHMENT_TYPES.register("3k_journeys", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
 
     public static void setWayfinder(Player player, UUID wayfinder) {
         player.setData(WAYFINDER, wayfinder);
@@ -38,6 +39,14 @@ public class WayfinderNeoForgeAttachmentData {
 
     public static void incrementWayfinderDeaths(Player player) {
         player.setData(WAYFINDER_DEATHS, getWayfinderDeaths(player) + 1);
+    }
+
+    public static int get3kJourneys(Player player) {
+        return player.getData(THREE_K_JOUNEYS);
+    }
+
+    public static void increment3kJourneys(Player player) {
+        player.setData(THREE_K_JOUNEYS, get3kJourneys(player) + 1);
     }
 
     public static void init(IEventBus eventBus) {
