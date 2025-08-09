@@ -1,0 +1,31 @@
+{
+  "parent": "wayfinder:wayfinder/beginner",
+  "criteria": {
+    "20_3k_journeys": {
+      "conditions": {
+        "distance": 3000,
+        "three_k_journeys": 20
+      },
+      "trigger": "wayfinder:wayfinder_got_to_biome"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.wayfinder.novice.description"
+    },
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "minecraft:golden_boots"
+    },
+    "title": {
+      "translate": "advancements.wayfinder.novice.title"
+    }
+  },
+  "requirements": [
+    [
+      "20_3k_journeys"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

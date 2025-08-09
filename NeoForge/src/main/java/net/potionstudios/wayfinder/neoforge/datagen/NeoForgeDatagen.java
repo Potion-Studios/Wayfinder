@@ -132,6 +132,15 @@ class NeoForgeDatagen {
             add("advancements.wayfinder.ultimate_betrayal.title", "Ultimate Betrayal");
             add("advancements.wayfinder.ultimate_betrayal.description", "You should be ashamed of yourself..");
 
+            add("advancements.wayfinder.beginner.title", "Beginner Adventurer");
+            add("advancements.wayfinder.beginner.description", "Complete 10 full journeys with a Wayfinder that are over 3K blocks");
+            add("advancements.wayfinder.novice.title", "Novice Adventurer");
+            add("advancements.wayfinder.novice.description", "Complete 20 full journeys with a Wayfinder that are over 3K blocks");
+            add("advancements.wayfinder.intermediate.title", "Intermediate Adventurer");
+            add("advancements.wayfinder.intermediate.description", "Complete 30 full journeys with a Wayfinder that are over 3K blocks");
+            add("advancements.wayfinder.ultimate.title", "Ultimate Adventurer");
+            add("advancements.wayfinder.ultimate.description", "Complete 50 full journeys with a Wayfinder that are over 3K blocks");
+
             add("gui.wayfinder.button.sit", "Sit");
             add("gui.wayfinder.button.follow", "Follow");
             add("gui.wayfinder.search", "Search Biomes");
@@ -322,6 +331,50 @@ class NeoForgeDatagen {
                     )
                     .parent(firstOfMany)
                     .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/familiar_lands"), existingFileHelper);
+
+            AdvancementHolder Beginner = Advancement.Builder.advancement()
+                            .addCriterion("10_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 10))
+                            .display(
+                                    Items.LEATHER_BOOTS,
+                                    translateAble("beginner.title"),
+                                    translateAble("beginner.description"),
+                                    null, AdvancementType.TASK, true, true, true
+                            )
+                            .parent(firstOfMany)
+                            .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/beginner"), existingFileHelper);
+
+            AdvancementHolder Novice = Advancement.Builder.advancement()
+                    .addCriterion("20_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 20))
+                    .display(
+                            Items.GOLDEN_BOOTS,
+                            translateAble("novice.title"),
+                            translateAble("novice.description"),
+                            null, AdvancementType.TASK, true, true, true
+                    )
+                    .parent(Beginner)
+                    .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/novice"), existingFileHelper);
+
+            AdvancementHolder Intermediate = Advancement.Builder.advancement()
+                    .addCriterion("30_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 30))
+                    .display(
+                            Items.DIAMOND_BOOTS,
+                            translateAble("intermediate.title"),
+                            translateAble("intermediate.description"),
+                            null, AdvancementType.TASK, true, true, true
+                    )
+                    .parent(Novice)
+                    .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/intermediate"), existingFileHelper);
+
+            Advancement.Builder.advancement()
+                    .addCriterion("50_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 50))
+                    .display(
+                            Items.NETHERITE_BOOTS,
+                            translateAble("ultimate.title"),
+                            translateAble("ultimate.description"),
+                            null, AdvancementType.TASK, true, true, true
+                    )
+                    .parent(Intermediate)
+                    .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/ultimate"), existingFileHelper);
 
             Advancement.Builder.advancement()
                     .addCriterion("kill_wayfinder", WayfinderOwnerKilledTrigger.TriggerInstance.ownerKilledWayfinder())
