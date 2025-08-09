@@ -5,7 +5,7 @@ import net.fabricmc.loom.api.LoomGradleExtensionAPI
 plugins {
     id("architectury-plugin") version "3.4-SNAPSHOT"
     id("dev.architectury.loom") version "1.10-SNAPSHOT" apply false
-    id("com.gradleup.shadow") version "8.3.8" apply false
+    id("com.gradleup.shadow") version "9.0.0" apply false
     id("com.hypherionmc.modutils.modpublisher") version "2.+"
     java
     idea
@@ -104,7 +104,7 @@ subprojects {
             curseID.set("1204282")
             modrinthID.set("909sOSOR")
             githubRepo.set("https://github.com/Potion-Studios/Wayfinder")
-            setReleaseType(ReleaseType.ALPHA)
+            setReleaseType(ReleaseType.BETA)
             setGameVersions(minecraftVersion)
             setCurseEnvironment(CurseEnvironment.BOTH)
             setJavaVersions(JavaVersion.VERSION_21, JavaVersion.VERSION_22)
