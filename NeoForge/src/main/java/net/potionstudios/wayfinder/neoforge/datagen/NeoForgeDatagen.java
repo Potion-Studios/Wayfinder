@@ -8,6 +8,7 @@ import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -16,6 +17,7 @@ import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
+import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
@@ -24,8 +26,10 @@ import net.minecraft.server.network.Filterable;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -34,6 +38,7 @@ import net.minecraft.world.level.storage.loot.functions.SetWrittenBookPagesFunct
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.neoforged.neoforge.client.model.generators.*;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.*;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -47,6 +52,7 @@ import net.potionstudios.wayfinder.tags.WayfinderBiomeTags;
 import net.potionstudios.wayfinder.tags.WayfinderEntityTypeTags;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntityType;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
+import net.potionstudios.wayfinder.world.item.jukebox.WayfinderJukeBoxSongs;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
 import net.potionstudios.wayfinder.world.level.block.WayfinderHeartBlock;
 import net.potionstudios.wayfinder.world.level.levelgen.structure.WayfinderTemplatePools;
@@ -80,6 +86,8 @@ class NeoForgeDatagen {
         generator.addProvider(event.includeServer(), new LootGenerator(output, lookupProvider));
         generator.addProvider(event.includeServer(), new AdvancementProvider(output, lookupProvider, existingFileHelper, ImmutableList.of(new AdvancementGenerator())));
         generator.addProvider(event.includeServer(), new EntityTypeTagsGenerator(output, lookupProvider, existingFileHelper));
+        BlockTagsGenerator blockTagsGenerator = generator.addProvider(event.includeServer(), new BlockTagsGenerator(output, lookupProvider, existingFileHelper));
+        generator.addProvider(event.includeServer(), new ItemTagsGenerator(output, lookupProvider, blockTagsGenerator.contentsGetter(), existingFileHelper));
         generator.addProvider(event.includeServer(), new BiomeTagsGenerator(output, lookupProvider, existingFileHelper));
     }
 
@@ -99,7 +107,11 @@ class NeoForgeDatagen {
             add("subtitles.entity.wayfinder.shield_break", "Wayfinder shield breaks");
 
             addItem(WayfinderItems.WAYFINDER_SPAWN_EGG, "Wayfinder Spawn Egg");
+            addItem(WayfinderItems.MUSIC_DISC_SWEET_DREAMS, "Music Disc");
             addBlock(WayfinderBlocks.WAYFINER_HEART, "Wayfinder Heart");
+
+            add("item." + Wayfinder.MOD_ID + ".music_disc_sweet_dreams.desc", "AOCAWOL - Sweet Dreams");
+            add("jukebox_song." + WayfinderJukeBoxSongs.SWEET_DREAMS.location().toLanguageKey(), "AOCAWOL - Sweet Dreams");
 
             add("wayfinder.commands.reload.success", "Wayfinder config reloaded");
             add("wayfinder.commands.deaths", "%s has %s Wayfinder deaths");
@@ -177,6 +189,7 @@ class NeoForgeDatagen {
             add(WayfinderSounds.WAYFINDER_SUMMON, definition().with(sound(Wayfinder.id("entity/wayfinder/summon"))).subtitle(subtitle("entity.wayfinder.summon")));
             add(WayfinderSounds.WAYFINDER_NO, definition().with(sound(Wayfinder.id("entity/wayfinder/no"))).subtitle(subtitle("entity.wayfinder.no")));
             add(WayfinderSounds.WAYFINDER_SCARED, definition().with(sound(Wayfinder.id("entity/wayfinder/scared"))).subtitle(subtitle("entity.wayfinder.scared")));
+            add(WayfinderSounds.MUSIC_DISC_SWEET_DREAMS.get().value(), definition().with(sound(Wayfinder.id("music/disc/sweet_dreams"))));
         }
 
         private String subtitle(String subtitle) {
@@ -193,6 +206,11 @@ class NeoForgeDatagen {
         @Override
         protected void registerModels() {
             spawnEggItem(WayfinderItems.WAYFINDER_SPAWN_EGG.get());
+            withExistingParent(key(WayfinderItems.MUSIC_DISC_SWEET_DREAMS.get()).getPath(), mcLoc("minecraft:item/template_music_disc")).texture("layer0", Wayfinder.id(ModelProvider.ITEM_FOLDER + "/" + key(WayfinderItems.MUSIC_DISC_SWEET_DREAMS.get()).getPath()));
+        }
+
+        private ResourceLocation key(Item item) {
+            return BuiltInRegistries.ITEM.getKey(item);
         }
     }
 
@@ -393,6 +411,28 @@ class NeoForgeDatagen {
         }
     }
 
+    private static class BlockTagsGenerator extends BlockTagsProvider {
+        public BlockTagsGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+            super(output, lookupProvider, Wayfinder.MOD_ID, existingFileHelper);
+        }
+
+        @Override
+        protected void addTags(HolderLookup.@NotNull Provider provider) {
+
+        }
+    }
+
+    private static class ItemTagsGenerator extends ItemTagsProvider {
+        private ItemTagsGenerator(PackOutput arg, CompletableFuture<HolderLookup.Provider> completableFuture, CompletableFuture<TagLookup<Block>> completableFuture2, @Nullable ExistingFileHelper existingFileHelper) {
+            super(arg, completableFuture, completableFuture2, Wayfinder.MOD_ID, existingFileHelper);
+        }
+
+        @Override
+        protected void addTags(HolderLookup.@NotNull Provider provider) {
+            tag(Tags.Items.MUSIC_DISCS).add(WayfinderItems.MUSIC_DISC_SWEET_DREAMS.get());
+        }
+    }
+
     private static class EntityTypeTagsGenerator extends EntityTypeTagsProvider {
         private EntityTypeTagsGenerator(PackOutput arg, CompletableFuture<HolderLookup.Provider> completableFuture, @Nullable ExistingFileHelper existingFileHelper) {
             super(arg, completableFuture, Wayfinder.MOD_ID, existingFileHelper);
@@ -419,5 +459,6 @@ class NeoForgeDatagen {
 
     private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
             .add(Registries.TEMPLATE_POOL, context -> WayfinderTemplatePools.TEMPLATE_POOL_FACTORIES.forEach((templatePoolResourceKey, templatePoolFactory) -> context.register(templatePoolResourceKey, templatePoolFactory.generate(context))))
-            .add(Registries.PROCESSOR_LIST, pContext -> WayfinderStructureProcessorLists.STRUCTURE_PROCESSOR_LIST_FACTORIES.forEach((structureProcessorListResourceKey, processorListFactory) -> pContext.register(structureProcessorListResourceKey, processorListFactory.generate(pContext.lookup(Registries.PROCESSOR_LIST)))));
+            .add(Registries.PROCESSOR_LIST, pContext -> WayfinderStructureProcessorLists.STRUCTURE_PROCESSOR_LIST_FACTORIES.forEach((structureProcessorListResourceKey, processorListFactory) -> pContext.register(structureProcessorListResourceKey, processorListFactory.generate(pContext.lookup(Registries.PROCESSOR_LIST)))))
+            .add(Registries.JUKEBOX_SONG, pContext -> WayfinderJukeBoxSongs.JUKEBOX_SONG_FACTORIES.forEach((songResourceKey, songFactory) -> pContext.register(songResourceKey, songFactory.generate(pContext))));
 }

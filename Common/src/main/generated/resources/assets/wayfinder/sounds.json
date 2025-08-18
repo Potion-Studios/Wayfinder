@@ -1,4 +1,9 @@
 {
+  "music_disc.sweet_dreams": {
+    "sounds": [
+      "wayfinder:music/disc/sweet_dreams"
+    ]
+  },
   "wayfinder.death": {
     "sounds": [
       "wayfinder:entity/wayfinder/death"

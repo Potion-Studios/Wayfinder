@@ -1,5 +1,6 @@
 package net.potionstudios.wayfinder.sounds;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
 import net.potionstudios.wayfinder.PlatformHandler;
@@ -24,8 +25,14 @@ public class WayfinderSounds {
     public static final Supplier<SoundEvent> WAYFINDER_NO = createVariableRangeEvent("wayfinder.no");
     public static final Supplier<SoundEvent> WAYFINDER_SCARED = createVariableRangeEvent("wayfinder.scared");
 
+    public static final Supplier<Holder.Reference<SoundEvent>> MUSIC_DISC_SWEET_DREAMS = registerSoundEventHolder("music_disc.sweet_dreams");
+
     private static Supplier<SoundEvent> createVariableRangeEvent(String id) {
         return PlatformHandler.PLATFORM_HANDLER.register(BuiltInRegistries.SOUND_EVENT, id, () -> SoundEvent.createVariableRangeEvent(Wayfinder.id(id)));
+    }
+
+    private static Supplier<Holder.Reference<SoundEvent>> registerSoundEventHolder(String id) {
+        return PlatformHandler.PLATFORM_HANDLER.registerForHolder(BuiltInRegistries.SOUND_EVENT, id, () -> SoundEvent.createVariableRangeEvent(Wayfinder.id(id)));
     }
 
     public static void sounds() {
