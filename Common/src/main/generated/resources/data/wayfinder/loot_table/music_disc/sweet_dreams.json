@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:advancement_reward",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "wayfinder:music_disc_sweet_dreams"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "wayfinder:music_disc/sweet_dreams"
+}

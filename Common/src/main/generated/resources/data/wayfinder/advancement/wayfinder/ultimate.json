@@ -27,5 +27,10 @@
       "50_3k_journeys"
     ]
   ],
+  "rewards": {
+    "loot": [
+      "wayfinder:music_disc/sweet_dreams"
+    ]
+  },
   "sends_telemetry_event": true
 }

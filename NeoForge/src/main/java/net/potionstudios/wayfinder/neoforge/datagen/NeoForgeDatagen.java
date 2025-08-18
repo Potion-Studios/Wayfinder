@@ -272,6 +272,7 @@ class NeoForgeDatagen {
     }
 
     private static final ResourceKey<LootTable> bookTable = Wayfinder.key(Registries.LOOT_TABLE, "book");
+    private static final ResourceKey<LootTable> sweetDreamsTable = Wayfinder.key(Registries.LOOT_TABLE, "music_disc/sweet_dreams");
 
     private static class AdvancementLootGenerator implements LootTableSubProvider {
 
@@ -289,6 +290,8 @@ class NeoForgeDatagen {
                                                     Filterable.passThrough(Component.translatable("wayfinder.book.story.page3")),
                                                     Filterable.passThrough(Component.translatable("wayfinder.book.story.page4"))),
                                             ListOperation.Append.INSTANCE))))));
+
+            output.accept(sweetDreamsTable, LootTable.lootTable().withPool(LootPool.lootPool().add(LootItem.lootTableItem(WayfinderItems.MUSIC_DISC_SWEET_DREAMS.get()))));
         }
     }
 
@@ -391,6 +394,7 @@ class NeoForgeDatagen {
                             translateAble("ultimate.description"),
                             null, AdvancementType.TASK, true, true, true
                     )
+                    .rewards(new AdvancementRewards.Builder().addLootTable(sweetDreamsTable).build())
                     .parent(Intermediate)
                     .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/ultimate"), existingFileHelper);
 
