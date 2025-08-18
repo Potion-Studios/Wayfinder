@@ -27,6 +27,7 @@
   "gui.wayfinder.button.stop": "Stoppen",
   "gui.wayfinder.description": "Glückwunsch zum Beschwören eines Wegweisers! Diese Mod zielt darauf ab, dem Spieler eine einzigartige, lorefreundliche Möglichkeit zur Erkundung zu bieten! Wähle einfach das Biom, das du finden möchtest, und folge dem Wegweiser! Sei vorsichtig, feindliche Mobs greifen ihn an, also musst du ihn verteidigen! Stirbt dein Wegweiser, musst du einen neuen Schrein finden und ihn mit mehr Smaragden beschwören!",
   "gui.wayfinder.search": "Nach Biomen suchen",
+  "item.wayfinder.music_disc_sweet_dreams": "Schallplatte",
   "item.wayfinder.wayfinder_spawn_egg": "Wegweiser-Spawn-Ei",
   "subtitles.entity.wayfinder.death": "Wegweiser stirbt",
   "subtitles.entity.wayfinder.hurt0": "Wegweiser verletzt",
