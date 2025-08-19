@@ -100,6 +100,7 @@ class NeoForgeDatagen {
         @Override
         protected void addTranslations() {
             addEntityType(WayfinderEntityType.WAYFINDER, "Wayfinder");
+            add("subtitles.entity.wayfinder.idle", "Wayfinder Giggles");
             add("subtitles.entity.wayfinder.death", "Wayfinder dies");
             add("subtitles.entity.wayfinder.hurt0", "Wayfinder hurts");
             add("subtitles.entity.wayfinder.hurt1", "Wayfinder hurts");
@@ -175,12 +176,12 @@ class NeoForgeDatagen {
 
         @Override
         public void registerSounds() {
-            add(WayfinderSounds.WAYFINDER_IDLE0, definition().with(sound(Wayfinder.id("entity/wayfinder/idle0"))).subtitle(subtitle("entity.wayfinder.idle0")));
-            add(WayfinderSounds.WAYFINDER_IDLE1, definition().with(sound(Wayfinder.id("entity/wayfinder/idle1"))).subtitle(subtitle("entity.wayfinder.idle1")));
-            add(WayfinderSounds.WAYFINDER_IDLE2, definition().with(sound(Wayfinder.id("entity/wayfinder/idle2"))).subtitle(subtitle("entity.wayfinder.idle2")));
-            add(WayfinderSounds.WAYFINDER_IDLE3, definition().with(sound(Wayfinder.id("entity/wayfinder/idle3"))).subtitle(subtitle("entity.wayfinder.idle3")));
-            add(WayfinderSounds.WAYFINDER_IDLE4, definition().with(sound(Wayfinder.id("entity/wayfinder/idle4"))).subtitle(subtitle("entity.wayfinder.idle4")));
-            add(WayfinderSounds.WAYFINDER_IDLE5, definition().with(sound(Wayfinder.id("entity/wayfinder/idle5"))).subtitle(subtitle("entity.wayfinder.idle5")));
+            add(WayfinderSounds.WAYFINDER_IDLE0, definition().with(sound(Wayfinder.id("entity/wayfinder/idle0"))).subtitle(subtitle("entity.wayfinder.idle")));
+            add(WayfinderSounds.WAYFINDER_IDLE1, definition().with(sound(Wayfinder.id("entity/wayfinder/idle1"))).subtitle(subtitle("entity.wayfinder.idle")));
+            add(WayfinderSounds.WAYFINDER_IDLE2, definition().with(sound(Wayfinder.id("entity/wayfinder/idle2"))).subtitle(subtitle("entity.wayfinder.idle")));
+            add(WayfinderSounds.WAYFINDER_IDLE3, definition().with(sound(Wayfinder.id("entity/wayfinder/idle3"))).subtitle(subtitle("entity.wayfinder.idle")));
+            add(WayfinderSounds.WAYFINDER_IDLE4, definition().with(sound(Wayfinder.id("entity/wayfinder/idle4"))).subtitle(subtitle("entity.wayfinder.idle")));
+            add(WayfinderSounds.WAYFINDER_IDLE5, definition().with(sound(Wayfinder.id("entity/wayfinder/idle5"))).subtitle(subtitle("entity.wayfinder.idle")));
             add(WayfinderSounds.WAYFINDER_DEATH, definition().with(sound(Wayfinder.id("entity/wayfinder/death"))).subtitle(subtitle("entity.wayfinder.death")));
             add(WayfinderSounds.WAYFINDER_HURT0, definition().with(sound(Wayfinder.id("entity/wayfinder/hurt0"))).subtitle(subtitle("entity.wayfinder.hurt0")));
             add(WayfinderSounds.WAYFINDER_HURT1, definition().with(sound(Wayfinder.id("entity/wayfinder/hurt1"))).subtitle(subtitle("entity.wayfinder.hurt1")));
