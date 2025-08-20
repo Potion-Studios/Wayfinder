@@ -21,7 +21,6 @@ import net.potionstudios.wayfinder.world.entity.block.WayfinderBlockEntityType;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
-import net.potionstudios.wayfinder.world.level.levelgen.structure.WayfinderTemplatePools;
 import org.slf4j.Logger;
 
 import java.util.function.BiConsumer;
@@ -48,7 +47,6 @@ public class Wayfinder {
         WayfinderEntityType.entities();
         WayfinderCriteriaTriggers.criteriaTriggers();
         WayfinderEntitySubPredicates.entitySubPredicates();
-        WayfinderTemplatePools.templatePools();
     }
 
     /**
