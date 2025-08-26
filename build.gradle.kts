@@ -44,6 +44,7 @@ subprojects {
         }
         maven("https://jitpack.io")
         maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
+        maven("https://maven.jt-dev.tech/releases")
     }
 
     @Suppress("UnstableApiUsage")

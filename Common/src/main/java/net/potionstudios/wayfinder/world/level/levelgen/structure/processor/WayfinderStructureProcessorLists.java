@@ -69,7 +69,7 @@ public class WayfinderStructureProcessorLists {
 		)
 	));
 
-	public static final ResourceKey<StructureProcessorList> GRASSY_SHRINE = register("grassy_shrine", structureProcessorListHolderGetter -> new StructureProcessorList(
+	public static final ResourceKey<StructureProcessorList> PLAINS_SHRINE = register("plains_shrine", structureProcessorListHolderGetter -> new StructureProcessorList(
 			ImmutableList.of(
 					createRuleProcessor(
 							createAlwaysTrueRandomBlockMatchTest(Blocks.MOSSY_COBBLESTONE, 0.1f, Blocks.CRACKED_STONE_BRICKS),
