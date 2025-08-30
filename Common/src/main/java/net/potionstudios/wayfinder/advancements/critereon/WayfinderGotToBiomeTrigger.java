@@ -26,48 +26,55 @@ public class WayfinderGotToBiomeTrigger extends SimpleCriterionTrigger<Wayfinder
         super.trigger(player, triggerInstance -> triggerInstance.matches(player, biome, level, distance));
     }
 
-    public record TriggerInstance(Optional<ContextAwarePredicate> player, Optional<ResourceKey<Biome>> biome, Optional<ResourceKey<Level>> level, Optional<Integer> distance, Optional<Integer> threeKJourneys) implements SimpleCriterionTrigger.SimpleInstance {
+    public record TriggerInstance(Optional<ContextAwarePredicate> player, Optional<ResourceKey<Biome>> biome, Optional<ResourceKey<Level>> level, Optional<Integer> distance, Optional<Integer> threeKJourneys, Optional<String> modid) implements SimpleCriterionTrigger.SimpleInstance {
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
                             EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
                             ResourceKey.codec(Registries.BIOME).optionalFieldOf("biome").forGetter(TriggerInstance::biome),
                             ResourceKey.codec(Registries.DIMENSION).optionalFieldOf("level").forGetter(TriggerInstance::level),
                             Codec.INT.optionalFieldOf("distance").forGetter(TriggerInstance::distance),
-                            Codec.INT.optionalFieldOf("three_k_journeys").forGetter(TriggerInstance::threeKJourneys)
+                            Codec.INT.optionalFieldOf("three_k_journeys").forGetter(TriggerInstance::threeKJourneys),
+                            Codec.STRING.optionalFieldOf("modid").forGetter(TriggerInstance::modid)
                         )
                         .apply(instance, TriggerInstance::new)
         );
 
         public static Criterion<TriggerInstance> gotToBiome() {
             return WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get()
-                    .createCriterion(new TriggerInstance(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
+                    .createCriterion(new TriggerInstance(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
         }
 
         public static Criterion<TriggerInstance> gotToBiome(ResourceKey<Level> level) {
             return WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get()
-                    .createCriterion(new TriggerInstance(Optional.empty(), Optional.empty(), Optional.of(level), Optional.empty(), Optional.empty()));
+                    .createCriterion(new TriggerInstance(Optional.empty(), Optional.empty(), Optional.of(level), Optional.empty(), Optional.empty(), Optional.empty()));
         }
 
         public static Criterion<TriggerInstance> gotToBiome(ResourceKey<Biome> biome, ResourceKey<Level> level, int distance) {
             return WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get()
-                    .createCriterion(new TriggerInstance(Optional.empty(), Optional.of(biome), Optional.of(level), Optional.of(distance), Optional.empty()));
+                    .createCriterion(new TriggerInstance(Optional.empty(), Optional.of(biome), Optional.of(level), Optional.of(distance), Optional.empty(), Optional.empty()));
         }
 
         public static Criterion<TriggerInstance> gotToBiome(ResourceKey<Level> level, int distance) {
             return WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get()
-                    .createCriterion(new TriggerInstance(Optional.empty(), Optional.empty(), Optional.of(level), Optional.of(distance), Optional.empty()));
+                    .createCriterion(new TriggerInstance(Optional.empty(), Optional.empty(), Optional.of(level), Optional.of(distance), Optional.empty(), Optional.empty()));
         }
 
         public static Criterion<TriggerInstance> gotToBiome(int distance, int threeKJourneys) {
             return WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get()
-                    .createCriterion(new TriggerInstance(Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(distance), Optional.of(threeKJourneys)));
+                    .createCriterion(new TriggerInstance(Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(distance), Optional.of(threeKJourneys), Optional.empty()));
+        }
+
+        public static Criterion<TriggerInstance> gotToBiome(String modid) {
+            return WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get()
+                    .createCriterion(new TriggerInstance(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(modid)));
         }
 
         public boolean matches(ServerPlayer player, ResourceKey<Biome> biome, ResourceKey<Level> level, int distance) {
             return this.biome.map(b -> b.equals(biome)).orElse(true) &&
                    this.level.map(l -> l.equals(level)).orElse(true) &&
                    this.distance.map(d -> d <= distance).orElse(true) &&
-                   this.threeKJourneys.map(t -> t == PlatformHandler.PLATFORM_HANDLER.get3kJourneys(player)).orElse(true);
+                   this.threeKJourneys.map(t -> t == PlatformHandler.PLATFORM_HANDLER.get3kJourneys(player)).orElse(true) &&
+                    this.modid.map(m -> biome.location().getNamespace().equals(m)).orElse(true);
         }
     }
 }

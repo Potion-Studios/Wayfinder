@@ -40,6 +40,8 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.neoforged.neoforge.client.model.generators.*;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.*;
+import net.potionstudios.biomeswevegone.BiomesWeveGone;
+import net.potionstudios.biomeswevegone.world.item.BWGItems;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -152,6 +154,8 @@ class NeoForgeDatagen {
             add("advancements.wayfinder.intermediate.description", "Complete 30 full journeys with a Wayfinder that are over 3K blocks");
             add("advancements.wayfinder.ultimate.title", "Ultimate Adventurer");
             add("advancements.wayfinder.ultimate.description", "Complete 50 full journeys with a Wayfinder that are over 3K blocks");
+            add("advancements.wayfinder.boundless_exploration.title", "Boundless Exploration");
+            add("advancements.wayfinder.boundless_exploration.description", "Your Wayfinder has their work cut out for them...");
 
             add("gui.wayfinder.button.sit", "Sit");
             add("gui.wayfinder.button.follow", "Follow");
@@ -408,6 +412,17 @@ class NeoForgeDatagen {
                     )
                     .parent(soItBegins)
                     .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/ultimate_betrayal"), existingFileHelper);
+
+            Advancement.Builder.advancement()
+                    .addCriterion("bwg_biome", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(BiomesWeveGone.MOD_ID))
+                    .display(
+                            BWGItems.BWG_LOGO.get(),
+                            translateAble("boundless_exploration.title"),
+                            translateAble("boundless_exploration.description"),
+                            null, AdvancementType.CHALLENGE, true, false, true
+                    )
+                    .parent(firstOfMany)
+                    .save(consumer, Wayfinder.id(BiomesWeveGone.MOD_ID + "/boundless_exploration"), existingFileHelper);
         }
 
         private static MutableComponent translateAble(String key) {

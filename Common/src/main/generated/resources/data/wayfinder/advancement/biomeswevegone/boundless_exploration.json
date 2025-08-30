@@ -1,0 +1,32 @@
+{
+  "parent": "wayfinder:wayfinder/first_of_many",
+  "criteria": {
+    "bwg_biome": {
+      "conditions": {
+        "modid": "biomeswevegone"
+      },
+      "trigger": "wayfinder:wayfinder_got_to_biome"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.wayfinder.boundless_exploration.description"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "biomeswevegone:bwg_logo"
+    },
+    "title": {
+      "translate": "advancements.wayfinder.boundless_exploration.title"
+    }
+  },
+  "requirements": [
+    [
+      "bwg_biome"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
