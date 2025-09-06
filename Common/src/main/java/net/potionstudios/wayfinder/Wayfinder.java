@@ -4,7 +4,6 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,7 +21,6 @@ import net.potionstudios.wayfinder.world.entity.block.WayfinderBlockEntityType;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
-import net.potionstudios.wayfinder.world.level.levelgen.structure.village.VillageShrines;
 import org.slf4j.Logger;
 
 import java.util.function.BiConsumer;
@@ -49,15 +47,6 @@ public class Wayfinder {
         WayfinderEntityType.entities();
         WayfinderCriteriaTriggers.criteriaTriggers();
         WayfinderEntitySubPredicates.entitySubPredicates();
-    }
-
-    /**
-     * Runs when the server starts.
-     * This is used to set up village shrines.
-     * @param server the Minecraft server
-     */
-    public static void onServerStart(MinecraftServer server) {
-        VillageShrines.setUp(server.registryAccess());
     }
 
     /**

@@ -6,7 +6,6 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.HandlerThread;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -37,7 +36,6 @@ public class WayfinderNeoForge {
                 event.accept(WayfinderBlocks.WAYFINER_HEART.get());
         });
         EVENT_BUS.addListener((EntityJoinLevelEvent event) -> Wayfinder.onEntityLoad(event.getEntity()));
-        EVENT_BUS.addListener((ServerAboutToStartEvent event) -> Wayfinder.onServerStart(event.getServer()));
         eventBus.addListener((RegisterPayloadHandlersEvent event) -> {
             final PayloadRegistrar registrar = event.registrar(Wayfinder.MOD_ID).executesOn(HandlerThread.NETWORK);
             WayfinderNetworking.registerS2CPackets((type, codec) -> registrar.playToClient(type, codec, (packet, context) -> packet.receiveMessage(context.player(), context::enqueueWork)));

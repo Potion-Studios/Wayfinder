@@ -6,7 +6,7 @@
   "client": [
   ],
   "mixins": [
-    "StructureTemplatePoolMixin"
+    "JigsawPlacementMixin"
   ],
   "injectors": {
     "defaultRequire": 1
