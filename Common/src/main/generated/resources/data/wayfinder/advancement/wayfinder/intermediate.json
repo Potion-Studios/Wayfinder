@@ -1,10 +1,10 @@
 {
   "parent": "wayfinder:wayfinder/novice",
   "criteria": {
-    "30_3k_journeys": {
+    "8_3k_journeys": {
       "conditions": {
         "distance": 3000,
-        "three_k_journeys": 30
+        "three_k_journeys": 8
       },
       "trigger": "wayfinder:wayfinder_got_to_biome"
     }
@@ -13,7 +13,6 @@
     "description": {
       "translate": "advancements.wayfinder.intermediate.description"
     },
-    "hidden": true,
     "icon": {
       "count": 1,
       "id": "minecraft:diamond_boots"
@@ -24,7 +23,7 @@
   },
   "requirements": [
     [
-      "30_3k_journeys"
+      "8_3k_journeys"
     ]
   ],
   "sends_telemetry_event": true

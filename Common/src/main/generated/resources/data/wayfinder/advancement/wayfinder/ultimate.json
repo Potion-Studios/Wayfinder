@@ -1,10 +1,10 @@
 {
   "parent": "wayfinder:wayfinder/intermediate",
   "criteria": {
-    "50_3k_journeys": {
+    "12_3k_journeys": {
       "conditions": {
         "distance": 3000,
-        "three_k_journeys": 50
+        "three_k_journeys": 12
       },
       "trigger": "wayfinder:wayfinder_got_to_biome"
     }
@@ -13,7 +13,6 @@
     "description": {
       "translate": "advancements.wayfinder.ultimate.description"
     },
-    "hidden": true,
     "icon": {
       "count": 1,
       "id": "minecraft:netherite_boots"
@@ -24,7 +23,7 @@
   },
   "requirements": [
     [
-      "50_3k_journeys"
+      "12_3k_journeys"
     ]
   ],
   "rewards": {

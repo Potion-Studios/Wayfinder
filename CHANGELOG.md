@@ -1,4 +1,6 @@
 # 1.0.2-Beta
+- Make some advancements visible
+- Decrease amount of journeys for each adventure advancement
 
 # 1.0.1-Beta
 - Add Boundless Exploration Advancement

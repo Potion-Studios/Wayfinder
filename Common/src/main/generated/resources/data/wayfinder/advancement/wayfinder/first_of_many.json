@@ -9,7 +9,6 @@
     "description": {
       "translate": "advancements.wayfinder.first_of_many.description"
     },
-    "hidden": true,
     "icon": {
       "count": 1,
       "id": "minecraft:map"

@@ -331,7 +331,7 @@ class NeoForgeDatagen {
                                 Items.MAP,
                                 translateAble("first_of_many.title"),
                                 translateAble("first_of_many.description"),
-                                null, AdvancementType.TASK, true, true, true
+                                null, AdvancementType.TASK, true, true, false
                         )
                         .parent(soItBegins)
                         .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/first_of_many"), existingFileHelper);
@@ -342,7 +342,7 @@ class NeoForgeDatagen {
                             Items.NETHERRACK,
                             translateAble("boiling_journeys.title"),
                             translateAble("boiling_journeys.description"),
-                            null, AdvancementType.TASK, true, true, true
+                            null, AdvancementType.TASK, true, true, false
                     )
                     .parent(firstOfMany)
                     .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/boiling_journeys"), existingFileHelper);
@@ -353,51 +353,51 @@ class NeoForgeDatagen {
                             Items.END_STONE,
                             translateAble("familiar_lands.title"),
                             translateAble("familiar_lands.description"),
-                            null, AdvancementType.TASK, true, true, true
+                            null, AdvancementType.TASK, true, true, false
                     )
                     .parent(firstOfMany)
                     .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/familiar_lands"), existingFileHelper);
 
             AdvancementHolder Beginner = Advancement.Builder.advancement()
-                            .addCriterion("10_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 10))
+                            .addCriterion("3_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 3))
                             .display(
                                     Items.LEATHER_BOOTS,
                                     translateAble("beginner.title"),
                                     translateAble("beginner.description"),
-                                    null, AdvancementType.TASK, true, true, true
+                                    null, AdvancementType.TASK, true, true, false
                             )
                             .parent(firstOfMany)
                             .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/beginner"), existingFileHelper);
 
             AdvancementHolder Novice = Advancement.Builder.advancement()
-                    .addCriterion("20_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 20))
+                    .addCriterion("5_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 5))
                     .display(
                             Items.GOLDEN_BOOTS,
                             translateAble("novice.title"),
                             translateAble("novice.description"),
-                            null, AdvancementType.TASK, true, true, true
+                            null, AdvancementType.TASK, true, true, false
                     )
                     .parent(Beginner)
                     .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/novice"), existingFileHelper);
 
             AdvancementHolder Intermediate = Advancement.Builder.advancement()
-                    .addCriterion("30_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 30))
+                    .addCriterion("8_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 8))
                     .display(
                             Items.DIAMOND_BOOTS,
                             translateAble("intermediate.title"),
                             translateAble("intermediate.description"),
-                            null, AdvancementType.TASK, true, true, true
+                            null, AdvancementType.TASK, true, true, false
                     )
                     .parent(Novice)
                     .save(consumer, Wayfinder.id(Wayfinder.MOD_ID + "/intermediate"), existingFileHelper);
 
             Advancement.Builder.advancement()
-                    .addCriterion("50_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 50))
+                    .addCriterion("12_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 12))
                     .display(
                             Items.NETHERITE_BOOTS,
                             translateAble("ultimate.title"),
                             translateAble("ultimate.description"),
-                            null, AdvancementType.TASK, true, true, true
+                            null, AdvancementType.TASK, true, true, false
                     )
                     .rewards(new AdvancementRewards.Builder().addLootTable(sweetDreamsTable).build())
                     .parent(Intermediate)

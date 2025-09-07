@@ -1,10 +1,10 @@
 {
   "parent": "wayfinder:wayfinder/first_of_many",
   "criteria": {
-    "10_3k_journeys": {
+    "3_3k_journeys": {
       "conditions": {
         "distance": 3000,
-        "three_k_journeys": 10
+        "three_k_journeys": 3
       },
       "trigger": "wayfinder:wayfinder_got_to_biome"
     }
@@ -13,7 +13,6 @@
     "description": {
       "translate": "advancements.wayfinder.beginner.description"
     },
-    "hidden": true,
     "icon": {
       "count": 1,
       "id": "minecraft:leather_boots"
@@ -24,7 +23,7 @@
   },
   "requirements": [
     [
-      "10_3k_journeys"
+      "3_3k_journeys"
     ]
   ],
   "sends_telemetry_event": true
