@@ -4,6 +4,7 @@
 - Add Ambient Sound Subtitle
 - Add Support for Oh The Biomes We've Gone Villages
 - Update Wayfinder Heart Block and Wayfinder textures
+- Add German Translations (de_de)
 
 # 1.0.0-Beta
 - Initial release

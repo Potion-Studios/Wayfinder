@@ -36,6 +36,8 @@ public class WayfinderForge {
                 event.accept(WayfinderItems.WAYFINDER_SPAWN_EGG.get());
             else if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS)
                 event.accept(WayfinderBlocks.WAYFINER_HEART.get());
+            else if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES)
+                event.accept(WayfinderItems.MUSIC_DISC_SWEET_DREAMS.get());
         });
         EVENT_BUS.addListener((EntityJoinLevelEvent event) -> Wayfinder.onEntityLoad(event.getEntity()));
         ForgeNetworking.init();

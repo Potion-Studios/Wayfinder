@@ -58,5 +58,7 @@
   "wayfinder.commands.reload.success": "Wegweiser-Konfiguration neu geladen",
   "wayfinder.commands.remove.fail": "%s hat keinen Wegweiser",
   "wayfinder.commands.remove.kill.success": "%s's Wegweiser wurde entfernt und getötet",
-  "wayfinder.commands.remove.success": "%s's Wegweiser wurde entfernt"
+  "wayfinder.commands.remove.success": "%s's Wegweiser wurde entfernt",
+  "item.wayfinder.music_disc_sweet_dreams.desc": "AOCAWOL - Sweet Dreams",
+  "jukebox_song.wayfinder.pixie_club": "AOCAWOL - Sweet Dreams"
 }

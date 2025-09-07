@@ -28,6 +28,7 @@ public class WayfinderFabric implements ModInitializer {
         CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> WayfinderCommands.register(dispatcher::register)));
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(group -> group.accept(WayfinderItems.WAYFINDER_SPAWN_EGG.get()));
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(group -> group.accept(WayfinderBlocks.WAYFINER_HEART.get()));
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(group -> group.accept(WayfinderItems.MUSIC_DISC_SWEET_DREAMS.get()));
         ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> Wayfinder.onEntityLoad(entity));
         WayfinderNetworking.registerS2CPackets((PayloadTypeRegistry.playS2C()::register));
         WayfinderNetworking.registerC2SPackets((PayloadTypeRegistry.playC2S()::register));
