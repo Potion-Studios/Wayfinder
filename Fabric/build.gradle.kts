@@ -68,4 +68,6 @@ publisher {
     setLoaders(ModLoader.FABRIC, ModLoader.QUILT)
     curseDepends.required.set(mutableListOf("fabric-api", "geckolib"))
     modrinthDepends.required.set(mutableListOf("fabric-api", "geckolib"))
+    curseDepends.optional.set(mutableListOf("oh-the-biomes-weve-gone"))
+    modrinthDepends.optional.set(mutableListOf("oh-the-biomes-weve-gone"))
 }

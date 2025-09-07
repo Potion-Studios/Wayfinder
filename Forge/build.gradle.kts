@@ -76,4 +76,6 @@ publisher {
     setLoaders(ModLoader.FORGE)
     curseDepends.required.set(mutableListOf("geckolib"))
     modrinthDepends.required.set(mutableListOf("geckolib"))
+    curseDepends.optional.set(mutableListOf("oh-the-biomes-weve-gone"))
+    modrinthDepends.optional.set(mutableListOf("oh-the-biomes-weve-gone"))
 }
