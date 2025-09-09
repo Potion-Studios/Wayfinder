@@ -1,6 +1,8 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Dynamic;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -22,14 +24,18 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.sensing.Sensor;
+import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -97,6 +103,19 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private int foundBiomeTick = -20 * Wayfinder.CONFIG.wayfinder.COOLDOWN.value();
     private int completedJourneys;
 
+    protected static final ImmutableList<SensorType<? extends Sensor<? super WayfinderEntity>>> SENSOR_TYPES = ImmutableList.of(
+            SensorType.NEAREST_LIVING_ENTITIES, SensorType.NEAREST_PLAYERS, SensorType.HURT_BY
+    );
+    protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(
+            MemoryModuleType.PATH,
+            MemoryModuleType.LOOK_TARGET,
+            MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES,
+            MemoryModuleType.WALK_TARGET,
+            MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
+            MemoryModuleType.HURT_BY,
+            MemoryModuleType.IS_PANICKING
+    );
+
     public WayfinderEntity(Level level, Player owner) {
         this(WayfinderEntityType.WAYFINDER.get(), level);
         setOwner(owner);
@@ -108,6 +127,21 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         moveControl = new WayfinderMoveControl(this, phaseOffset);
         completedJourneys = 0;
         setPersistenceRequired();
+    }
+
+    @Override
+    protected Brain.@NotNull Provider<WayfinderEntity> brainProvider() {
+        return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
+    }
+
+    @Override
+    protected @NotNull Brain<?> makeBrain(@NotNull Dynamic<?> dynamic) {
+        return WayfinderAi.makeBrain(this.brainProvider().makeBrain(dynamic));
+    }
+
+    @Override
+    public @NotNull Brain<WayfinderEntity> getBrain() {
+        return (Brain<WayfinderEntity>) super.getBrain();
     }
 
     @Override
