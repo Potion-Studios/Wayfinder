@@ -27,16 +27,15 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.schedule.Activity;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -51,11 +50,6 @@ import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.tags.WayfinderBiomeTags;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntityType;
-import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
-import net.potionstudios.wayfinder.world.entity.ai.goal.FollowOwnerGoal;
-import net.potionstudios.wayfinder.world.entity.ai.goal.GoToPosGoal;
-import net.potionstudios.wayfinder.world.entity.ai.goal.ScaredWayfinderGoal;
-import net.potionstudios.wayfinder.world.entity.ai.goal.ShieldRegenGoal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoAnimatable;
@@ -124,7 +118,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     public WayfinderEntity(EntityType<? extends WayfinderEntity> entityType, Level level) {
         super(entityType, level);
         phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
-        moveControl = new WayfinderMoveControl(this, phaseOffset);
+        moveControl = new FlyingMoveControl(this, 20, true);
+        //moveControl = new WayfinderMoveControl(this, phaseOffset);
         completedJourneys = 0;
         setPersistenceRequired();
     }
@@ -319,10 +314,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                             Wayfinder.CONFIG.wayfinder.MAX_SEARCH_DISTANCE.value(), 32, 64);
 
             if (value != null) {
-                setTargetBlockPos(Optional.of(value.getFirst()));
+                getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(value.getFirst(), 1, 50000));
                 foundBiomeTick = getServer().getTickCount();
                 triggerAnim("controller", "searching_end");
                 playSound(SoundEvents.ENCHANTMENT_TABLE_USE);
+                getBrain().setActiveActivityIfPossible(Activity.WORK);
             } else no();
         });
     }
@@ -339,6 +335,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     public void sit() {
         setSitting(true);
+        getBrain().setActiveActivityIfPossible(Activity.REST);
     }
 
     public void stand() {
@@ -440,21 +437,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
-    protected void registerGoals() {
-        goalSelector.addGoal(0, new FloatGoal(this));
-        goalSelector.addGoal(1, new FollowOwnerGoal(this, 1.0, 5.0F, 1.0F));
-        goalSelector.addGoal(1, new GoToPosGoal(this, getOwner(), getTargetBiomeBlockPos(), 2.5));
-        goalSelector.addGoal(2, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        goalSelector.addGoal(2, new ScaredWayfinderGoal(this));
-        goalSelector.addGoal(5, new ShieldRegenGoal(this));
-        goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-    }
-
-    @Override
-    protected void updateControlFlags() {
-        super.updateControlFlags();
-        goalSelector.setControlFlag(Goal.Flag.MOVE, !(isScared() || isSitting()));
-        goalSelector.setControlFlag(Goal.Flag.LOOK, !(isScared() || isSitting()));
+    protected void customServerAiStep() {
+        level().getProfiler().push("wayfinderBrain");
+        getBrain().tick((ServerLevel) level(), this);
+        level().getProfiler().pop();
+        super.customServerAiStep();
     }
 
     @Override
