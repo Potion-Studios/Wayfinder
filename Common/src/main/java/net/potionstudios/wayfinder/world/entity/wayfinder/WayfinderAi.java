@@ -3,11 +3,9 @@ package net.potionstudios.wayfinder.world.entity.wayfinder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.behavior.FollowTemptation;
-import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.ai.behavior.MoveToTargetSink;
-import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
 import net.minecraft.world.entity.schedule.Activity;
+import net.potionstudios.wayfinder.world.entity.ai.behavior.FollowOwner;
 
 public class WayfinderAi {
 
@@ -26,7 +24,7 @@ public class WayfinderAi {
                 Activity.CORE,
                 0,
                 ImmutableList.of(
-                    //new FollowTemptation()
+                    new FollowOwner()
                 )
         );
     }
@@ -45,9 +43,7 @@ public class WayfinderAi {
         brain.addActivity(
                 Activity.IDLE,
                 0,
-                ImmutableList.of(
-                    //new LookAtTargetSink()
-                )
+                ImmutableList.of()
         );
     }
 
