@@ -9,6 +9,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -137,6 +138,12 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     @Override
     public @NotNull Brain<WayfinderEntity> getBrain() {
         return (Brain<WayfinderEntity>) super.getBrain();
+    }
+
+    @Override
+    protected void sendDebugPackets() {
+        super.sendDebugPackets();
+        DebugPackets.sendEntityBrain(this);
     }
 
     @Override
