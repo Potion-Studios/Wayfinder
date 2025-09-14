@@ -1,32 +1,27 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.ai.Brain;
+import net.minecraft.world.entity.ai.behavior.DoNothing;
 import net.minecraft.world.entity.ai.behavior.MoveToTargetSink;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.schedule.Activity;
 import net.potionstudios.wayfinder.world.entity.ai.behavior.FollowOwner;
+
+import java.util.Set;
 
 public class WayfinderAi {
 
     protected static Brain<?> makeBrain(Brain<WayfinderEntity> brain) {
-        initCoreActivity(brain);
         initWorkingActivity(brain);
         initIdleActivity(brain);
         initRestActivity(brain);
-        brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
-        brain.setDefaultActivity(Activity.CORE);
+		initPanicActivity(brain);
+        //brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
+        brain.setDefaultActivity(Activity.IDLE);
         return brain;
-    }
-
-    private static void initCoreActivity(Brain<WayfinderEntity> brain) {
-        brain.addActivity(
-                Activity.CORE,
-                0,
-                ImmutableList.of(
-                    new FollowOwner()
-                )
-        );
     }
 
     private static void initWorkingActivity(Brain<WayfinderEntity> brain) {
@@ -43,7 +38,9 @@ public class WayfinderAi {
         brain.addActivity(
                 Activity.IDLE,
                 0,
-                ImmutableList.of()
+                ImmutableList.of(
+	                new FollowOwner()
+                )
         );
     }
 
@@ -54,4 +51,22 @@ public class WayfinderAi {
                 ImmutableList.of()
         );
     }
+
+	private static void initPanicActivity(Brain<WayfinderEntity> brain) {
+		brain.addActivityWithConditions(
+				Activity.PANIC,
+				ImmutableList.of(Pair.of(0, new DoNothing(10, 100))),
+				Set.of(Pair.of(MemoryModuleType.DANGER_DETECTED_RECENTLY, MemoryStatus.VALUE_PRESENT),
+						Pair.of(MemoryModuleType.IS_PANICKING, MemoryStatus.VALUE_ABSENT))
+		);
+	}
+
+	public static void updateActivity(WayfinderEntity wayfinder) {
+		wayfinder.getBrain().setActiveActivityToFirstValid(ImmutableList.of(
+				Activity.PANIC,
+				Activity.REST,
+				Activity.WORK,
+				Activity.IDLE
+		));
+	}
 }
