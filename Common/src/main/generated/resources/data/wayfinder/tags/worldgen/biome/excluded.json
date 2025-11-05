@@ -1,3 +1,5 @@
 {
-  "values": []
+  "values": [
+    "#c:hidden_from_locator_selection"
+  ]
 }

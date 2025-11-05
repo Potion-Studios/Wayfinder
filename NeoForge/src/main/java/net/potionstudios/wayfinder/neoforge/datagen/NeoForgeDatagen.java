@@ -473,7 +473,7 @@ class NeoForgeDatagen {
 
         @Override
         protected void addTags(HolderLookup.@NotNull Provider provider) {
-            tag(WayfinderBiomeTags.WAYFINDER_EXCLUDED);
+            tag(WayfinderBiomeTags.WAYFINDER_EXCLUDED).addTag(Tags.Biomes.HIDDEN_FROM_LOCATOR_SELECTION);
         }
     }
 

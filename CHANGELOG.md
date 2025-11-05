@@ -1,6 +1,7 @@
 # 1.0.2-Beta
 - Make some advancements visible
 - Decrease amount of journeys for each adventure advancement
+- Exclude biomes in #c:hidden_from_locator_selection tag from Wayfinder Locator Selection GUI
 
 # 1.0.1-Beta
 - Add Boundless Exploration Advancement
