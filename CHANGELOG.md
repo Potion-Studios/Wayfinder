@@ -1,3 +1,6 @@
+# 1.1.0-Beta
+- Major AI Reworks
+
 # 1.0.2-Beta
 - Make some advancements visible
 - Decrease amount of journeys for each adventure advancement
