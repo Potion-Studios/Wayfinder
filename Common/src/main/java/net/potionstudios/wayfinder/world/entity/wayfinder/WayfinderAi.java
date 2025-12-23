@@ -25,12 +25,10 @@ public class WayfinderAi {
     }
 
     private static void initWorkingActivity(Brain<WayfinderEntity> brain) {
-        brain.addActivity(
+        brain.addActivityWithConditions(
                 Activity.WORK,
-                0,
-                ImmutableList.of(
-                    new MoveToTargetSink()
-                )
+                ImmutableList.of(Pair.of(0, new MoveToTargetSink())),
+                Set.of(Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_PRESENT))
         );
     }
 
@@ -64,7 +62,7 @@ public class WayfinderAi {
 	public static void updateActivity(WayfinderEntity wayfinder) {
 		wayfinder.getBrain().setActiveActivityToFirstValid(ImmutableList.of(
 				Activity.PANIC,
-				Activity.REST,
+//				Activity.REST,
 				Activity.WORK,
 				Activity.IDLE
 		));

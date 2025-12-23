@@ -20,7 +20,7 @@ public class FollowOwner extends Behavior<WayfinderEntity> {
     @Override
     protected boolean checkExtraStartConditions(@NotNull ServerLevel level, @NotNull WayfinderEntity owner) {
         ServerPlayer player = (ServerPlayer) owner.getOwner();
-        if (player == null || owner.unableToMoveToOwner() || owner.distanceToSqr(player) < 20)
+        if (player == null || owner.unableToMoveToOwner() || owner.distanceToSqr(player) < 30.0)
             return false;
 
         this.owner = player;
@@ -39,12 +39,12 @@ public class FollowOwner extends Behavior<WayfinderEntity> {
     }
 
     @Override
-    protected void tick(@NotNull ServerLevel level, @NotNull WayfinderEntity owner, long gameTime) {
+    protected void tick(@NotNull ServerLevel level, @NotNull WayfinderEntity wayfinderEntity, long gameTime) {
         if (--this.timeToRecalcPath <= 0) {
             this.timeToRecalcPath = 10;
-            if (owner.shouldTryTeleportToOwner())
-                owner.tryToTeleportToOwner();
-            else owner.getNavigation().moveTo(this.owner, 1.5);
+            if (wayfinderEntity.shouldTryTeleportToOwner())
+                wayfinderEntity.tryToTeleportToOwner();
+            else wayfinderEntity.getNavigation().moveTo(this.owner, 1.5);
         }
     }
 

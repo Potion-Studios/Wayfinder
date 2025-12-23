@@ -104,10 +104,13 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(
             MemoryModuleType.PATH,
             MemoryModuleType.LOOK_TARGET,
+            MemoryModuleType.NEAREST_LIVING_ENTITIES,
             MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES,
+            MemoryModuleType.NEAREST_PLAYERS,
             MemoryModuleType.WALK_TARGET,
             MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
             MemoryModuleType.HURT_BY,
+            MemoryModuleType.DANGER_DETECTED_RECENTLY,
             MemoryModuleType.IS_PANICKING
     );
 
@@ -315,19 +318,27 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         }
 
         triggerAnim("controller", "searching_start");
-        CompletableFuture.runAsync(() -> {
-            Pair<BlockPos, Holder<Biome>> value = serverLevel
-                    .findClosestBiome3d(biomeHolder -> biomeHolder.is(biome), blockPosition(),
-                            Wayfinder.CONFIG.wayfinder.MAX_SEARCH_DISTANCE.value(), 32, 64);
 
-            if (value != null) {
-                getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(value.getFirst(), 1, 50000));
-                foundBiomeTick = getServer().getTickCount();
-                triggerAnim("controller", "searching_end");
-                playSound(SoundEvents.ENCHANTMENT_TABLE_USE);
-                getBrain().setActiveActivityIfPossible(Activity.WORK);
-            } else no();
-        });
+        CompletableFuture.supplyAsync(() -> serverLevel.findClosestBiome3d(
+                        biomeHolder -> biomeHolder.is(biome),
+                        blockPosition(),
+                        Wayfinder.CONFIG.wayfinder.MAX_SEARCH_DISTANCE.value(),
+                        32, 64))
+                .thenAccept(result -> serverLevel.getServer().execute(() -> {
+                    if (!isAlive()) return;
+
+                    if (result != null) {
+                        getBrain().setMemory(MemoryModuleType.WALK_TARGET,
+                                new WalkTarget(result.getFirst(), 1, 50000)
+                        );
+
+                        foundBiomeTick = serverLevel.getServer().getTickCount();
+                        triggerAnim("controller", "searching_end");
+                        playSound(SoundEvents.ENCHANTMENT_TABLE_USE);
+
+                        getBrain().setActiveActivityIfPossible(Activity.WORK);
+                    } else no();
+                }));
     }
 
     public void no() {
