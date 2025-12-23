@@ -1,7 +1,6 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -43,6 +42,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+import net.minecraft.world.phys.Vec3;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
@@ -329,14 +329,15 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
                     if (result != null) {
                         getBrain().setMemory(MemoryModuleType.WALK_TARGET,
-                                new WalkTarget(result.getFirst(), 1, 50000)
+                                new WalkTarget(result.getFirst(), 1, 5)
                         );
+                        setTargetBlockPos(Optional.of(result.getFirst()));
+                        setStepWalkTargetTowards(result.getFirst());
+                        getBrain().eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
                         foundBiomeTick = serverLevel.getServer().getTickCount();
                         triggerAnim("controller", "searching_end");
                         playSound(SoundEvents.ENCHANTMENT_TABLE_USE);
-
-                        getBrain().setActiveActivityIfPossible(Activity.WORK);
                     } else no();
                 }));
     }
@@ -459,11 +460,35 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         level().getProfiler().push("wayfinderBrain");
         getBrain().tick((ServerLevel) level(), this);
         level().getProfiler().pop();
+        getTargetBiomeBlockPos().ifPresent(target -> {
+            if (tickCount % 10 == 0 || getBrain().getMemory(MemoryModuleType.WALK_TARGET).isEmpty()) {
+                setStepWalkTargetTowards(target);
+                getBrain().eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+            }
+        });
         level().getProfiler().push("wayfinderActivityUpdate");
         WayfinderAi.updateActivity(this);
         level().getProfiler().pop();
         super.customServerAiStep();
     }
+
+    private void setStepWalkTargetTowards(BlockPos target) {
+        Vec3 to = Vec3.atCenterOf(target).subtract(position());
+        double dist = to.length();
+
+        if (dist <= 4.0) {
+            setTargetBlockPos(Optional.empty());
+            getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
+            getBrain().eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+            return;
+        }
+
+        Vec3 step = position().add(to.normalize().scale(24.0));
+        BlockPos stepPos = BlockPos.containing(step);
+
+        getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(stepPos, 1.0F, 2));
+    }
+
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
