@@ -19,7 +19,6 @@ public class WayfinderAi {
         initIdleActivity(brain);
         initRestActivity(brain);
 		initPanicActivity(brain);
-        //brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
         brain.setDefaultActivity(Activity.IDLE);
         return brain;
     }
@@ -59,10 +58,14 @@ public class WayfinderAi {
 		);
 	}
 
-	public static void updateActivity(WayfinderEntity wayfinder) {
-		wayfinder.getBrain().setActiveActivityToFirstValid(ImmutableList.of(
+	protected static void updateActivity(WayfinderEntity wayfinder) {
+		if (wayfinder.isSitting())
+			wayfinder.getBrain().setActiveActivityToFirstValid(ImmutableList.of(
+					Activity.PANIC,
+					Activity.REST
+			));
+		else wayfinder.getBrain().setActiveActivityToFirstValid(ImmutableList.of(
 				Activity.PANIC,
-//				Activity.REST,
 				Activity.WORK,
 				Activity.IDLE
 		));

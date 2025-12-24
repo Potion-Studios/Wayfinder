@@ -460,12 +460,13 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         level().getProfiler().push("wayfinderBrain");
         getBrain().tick((ServerLevel) level(), this);
         level().getProfiler().pop();
-        getTargetBiomeBlockPos().ifPresent(target -> {
-            if (tickCount % 10 == 0 || getBrain().getMemory(MemoryModuleType.WALK_TARGET).isEmpty()) {
-                setStepWalkTargetTowards(target);
-                getBrain().eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
-            }
-        });
+        if (!isSitting())
+            getTargetBiomeBlockPos().ifPresent(target -> {
+                if (tickCount % 10 == 0 || getBrain().getMemory(MemoryModuleType.WALK_TARGET).isEmpty()) {
+                    setStepWalkTargetTowards(target);
+                    getBrain().eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
+                }
+            });
         level().getProfiler().push("wayfinderActivityUpdate");
         WayfinderAi.updateActivity(this);
         level().getProfiler().pop();
