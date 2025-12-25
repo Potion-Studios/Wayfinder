@@ -108,6 +108,7 @@ class NeoForgeDatagen {
             add("subtitles.entity.wayfinder.hurt1", "Wayfinder hurts");
             add("subtitles.entity.wayfinder.shield_hit", "Wayfinder shield hit");
             add("subtitles.entity.wayfinder.shield_break", "Wayfinder shield breaks");
+            add("subtitles.entity.wayfinder.no", "Wayfinder declines");
 
             addItem(WayfinderItems.WAYFINDER_SPAWN_EGG, "Wayfinder Spawn Egg");
             addItem(WayfinderItems.MUSIC_DISC_SWEET_DREAMS, "Music Disc");
