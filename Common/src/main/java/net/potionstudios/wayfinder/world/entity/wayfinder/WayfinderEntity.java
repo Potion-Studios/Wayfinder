@@ -27,7 +27,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
@@ -51,6 +50,7 @@ import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.tags.WayfinderBiomeTags;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntityType;
+import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoAnimatable;
@@ -88,18 +88,20 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private static final RawAnimation SIT_IDLE_4 = RawAnimation.begin().thenLoop("sit_idle4");
     private static final RawAnimation SCARED = RawAnimation.begin().thenLoop("scared");
 
+    private static final EntityDataAccessor<Optional<BlockPos>> START_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     private static final EntityDataAccessor<Optional<BlockPos>> BLOCK_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     private static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Boolean> DATA_SCARED = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_SITTING = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> DATA_SHIELD = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.INT);
 
-    private float phaseOffset;
     private int foundBiomeTick = -20 * Wayfinder.CONFIG.wayfinder.COOLDOWN.value();
     private int completedJourneys;
 
     protected static final ImmutableList<SensorType<? extends Sensor<? super WayfinderEntity>>> SENSOR_TYPES = ImmutableList.of(
-            SensorType.NEAREST_LIVING_ENTITIES, SensorType.NEAREST_PLAYERS, SensorType.HURT_BY
+            SensorType.NEAREST_LIVING_ENTITIES,
+            SensorType.NEAREST_PLAYERS,
+            SensorType.HURT_BY
     );
     protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(
             MemoryModuleType.PATH,
@@ -121,9 +123,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     public WayfinderEntity(EntityType<? extends WayfinderEntity> entityType, Level level) {
         super(entityType, level);
-        phaseOffset = random.nextFloat() * (float) (2 * Math.PI);
-        moveControl = new FlyingMoveControl(this, 20, true);
-        //moveControl = new WayfinderMoveControl(this, phaseOffset);
+        moveControl = new WayfinderMoveControl(this);
         completedJourneys = 0;
         setPersistenceRequired();
     }
@@ -158,6 +158,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         builder.define(DATA_SITTING, false);
         builder.define(DATA_SHIELD, 2);
         builder.define(BLOCK_POS, Optional.empty());
+        builder.define(START_POS, Optional.empty());
     }
 
     @Override
@@ -167,10 +168,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
             compound.putUUID("Owner", getOwnerUUID());
         compound.putString("Type", getVariant().getSerializedName());
         compound.putBoolean("Sitting", entityData.get(DATA_SITTING));
-        compound.putFloat("Offset", phaseOffset);
         compound.putInt("Shield", entityData.get(DATA_SHIELD));
         if (getTargetBiomeBlockPos().isPresent())
             compound.putLong("BlockPos", getTargetBiomeBlockPos().get().asLong());
+        if (getStartBlockPos().isPresent())
+            compound.putLong("StartPos", getStartBlockPos().get().asLong());
         compound.putInt("CompletedJourneys", completedJourneys);
     }
 
@@ -190,9 +192,10 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         setVariant(Variant.byName(compound.getString("Type")));
         entityData.set(DATA_SITTING, compound.getBoolean("Sitting"));
         entityData.set(DATA_SHIELD, compound.getInt("Shield"));
-        phaseOffset = compound.getFloat("Offset");
         if (compound.contains("BlockPos"))
             setTargetBlockPos(Optional.of(BlockPos.of(compound.getLong("BlockPos"))));
+        if (compound.contains("StartPos"))
+            setStartBlockPos(Optional.of(BlockPos.of(compound.getLong("StartPos"))));
         completedJourneys = compound.getInt("CompletedJourneys");
     }
 
@@ -328,11 +331,13 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                     if (!isAlive()) return;
 
                     if (result != null) {
+                        BlockPos biomePos = result.getFirst();
                         getBrain().setMemory(MemoryModuleType.WALK_TARGET,
-                                new WalkTarget(result.getFirst(), 1, 5)
+                                new WalkTarget(biomePos, 2.2F, 5)
                         );
-                        setTargetBlockPos(Optional.of(result.getFirst()));
-                        setStepWalkTargetTowards(result.getFirst());
+                        setTargetBlockPos(Optional.of(biomePos));
+                        setStartBlockPos(Optional.of(blockPosition()));
+                        setStepWalkTargetTowards(biomePos);
                         getBrain().eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
                         foundBiomeTick = serverLevel.getServer().getTickCount();
@@ -410,6 +415,14 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         entityData.set(BLOCK_POS, pos);
     }
 
+    public Optional<BlockPos> getStartBlockPos() {
+        return entityData.get(START_POS);
+    }
+
+    public void setStartBlockPos(Optional<BlockPos> pos) {
+        entityData.set(START_POS, pos);
+    }
+
     public final boolean unableToMoveToOwner() {
         return isSitting() || isPassenger() || getOwner() == null || getOwner().isSpectator() || getOwner().isDeadOrDying() || getTargetBiomeBlockPos().isPresent();
     }
@@ -418,8 +431,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         return Mob.createMobAttributes()
                 .add(Attributes.GRAVITY, 0.06D)
                 .add(Attributes.MAX_HEALTH, 20)
-                .add(Attributes.FLYING_SPEED, 3D)
-                .add(Attributes.MOVEMENT_SPEED, 2D)
+                .add(Attributes.FLYING_SPEED, 0.7D)
+                //.add(Attributes.MOVEMENT_SPEED, 2D)
                 .add(Attributes.FALL_DAMAGE_MULTIPLIER, 0);
     }
 
@@ -478,7 +491,9 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         double dist = to.length();
 
         if (dist <= 4.0) {
+            WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get().trigger((ServerPlayer) this.getOwner(), level().getBiome(target).unwrapKey().get(), level().dimension(), getStartBlockPos().isPresent() ? (int) getStartBlockPos().get().distSqr(target) : 0);
             setTargetBlockPos(Optional.empty());
+            setStartBlockPos(Optional.empty());
             getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
             getBrain().eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
             return;
@@ -487,7 +502,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         Vec3 step = position().add(to.normalize().scale(24.0));
         BlockPos stepPos = BlockPos.containing(step);
 
-        getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(stepPos, 1.0F, 2));
+        getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(stepPos, 1.2F, 2));
     }
 
 

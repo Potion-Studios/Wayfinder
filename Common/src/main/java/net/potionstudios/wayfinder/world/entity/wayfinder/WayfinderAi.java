@@ -9,6 +9,8 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.schedule.Activity;
 import net.potionstudios.wayfinder.world.entity.ai.behavior.FollowOwner;
+import net.potionstudios.wayfinder.world.entity.ai.behavior.RegenerateShield;
+import net.potionstudios.wayfinder.world.entity.ai.behavior.ResetScared;
 
 import java.util.Set;
 
@@ -45,16 +47,22 @@ public class WayfinderAi {
         brain.addActivity(
                 Activity.REST,
                 0,
-                ImmutableList.of()
+                ImmutableList.of(new RegenerateShield())
         );
     }
 
 	private static void initPanicActivity(Brain<WayfinderEntity> brain) {
 		brain.addActivityWithConditions(
 				Activity.PANIC,
-				ImmutableList.of(Pair.of(0, new DoNothing(10, 100))),
-				Set.of(Pair.of(MemoryModuleType.DANGER_DETECTED_RECENTLY, MemoryStatus.VALUE_PRESENT),
-						Pair.of(MemoryModuleType.IS_PANICKING, MemoryStatus.VALUE_ABSENT))
+				ImmutableList.of(
+						Pair.of(0, new DoNothing(10, 100)),
+						Pair.of(10, new ResetScared())
+				),
+				Set.of(
+						Pair.of(MemoryModuleType.DANGER_DETECTED_RECENTLY, MemoryStatus.VALUE_PRESENT),
+						Pair.of(MemoryModuleType.IS_PANICKING, MemoryStatus.REGISTERED),
+						Pair.of(MemoryModuleType.HURT_BY, MemoryStatus.REGISTERED)
+				)
 		);
 	}
 
