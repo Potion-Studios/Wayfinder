@@ -370,6 +370,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public void sit() {
+        getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
+        getBrain().eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
         this.getNavigation().stop();
         getBrain().setMemory(WayfinderMemoryModuleType.IS_RESTING.get(), Unit.INSTANCE);
     }
@@ -476,7 +478,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         level().getProfiler().push("wayfinderBrain");
         getBrain().tick((ServerLevel) level(), this);
         level().getProfiler().pop();
-        if (!isResting())
+        if (!isResting() && !isPanic())
             getTargetBiomeBlockPos().ifPresent(target -> {
                 if (tickCount % 10 == 0 || getBrain().getMemory(MemoryModuleType.WALK_TARGET).isEmpty()) {
                     setStepWalkTargetTowards(target);
@@ -492,8 +494,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         boolean currentlyResting = this.getBrain().isActive(Activity.REST);
         if (isResting() != currentlyResting)
             entityData.set(DATA_REST, currentlyResting);
-        if (getBrain().getActiveNonCoreActivity().isPresent())
-            Wayfinder.LOGGER.info("Current Activity: {}", getBrain().getActiveNonCoreActivity().get());
         super.customServerAiStep();
     }
 
