@@ -15,7 +15,7 @@ public class WayfinderMoveControl extends FlyingMoveControl {
 
     @Override
     public void tick() {
-        if (wayfinder.isSitting() || wayfinder.isScared()) {
+        if (wayfinder.isResting() || wayfinder.isPanic()) {
             if (wayfinder.isNoGravity()) wayfinder.setNoGravity(false);
             if (wayfinder.onGround()) wayfinder.setDeltaMovement(0, 0, 0);
         } else {

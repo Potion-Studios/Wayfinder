@@ -20,7 +20,7 @@ public class WayfinderRenderer<T extends WayfinderEntity> extends GeoEntityRende
 
     @Override
     public @Nullable RenderType getRenderType(T animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
-	    if (animatable.isScared() && animatable.hasShield())
+	    if (animatable.isPanic() && animatable.hasShield())
             return RenderType.ENTITY_TRANSLUCENT.apply(texture, false);
         return super.getRenderType(animatable, texture, bufferSource, partialTick);
     }

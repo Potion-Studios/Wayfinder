@@ -9,14 +9,14 @@ import software.bernie.geckolib.model.GeoModel;
 class WayfinderModel<T extends WayfinderEntity> extends GeoModel<T> {
     @Override
     public ResourceLocation getModelResource(@NotNull T animatable) {
-        if (animatable.isScared() && animatable.hasShield())
+        if (animatable.isPanic() && animatable.hasShield())
             return Wayfinder.id("geo/wayfinder_shield.geo.json");
         return Wayfinder.id("geo/wayfinder.geo.json");
     }
 
     @Override
     public ResourceLocation getTextureResource(@NotNull T animatable) {
-        if (animatable.isScared() && animatable.hasShield())
+        if (animatable.isPanic() && animatable.hasShield())
             if (animatable.shield() == WayfinderEntity.SHIELD.FULL)
                 return Wayfinder.id("textures/entity/wayfinder/" + animatable.getVariant().getSerializedName() + "/wayfinder_shield.png");
             else return Wayfinder.id("textures/entity/wayfinder/" + animatable.getVariant().getSerializedName() + "/wayfinder_shield_broken.png");

@@ -20,6 +20,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -49,8 +50,11 @@ import net.potionstudios.wayfinder.network.packets.WayfinderCloseScreenPacket;
 import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.tags.WayfinderBiomeTags;
+import net.potionstudios.wayfinder.tags.WayfinderEntityTypeTags;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntityType;
 import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
+import net.potionstudios.wayfinder.world.entity.ai.memory.WayfinderMemoryModuleType;
+import net.potionstudios.wayfinder.world.entity.ai.sensing.WayfinderSensorType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoAnimatable;
@@ -60,13 +64,18 @@ import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.IntFunction;
 
+/**
+ * Wayfinder entity
+ * @author Joseph T. McQuigg
+ * @see PathfinderMob
+ * @see GeoEntity
+ * @see OwnableEntity
+ * @see VariantHolder
+ */
 public class WayfinderEntity extends PathfinderMob implements GeoEntity, OwnableEntity, VariantHolder<WayfinderEntity.Variant> {
     private static final EntityDataAccessor<Integer> DATA_TYPE_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.INT);
 
@@ -91,8 +100,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private static final EntityDataAccessor<Optional<BlockPos>> START_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     private static final EntityDataAccessor<Optional<BlockPos>> BLOCK_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     private static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_UUID);
-    private static final EntityDataAccessor<Boolean> DATA_SCARED = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> DATA_SITTING = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> DATA_SHIELD = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.INT);
 
     private int foundBiomeTick = -20 * Wayfinder.CONFIG.wayfinder.COOLDOWN.value();
@@ -101,7 +108,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     protected static final ImmutableList<SensorType<? extends Sensor<? super WayfinderEntity>>> SENSOR_TYPES = ImmutableList.of(
             SensorType.NEAREST_LIVING_ENTITIES,
             SensorType.NEAREST_PLAYERS,
-            SensorType.HURT_BY
+            SensorType.HURT_BY,
+            WayfinderSensorType.WAYFINDER_SCARE_DETECTED.get()
     );
     protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(
             MemoryModuleType.PATH,
@@ -113,7 +121,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
             MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
             MemoryModuleType.HURT_BY,
             MemoryModuleType.DANGER_DETECTED_RECENTLY,
-            MemoryModuleType.IS_PANICKING
+            MemoryModuleType.IS_PANICKING,
+            WayfinderMemoryModuleType.IS_RESTING.get()
     );
 
     public WayfinderEntity(Level level, Player owner) {
@@ -149,13 +158,19 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         DebugPackets.sendEntityBrain(this);
     }
 
+    public boolean isScaredBy(LivingEntity entity) {
+        return entity.getType().is(WayfinderEntityTypeTags.SCARES_WAYFINDER) || this.getLastHurtByMob() == entity;
+    }
+
+    public boolean canScare() {
+        return !this.isPanic();
+    }
+
     @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(DATA_TYPE_ID, 0);
         builder.define(DATA_OWNERUUID_ID, Optional.empty());
-        builder.define(DATA_SCARED, false);
-        builder.define(DATA_SITTING, false);
         builder.define(DATA_SHIELD, 2);
         builder.define(BLOCK_POS, Optional.empty());
         builder.define(START_POS, Optional.empty());
@@ -167,7 +182,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         if (getOwnerUUID() != null)
             compound.putUUID("Owner", getOwnerUUID());
         compound.putString("Type", getVariant().getSerializedName());
-        compound.putBoolean("Sitting", entityData.get(DATA_SITTING));
         compound.putInt("Shield", entityData.get(DATA_SHIELD));
         if (getTargetBiomeBlockPos().isPresent())
             compound.putLong("BlockPos", getTargetBiomeBlockPos().get().asLong());
@@ -190,21 +204,12 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         if (uuid != null) setOwnerUUID(uuid);
 
         setVariant(Variant.byName(compound.getString("Type")));
-        entityData.set(DATA_SITTING, compound.getBoolean("Sitting"));
         entityData.set(DATA_SHIELD, compound.getInt("Shield"));
         if (compound.contains("BlockPos"))
             setTargetBlockPos(Optional.of(BlockPos.of(compound.getLong("BlockPos"))));
         if (compound.contains("StartPos"))
             setStartBlockPos(Optional.of(BlockPos.of(compound.getLong("StartPos"))));
         completedJourneys = compound.getInt("CompletedJourneys");
-    }
-
-    @Override
-    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> dataAccessor) {
-        super.onSyncedDataUpdated(dataAccessor);
-        if (!level().isClientSide() && dataAccessor.equals(DATA_SCARED) && getOwner() != null)
-            if (entityData.get(DATA_SCARED))
-                PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderCloseScreenPacket(), (Player) getOwner());
     }
 
     @Override
@@ -232,21 +237,25 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "controller", 0, this::predicate)
-                .triggerableAnim("searching_start", SEARCHING_START).triggerableAnim("searching_end", SEARCHING_END)
-                .triggerableAnim("idle", IDLE_1).triggerableAnim("idle2", IDLE_2).triggerableAnim("idle3", IDLE_3));
+                .triggerableAnim("searching_start", SEARCHING_START)
+                .triggerableAnim("searching_end", SEARCHING_END)
+                .triggerableAnim("idle", IDLE_1)
+                .triggerableAnim("idle2", IDLE_2)
+                .triggerableAnim("idle3", IDLE_3));
     }
 
     private <E extends GeoAnimatable> PlayState predicate(AnimationState<E> event) {
         if (isDeadOrDying())
             return event.setAndContinue(DEATH);
-        else if (isScared())
+        else if (isPanic())
             return event.setAndContinue(SCARED);
 
         AnimationController<E> controller = event.getController();
         RawAnimation currentAnimation = controller.getCurrentRawAnimation();
         boolean finished = controller.hasAnimationFinished() || currentAnimation == null;
 
-        if (isSitting())
+        if (isResting()) {
+            Wayfinder.LOGGER.info("Resting according to brain and sit should play");
             if (finished || (!currentAnimation.equals(SIT_IDLE_1) && !currentAnimation.equals(SIT_IDLE_2) && !currentAnimation.equals(SIT_IDLE_3) && !currentAnimation.equals(SIT_IDLE_4)))
                 return switch (getRandom().nextInt(4)) {
                     case 0 -> event.setAndContinue(SIT_IDLE_3);
@@ -255,6 +264,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                     default -> event.setAndContinue(SIT_IDLE_1);
                 };
             else return PlayState.CONTINUE;
+        }
 
         if (isSearching() && (currentAnimation != null && !currentAnimation.equals(SEARCHING_START) && !currentAnimation.equals(SEARCHING_END)))
           return event.setAndContinue(SEARCHING_LOOP);
@@ -279,7 +289,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     @Override
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         if (level() instanceof ServerLevel serverLevel) {
-            if (isScared()) return InteractionResult.FAIL;
+            if (isPanic()) return InteractionResult.FAIL;
 	        if (player.getItemInHand(hand).is(Items.GLOW_BERRIES)) {
 				this.playSound(SoundEvents.GENERIC_EAT);
 				if (getHealth() < getMaxHealth())
@@ -302,7 +312,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                 ResourceLocation current;
                 if (getTargetBiomeBlockPos().isEmpty()) current = Wayfinder.id("clear_packet");
                 else current = serverLevel.getBiome(getTargetBiomeBlockPos().get()).unwrapKey().get().location();
-                PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderOpenScreenPacket(biomeList, current, isSitting()), player);
+                PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderOpenScreenPacket(biomeList, current, isResting()), player);
                 return InteractionResult.SUCCESS;
             } else if (getOwner() == null && !PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
                 setOwner(player);
@@ -358,13 +368,13 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public void sit() {
-        setSitting(true);
-        getBrain().setActiveActivityIfPossible(Activity.REST);
+        this.getNavigation().stop();
+        getBrain().setMemory(WayfinderMemoryModuleType.IS_RESTING.get(), Unit.INSTANCE);
     }
 
     public void stand() {
         triggerAnim("controller", "idle" + (getRandom().nextInt(3) + 1));
-        setSitting(false);
+        getBrain().eraseMemory(WayfinderMemoryModuleType.IS_RESTING.get());
     }
 
     public int getCompletedJourneys() {
@@ -375,24 +385,16 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         completedJourneys++;
     }
 
-    public boolean isSitting() {
-        return entityData.get(DATA_SITTING);
-    }
-
-    private void setSitting(boolean sitting) {
-        entityData.set(DATA_SITTING, sitting);
+    public boolean isResting() {
+        return getBrain().isActive(Activity.REST);
     }
 
     public boolean isSearching() {
-        return getTargetBiomeBlockPos().isPresent();
+        return getBrain().isActive(Activity.WORK);
     }
 
-    public boolean isScared() {
-        return entityData.get(DATA_SCARED);
-    }
-
-    public void setScared(boolean scared) {
-        entityData.set(DATA_SCARED, scared);
+    public boolean isPanic() {
+        return getBrain().isActive(Activity.PANIC);
     }
 
     public SHIELD shield() {
@@ -424,15 +426,14 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public final boolean unableToMoveToOwner() {
-        return isSitting() || isPassenger() || getOwner() == null || getOwner().isSpectator() || getOwner().isDeadOrDying() || getTargetBiomeBlockPos().isPresent();
+        return isResting() || isPassenger() || getOwner() == null || getOwner().isSpectator() || getOwner().isDeadOrDying() || getTargetBiomeBlockPos().isPresent();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
-                .add(Attributes.GRAVITY, 0.06D)
+                //.add(Attributes.GRAVITY, 0.06D)
                 .add(Attributes.MAX_HEALTH, 20)
                 .add(Attributes.FLYING_SPEED, 0.7D)
-                //.add(Attributes.MOVEMENT_SPEED, 2D)
                 .add(Attributes.FALL_DAMAGE_MULTIPLIER, 0);
     }
 
@@ -450,7 +451,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     protected @Nullable SoundEvent getAmbientSound() {
         if (Wayfinder.CONFIG.wayfinder.DISABLE_SOUNDS_WHEN_SITTING.value() || getRandom().nextBoolean())
             return SoundEvents.EMPTY;
-        else if (isScared())
+        else if (isPanic())
             return WayfinderSounds.WAYFINDER_SCARED.get();
         return switch (getRandom().nextInt(7)) {
             case 0 -> WayfinderSounds.WAYFINDER_IDLE0.get();
@@ -473,7 +474,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         level().getProfiler().push("wayfinderBrain");
         getBrain().tick((ServerLevel) level(), this);
         level().getProfiler().pop();
-        if (!isSitting())
+        if (!isResting())
             getTargetBiomeBlockPos().ifPresent(target -> {
                 if (tickCount % 10 == 0 || getBrain().getMemory(MemoryModuleType.WALK_TARGET).isEmpty()) {
                     setStepWalkTargetTowards(target);
@@ -483,6 +484,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         level().getProfiler().push("wayfinderActivityUpdate");
         WayfinderAi.updateActivity(this);
         level().getProfiler().pop();
+        if (getBrain().getActiveNonCoreActivity().isPresent())
+            Wayfinder.LOGGER.info("Current Activity: {}", getBrain().getActiveNonCoreActivity().get());
         super.customServerAiStep();
     }
 
@@ -496,21 +499,24 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
             setStartBlockPos(Optional.empty());
             getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
             getBrain().eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
-            return;
+        } else if (getOwner() == null || getOwner().isDeadOrDying()) {
+            getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
+            setTargetBlockPos(Optional.empty());
+            setStartBlockPos(Optional.empty());
+        } else if (this.distanceToSqr(getOwner()) > 100) {
+            getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
+        } else {
+            Vec3 step = position().add(to.normalize().scale(Math.min(24, dist)));
+            BlockPos stepPos = BlockPos.containing(step);
+            getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(stepPos, 1.2F, 2));
         }
-
-        Vec3 step = position().add(to.normalize().scale(24.0));
-        BlockPos stepPos = BlockPos.containing(step);
-
-        getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(stepPos, 1.2F, 2));
     }
-
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
         if (level().isClientSide()) return false;
 
-        if (isScared())
+        if (isPanic())
             if (shield() == SHIELD.FULL) {
                 setShield(SHIELD.HALF);
                 playSound(WayfinderSounds.WAYFINDER_SHIELD_HIT.get());
@@ -524,7 +530,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         boolean hurt = super.hurt(source, amount);
 
         if (hurt) {
-            setScared(true);
+            getBrain().setMemory(MemoryModuleType.DANGER_DETECTED_RECENTLY, true);
             if (isDeadOrDying() && getOwner() != null)
                 if (source.getEntity() != null && source.getEntity() instanceof ServerPlayer player && getOwner().is(player))
                     WayfinderCriteriaTriggers.WAYFINDER_OWNER_KILLED.get().trigger(player);

@@ -50,6 +50,6 @@ public class FollowOwner extends Behavior<WayfinderEntity> {
 
     @Override
     protected boolean canStillUse(@NotNull ServerLevel level, @NotNull WayfinderEntity entity, long gameTime) {
-        return true;
+        return !entity.unableToMoveToOwner();
     }
 }
