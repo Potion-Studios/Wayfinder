@@ -12,6 +12,7 @@ import net.minecraft.world.entity.schedule.Activity;
 import net.potionstudios.wayfinder.world.entity.ai.behavior.CloseScreenOnPanic;
 import net.potionstudios.wayfinder.world.entity.ai.behavior.FollowOwner;
 import net.potionstudios.wayfinder.world.entity.ai.behavior.RegenerateShield;
+import net.potionstudios.wayfinder.world.entity.ai.behavior.WayfinderPanicTrigger;
 import net.potionstudios.wayfinder.world.entity.ai.memory.WayfinderMemoryModuleType;
 
 import java.util.Set;
@@ -33,7 +34,7 @@ public class WayfinderAi {
 		brain.addActivity(
 				Activity.CORE,
 				0,
-				ImmutableList.of()
+				ImmutableList.of(new WayfinderPanicTrigger())
 		);
 	}
 
