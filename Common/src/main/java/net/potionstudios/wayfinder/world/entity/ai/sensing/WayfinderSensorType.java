@@ -18,7 +18,7 @@ import java.util.function.Supplier;
  */
 public class WayfinderSensorType {
 
-    public static final Supplier<SensorType<MobSensor<WayfinderEntity>>> WAYFINDER_SCARE_DETECTED = register("wayfinder_scare_detected", () -> new MobSensor<>(5, WayfinderEntity::isScaredBy, WayfinderEntity::canScare, MemoryModuleType.DANGER_DETECTED_RECENTLY, 10000));
+    public static final Supplier<SensorType<MobSensor<WayfinderEntity>>> WAYFINDER_SCARE_DETECTED = register("wayfinder_scare_detected", () -> new MobSensor<>(5, WayfinderEntity::isScaredBy, WayfinderEntity::canScare, MemoryModuleType.DANGER_DETECTED_RECENTLY, 100));
 
     public static void sensorType() {
         Wayfinder.LOGGER.info("Registering Wayfinder Sensor Types");

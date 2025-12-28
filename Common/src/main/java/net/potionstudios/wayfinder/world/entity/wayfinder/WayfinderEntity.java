@@ -101,6 +101,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private static final EntityDataAccessor<Optional<BlockPos>> BLOCK_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     private static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Integer> DATA_SHIELD = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> DATA_PANIC = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> DATA_REST = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
 
     private int foundBiomeTick = -20 * Wayfinder.CONFIG.wayfinder.COOLDOWN.value();
     private int completedJourneys;
@@ -174,6 +176,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         builder.define(DATA_SHIELD, 2);
         builder.define(BLOCK_POS, Optional.empty());
         builder.define(START_POS, Optional.empty());
+        builder.define(DATA_PANIC, false);
+        builder.define(DATA_REST, false);
     }
 
     @Override
@@ -254,8 +258,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         RawAnimation currentAnimation = controller.getCurrentRawAnimation();
         boolean finished = controller.hasAnimationFinished() || currentAnimation == null;
 
-        if (isResting()) {
-            Wayfinder.LOGGER.info("Resting according to brain and sit should play");
+        if (isResting())
             if (finished || (!currentAnimation.equals(SIT_IDLE_1) && !currentAnimation.equals(SIT_IDLE_2) && !currentAnimation.equals(SIT_IDLE_3) && !currentAnimation.equals(SIT_IDLE_4)))
                 return switch (getRandom().nextInt(4)) {
                     case 0 -> event.setAndContinue(SIT_IDLE_3);
@@ -264,7 +267,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                     default -> event.setAndContinue(SIT_IDLE_1);
                 };
             else return PlayState.CONTINUE;
-        }
 
         if (isSearching() && (currentAnimation != null && !currentAnimation.equals(SEARCHING_START) && !currentAnimation.equals(SEARCHING_END)))
           return event.setAndContinue(SEARCHING_LOOP);
@@ -386,7 +388,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public boolean isResting() {
-        return getBrain().isActive(Activity.REST);
+        return entityData.get(DATA_REST);
     }
 
     public boolean isSearching() {
@@ -394,7 +396,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public boolean isPanic() {
-        return getBrain().isActive(Activity.PANIC);
+        return entityData.get(DATA_PANIC);
     }
 
     public SHIELD shield() {
@@ -484,6 +486,12 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         level().getProfiler().push("wayfinderActivityUpdate");
         WayfinderAi.updateActivity(this);
         level().getProfiler().pop();
+        boolean currentlyPanicking = this.getBrain().isActive(Activity.PANIC);
+        if (isPanic() != currentlyPanicking)
+            entityData.set(DATA_PANIC, currentlyPanicking);
+        boolean currentlyResting = this.getBrain().isActive(Activity.REST);
+        if (isResting() != currentlyResting)
+            entityData.set(DATA_REST, currentlyResting);
         if (getBrain().getActiveNonCoreActivity().isPresent())
             Wayfinder.LOGGER.info("Current Activity: {}", getBrain().getActiveNonCoreActivity().get());
         super.customServerAiStep();
@@ -530,7 +538,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         boolean hurt = super.hurt(source, amount);
 
         if (hurt) {
-            getBrain().setMemory(MemoryModuleType.DANGER_DETECTED_RECENTLY, true);
+            getBrain().setMemoryWithExpiry(MemoryModuleType.DANGER_DETECTED_RECENTLY, true, 200L);
             if (isDeadOrDying() && getOwner() != null)
                 if (source.getEntity() != null && source.getEntity() instanceof ServerPlayer player && getOwner().is(player))
                     WayfinderCriteriaTriggers.WAYFINDER_OWNER_KILLED.get().trigger(player);

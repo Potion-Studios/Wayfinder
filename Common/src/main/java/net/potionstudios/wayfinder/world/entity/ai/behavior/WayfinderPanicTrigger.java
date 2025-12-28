@@ -27,7 +27,7 @@ public class WayfinderPanicTrigger extends Behavior<WayfinderEntity> {
 			if (!brain.isActive(Activity.PANIC)) {
 				brain.eraseMemory(MemoryModuleType.WALK_TARGET);
 			}
-			brain.setMemory(MemoryModuleType.IS_PANICKING, true);
+			brain.setMemoryWithExpiry(MemoryModuleType.IS_PANICKING, true, 200L);
 		}
 	}
 
