@@ -50,7 +50,9 @@ public class TravelToJourneyTarget extends Behavior<WayfinderEntity> {
         double dist = to.length();
 
         if (dist <= 4.0) {
-            WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get().trigger((ServerPlayer) entity.getOwner(), level.getBiome(target).unwrapKey().get(), level.dimension(), entity.getStartBlockPos().isPresent() ? (int) entity.getStartBlockPos().get().distSqr(target) : 0);
+            int completedDistance = entity.getStartBlockPos().isPresent() ? (int) entity.getStartBlockPos().get().distSqr(target) : 0;
+            WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get().trigger((ServerPlayer) entity.getOwner(), level.getBiome(target).unwrapKey().get(), level.dimension(), completedDistance);
+            entity.incrementCompletedJourneys((ServerPlayer) entity.getOwner(), completedDistance);
             entity.setStartBlockPos(Optional.empty());
             brain.eraseMemory(WayfinderMemoryModuleType.JOURNEY_TARGET_POS.get());
             stop(level, entity, gameTime);

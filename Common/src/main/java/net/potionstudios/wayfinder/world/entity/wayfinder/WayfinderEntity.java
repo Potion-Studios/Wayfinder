@@ -376,7 +376,9 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         return completedJourneys;
     }
 
-    public void incrementCompletedJourneys() {
+    public void incrementCompletedJourneys(ServerPlayer player, int distance) {
+        if (distance >= 3000)
+            PlatformHandler.PLATFORM_HANDLER.increment3kJourneys(player);
         completedJourneys++;
     }
 
