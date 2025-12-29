@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.DoNothing;
+import net.minecraft.world.entity.ai.behavior.LookAtTargetSink;
 import net.minecraft.world.entity.ai.behavior.MoveToTargetSink;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
@@ -33,7 +34,8 @@ public class WayfinderAi {
 				0,
 				ImmutableList.of(
 						new WayfinderPanicTrigger(),
-						new MoveToTargetSink()
+						new MoveToTargetSink(),
+						new LookAtTargetSink(10, 50)
 				)
 		);
 	}
@@ -50,7 +52,10 @@ public class WayfinderAi {
         brain.addActivity(
                 Activity.IDLE,
                 0,
-                ImmutableList.of(new FollowOwner())
+                ImmutableList.of(
+						new FollowOwner(),
+						new LookAtOwner()
+				)
         );
     }
 
