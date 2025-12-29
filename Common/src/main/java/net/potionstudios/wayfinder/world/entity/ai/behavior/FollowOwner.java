@@ -4,8 +4,11 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.behavior.Behavior;
+import net.minecraft.world.entity.ai.behavior.EntityTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
+import net.minecraft.world.entity.ai.memory.WalkTarget;
+import net.potionstudios.wayfinder.world.entity.ai.memory.WayfinderMemoryModuleType;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,14 +17,19 @@ public class FollowOwner extends Behavior<WayfinderEntity> {
     private int timeToRecalcPath;
 
     public FollowOwner() {
-        super(ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT));
+        super(ImmutableMap.of(
+                MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED,
+                WayfinderMemoryModuleType.JOURNEY_TARGET_POS.get(), MemoryStatus.VALUE_ABSENT
+        ));
     }
 
     @Override
-    protected boolean checkExtraStartConditions(@NotNull ServerLevel level, @NotNull WayfinderEntity owner) {
-        ServerPlayer player = (ServerPlayer) owner.getOwner();
-        if (player == null || owner.unableToMoveToOwner() || owner.distanceToSqr(player) < 30.0)
-            return false;
+    protected boolean checkExtraStartConditions(@NotNull ServerLevel level, @NotNull WayfinderEntity entity) {
+        if (entity.unableToMoveToOwner()) return false;
+
+        if (!(entity.getOwner() instanceof ServerPlayer player)) return false;
+
+        if (entity.distanceToSqr(player) < 30) return false;
 
         this.owner = player;
         return true;
@@ -35,21 +43,33 @@ public class FollowOwner extends Behavior<WayfinderEntity> {
     @Override
     protected void stop(@NotNull ServerLevel level, @NotNull WayfinderEntity entity, long gameTime) {
         this.owner = null;
+        entity.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
         entity.getNavigation().stop();
     }
 
     @Override
-    protected void tick(@NotNull ServerLevel level, @NotNull WayfinderEntity wayfinderEntity, long gameTime) {
-        if (--this.timeToRecalcPath <= 0) {
-            this.timeToRecalcPath = 10;
-            if (wayfinderEntity.shouldTryTeleportToOwner())
-                wayfinderEntity.tryToTeleportToOwner();
-            else wayfinderEntity.getNavigation().moveTo(this.owner, 1.5);
+    protected void tick(@NotNull ServerLevel level, @NotNull WayfinderEntity entity, long gameTime) {
+        if (this.owner == null) return;
+
+        if (this.timeToRecalcPath-- > 0) return;
+        this.timeToRecalcPath = 10;
+
+        if (entity.shouldTryTeleportToOwner()) {
+            entity.tryToTeleportToOwner();
+            entity.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
+            return;
         }
+
+        entity.getBrain().setMemory(
+                MemoryModuleType.WALK_TARGET,
+                new WalkTarget(new EntityTracker(this.owner, false), 1.5F, 2)
+        );
     }
 
     @Override
     protected boolean canStillUse(@NotNull ServerLevel level, @NotNull WayfinderEntity entity, long gameTime) {
-        return !entity.unableToMoveToOwner();
+        if (entity.unableToMoveToOwner()) return false;
+
+        return entity.distanceToSqr(this.owner) > 16;
     }
 }

@@ -10,12 +10,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
+import net.potionstudios.wayfinder.world.entity.ai.memory.WayfinderMemoryModuleType;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.network.packet.MultiloaderPacket;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 
 public record WayfinderBiomePacket(ResourceLocation biome) implements MultiloaderPacket {
@@ -33,7 +33,7 @@ public record WayfinderBiomePacket(ResourceLocation biome) implements Multiloade
 			Entity entity = player.getServer().getLevel(player.getCommandSenderWorld().dimension()).getEntity(PlatformHandler.PLATFORM_HANDLER.getWayfinder(player));
 			if (entity instanceof WayfinderEntity wayfinder)
 				if (biome.equals(Wayfinder.id("clear_packet"))) {
-					wayfinder.setTargetBlockPos(Optional.empty());
+					wayfinder.getBrain().eraseMemory(WayfinderMemoryModuleType.JOURNEY_TARGET_POS.get());
 					wayfinder.playSound(SoundEvents.BOOK_PUT);
 				}
 				else wayfinder.startBiomeSearch(biome);

@@ -18,18 +18,20 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.sensing.Sensor;
@@ -42,7 +44,6 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
-import net.minecraft.world.phys.Vec3;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
@@ -98,7 +99,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private static final RawAnimation SCARED = RawAnimation.begin().thenLoop("scared");
 
     private static final EntityDataAccessor<Optional<BlockPos>> START_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
-    private static final EntityDataAccessor<Optional<BlockPos>> BLOCK_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     private static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     private static final EntityDataAccessor<Integer> DATA_SHIELD = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> DATA_PANIC = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
@@ -124,7 +124,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
             MemoryModuleType.HURT_BY,
             MemoryModuleType.DANGER_DETECTED_RECENTLY,
             MemoryModuleType.IS_PANICKING,
-            WayfinderMemoryModuleType.IS_RESTING.get()
+            WayfinderMemoryModuleType.IS_RESTING.get(),
+            WayfinderMemoryModuleType.JOURNEY_TARGET_POS.get()
     );
 
     public WayfinderEntity(Level level, Player owner) {
@@ -174,7 +175,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         builder.define(DATA_TYPE_ID, 0);
         builder.define(DATA_OWNERUUID_ID, Optional.empty());
         builder.define(DATA_SHIELD, 2);
-        builder.define(BLOCK_POS, Optional.empty());
         builder.define(START_POS, Optional.empty());
         builder.define(DATA_PANIC, false);
         builder.define(DATA_REST, false);
@@ -187,8 +187,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
             compound.putUUID("Owner", getOwnerUUID());
         compound.putString("Type", getVariant().getSerializedName());
         compound.putInt("Shield", entityData.get(DATA_SHIELD));
-        if (getTargetBiomeBlockPos().isPresent())
-            compound.putLong("BlockPos", getTargetBiomeBlockPos().get().asLong());
         if (getStartBlockPos().isPresent())
             compound.putLong("StartPos", getStartBlockPos().get().asLong());
         compound.putInt("CompletedJourneys", completedJourneys);
@@ -209,8 +207,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
         setVariant(Variant.byName(compound.getString("Type")));
         entityData.set(DATA_SHIELD, compound.getInt("Shield"));
-        if (compound.contains("BlockPos"))
-            setTargetBlockPos(Optional.of(BlockPos.of(compound.getLong("BlockPos"))));
         if (compound.contains("StartPos"))
             setStartBlockPos(Optional.of(BlockPos.of(compound.getLong("StartPos"))));
         completedJourneys = compound.getInt("CompletedJourneys");
@@ -312,8 +308,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                     if (!key.is(WayfinderBiomeTags.WAYFINDER_EXCLUDED))
                         key.unwrapKey().ifPresent(biome -> biomeList.add(biome.location()));
                 ResourceLocation current;
-                if (getTargetBiomeBlockPos().isEmpty()) current = Wayfinder.id("clear_packet");
-                else current = serverLevel.getBiome(getTargetBiomeBlockPos().get()).unwrapKey().get().location();
+                if (!getBrain().hasMemoryValue(WayfinderMemoryModuleType.JOURNEY_TARGET_POS.get())) current = Wayfinder.id("clear_packet");
+                else current = serverLevel.getBiome(getBrain().getMemory(WayfinderMemoryModuleType.JOURNEY_TARGET_POS.get()).get()).unwrapKey().get().location();
                 PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderOpenScreenPacket(biomeList, current, isResting()), player);
                 return InteractionResult.SUCCESS;
             } else if (getOwner() == null && !PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
@@ -344,13 +340,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
                     if (result != null) {
                         BlockPos biomePos = result.getFirst();
-                        getBrain().setMemory(MemoryModuleType.WALK_TARGET,
-                                new WalkTarget(biomePos, 2.2F, 5)
-                        );
-                        setTargetBlockPos(Optional.of(biomePos));
+                        getBrain().setMemory(WayfinderMemoryModuleType.JOURNEY_TARGET_POS.get(), biomePos);
                         setStartBlockPos(Optional.of(blockPosition()));
-                        setStepWalkTargetTowards(biomePos);
-                        getBrain().eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
 
                         foundBiomeTick = serverLevel.getServer().getTickCount();
                         triggerAnim("controller", "searching_end");
@@ -413,14 +404,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         return shield() != SHIELD.NONE;
     }
 
-    public Optional<BlockPos> getTargetBiomeBlockPos() {
-        return entityData.get(BLOCK_POS);
-    }
-
-    public void setTargetBlockPos(Optional<BlockPos> pos) {
-        entityData.set(BLOCK_POS, pos);
-    }
-
     public Optional<BlockPos> getStartBlockPos() {
         return entityData.get(START_POS);
     }
@@ -430,7 +413,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public final boolean unableToMoveToOwner() {
-        return isResting() || isPassenger() || getOwner() == null || getOwner().isSpectator() || getOwner().isDeadOrDying() || getTargetBiomeBlockPos().isPresent();
+        return isResting() || isPassenger() || getOwner() == null || getOwner().isSpectator() || getOwner().isDeadOrDying() || getBrain().hasMemoryValue(WayfinderMemoryModuleType.JOURNEY_TARGET_POS.get());
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -478,13 +461,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         level().getProfiler().push("wayfinderBrain");
         getBrain().tick((ServerLevel) level(), this);
         level().getProfiler().pop();
-        if (!isResting() && !isPanic())
-            getTargetBiomeBlockPos().ifPresent(target -> {
-                if (tickCount % 10 == 0 || getBrain().getMemory(MemoryModuleType.WALK_TARGET).isEmpty()) {
-                    setStepWalkTargetTowards(target);
-                    getBrain().eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
-                }
-            });
         level().getProfiler().push("wayfinderActivityUpdate");
         WayfinderAi.updateActivity(this);
         level().getProfiler().pop();
@@ -497,32 +473,12 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         super.customServerAiStep();
     }
 
-    private void setStepWalkTargetTowards(BlockPos target) {
-        Vec3 to = Vec3.atCenterOf(target).subtract(position());
-        double dist = to.length();
-
-        if (dist <= 4.0) {
-            WayfinderCriteriaTriggers.WAYFINDER_GOT_TO_BIOME.get().trigger((ServerPlayer) this.getOwner(), level().getBiome(target).unwrapKey().get(), level().dimension(), getStartBlockPos().isPresent() ? (int) getStartBlockPos().get().distSqr(target) : 0);
-            setTargetBlockPos(Optional.empty());
-            setStartBlockPos(Optional.empty());
-            getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
-            getBrain().eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
-        } else if (getOwner() == null || getOwner().isDeadOrDying()) {
-            getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
-            setTargetBlockPos(Optional.empty());
-            setStartBlockPos(Optional.empty());
-        } else if (this.distanceToSqr(getOwner()) > 100) {
-            getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
-        } else {
-            Vec3 step = position().add(to.normalize().scale(Math.min(24, dist)));
-            BlockPos stepPos = BlockPos.containing(step);
-            getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(stepPos, 1.2F, 2));
-        }
-    }
-
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
         if (level().isClientSide()) return false;
+
+        if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY))
+            return super.hurt(source, amount);
 
         if (isPanic())
             if (shield() == SHIELD.FULL) {

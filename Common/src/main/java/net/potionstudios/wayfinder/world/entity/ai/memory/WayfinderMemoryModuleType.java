@@ -1,6 +1,7 @@
 package net.potionstudios.wayfinder.world.entity.ai.memory;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -18,6 +19,7 @@ import java.util.function.Supplier;
 public class WayfinderMemoryModuleType {
 
     public static final Supplier<MemoryModuleType<Unit>> IS_RESTING = register("is_resting", Optional.of(Unit.CODEC));
+    public static final Supplier<MemoryModuleType<BlockPos>> JOURNEY_TARGET_POS = register("journey_target_pos", Optional.of(BlockPos.CODEC));
 
     private static <U> Supplier<MemoryModuleType<U>> register(String name, Optional<Codec<U>> codec) {
         return PlatformHandler.PLATFORM_HANDLER.register(BuiltInRegistries.MEMORY_MODULE_TYPE, name, () -> new MemoryModuleType<>(codec));

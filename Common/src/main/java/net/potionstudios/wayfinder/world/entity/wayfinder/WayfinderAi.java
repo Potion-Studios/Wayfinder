@@ -9,10 +9,7 @@ import net.minecraft.world.entity.ai.behavior.MoveToTargetSink;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.schedule.Activity;
-import net.potionstudios.wayfinder.world.entity.ai.behavior.CloseScreenOnPanic;
-import net.potionstudios.wayfinder.world.entity.ai.behavior.FollowOwner;
-import net.potionstudios.wayfinder.world.entity.ai.behavior.RegenerateShield;
-import net.potionstudios.wayfinder.world.entity.ai.behavior.WayfinderPanicTrigger;
+import net.potionstudios.wayfinder.world.entity.ai.behavior.*;
 import net.potionstudios.wayfinder.world.entity.ai.memory.WayfinderMemoryModuleType;
 
 import java.util.Set;
@@ -34,15 +31,18 @@ public class WayfinderAi {
 		brain.addActivity(
 				Activity.CORE,
 				0,
-				ImmutableList.of(new WayfinderPanicTrigger())
+				ImmutableList.of(
+						new WayfinderPanicTrigger(),
+						new MoveToTargetSink()
+				)
 		);
 	}
 
     private static void initWorkingActivity(Brain<WayfinderEntity> brain) {
         brain.addActivityWithConditions(
                 Activity.WORK,
-                ImmutableList.of(Pair.of(0, new MoveToTargetSink())),
-                Set.of(Pair.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_PRESENT))
+                ImmutableList.of(Pair.of(0, new TravelToJourneyTarget())),
+                Set.of(Pair.of(WayfinderMemoryModuleType.JOURNEY_TARGET_POS.get(), MemoryStatus.VALUE_PRESENT))
         );
     }
 
