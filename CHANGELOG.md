@@ -1,5 +1,6 @@
-# 1.1.0-Beta
-- Major AI Reworks
+# 1.0.0
+- First non-beta release
+- Complete Rewrite of Wayfinder logic to use minecraft's Brain and AI systems
 
 # 1.0.2-Beta
 - Make some advancements visible

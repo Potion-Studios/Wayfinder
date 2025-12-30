@@ -16,7 +16,7 @@ val minecraftVersion = project.properties["minecraft_version"] as String
 architectury.minecraft = minecraftVersion
 
 allprojects {
-    version = project.properties["mod_version"] as String
+    version = "${project.properties["mod_version"]}-$minecraftVersion"
     group = project.properties["maven_group"] as String
 }
 
@@ -105,10 +105,10 @@ subprojects {
             curseID.set("1204282")
             modrinthID.set("909sOSOR")
             githubRepo.set("https://github.com/Potion-Studios/Wayfinder")
-            setReleaseType(ReleaseType.BETA)
+            setReleaseType(ReleaseType.RELEASE)
             setGameVersions(minecraftVersion)
             setCurseEnvironment(CurseEnvironment.BOTH)
-            setJavaVersions(JavaVersion.VERSION_21, JavaVersion.VERSION_22)
+            setJavaVersions(JavaVersion.VERSION_21, JavaVersion.VERSION_22, JavaVersion.VERSION_25)
         }
 }
 
