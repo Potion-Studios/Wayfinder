@@ -30,7 +30,6 @@ configurations {
 loom {
     accessWidenerPath.set(project(":Common").loom.accessWidenerPath)
 
-    // NeoForge Datagen Gradle config.  Remove if not using NeoForge datagen
     runs.create("datagen") {
         data()
         programArgs("--all", "--mod", "wayfinder")
