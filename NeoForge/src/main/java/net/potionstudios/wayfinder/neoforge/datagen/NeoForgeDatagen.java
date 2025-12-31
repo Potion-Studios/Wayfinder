@@ -149,13 +149,13 @@ class NeoForgeDatagen {
             add("advancements.wayfinder.ultimate_betrayal.description", "You should be ashamed of yourself..");
 
             add("advancements.wayfinder.beginner.title", "Beginner Adventurer");
-            add("advancements.wayfinder.beginner.description", "Complete 10 full journeys with a Wayfinder that are over 3K blocks");
+            add("advancements.wayfinder.beginner.description", "Complete 3 full journeys with a Wayfinder that are over 3K blocks");
             add("advancements.wayfinder.novice.title", "Novice Adventurer");
-            add("advancements.wayfinder.novice.description", "Complete 20 full journeys with a Wayfinder that are over 3K blocks");
+            add("advancements.wayfinder.novice.description", "Complete 5 full journeys with a Wayfinder that are over 3K blocks");
             add("advancements.wayfinder.intermediate.title", "Intermediate Adventurer");
-            add("advancements.wayfinder.intermediate.description", "Complete 30 full journeys with a Wayfinder that are over 3K blocks");
+            add("advancements.wayfinder.intermediate.description", "Complete 8 full journeys with a Wayfinder that are over 3K blocks");
             add("advancements.wayfinder.ultimate.title", "Ultimate Adventurer");
-            add("advancements.wayfinder.ultimate.description", "Complete 50 full journeys with a Wayfinder that are over 3K blocks");
+            add("advancements.wayfinder.ultimate.description", "Complete 12 full journeys with a Wayfinder that are over 3K blocks");
             add("advancements.wayfinder.boundless_exploration.title", "Boundless Exploration");
             add("advancements.wayfinder.boundless_exploration.description", "Your Wayfinder has their work cut out for them...");
 
