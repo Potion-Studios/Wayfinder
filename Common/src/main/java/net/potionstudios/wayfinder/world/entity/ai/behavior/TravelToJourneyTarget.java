@@ -19,6 +19,7 @@ import java.util.Optional;
 
 public class TravelToJourneyTarget extends Behavior<WayfinderEntity> {
     private int timeToRecalc;
+    private int teleportTimer;
 
     public TravelToJourneyTarget() {
         super(ImmutableMap.of(
@@ -31,6 +32,7 @@ public class TravelToJourneyTarget extends Behavior<WayfinderEntity> {
     @Override
     protected void start(@NotNull ServerLevel level, @NotNull WayfinderEntity entity, long gameTime) {
         timeToRecalc = 0;
+        teleportTimer = 0;
         entity.getBrain().eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
     }
 
@@ -60,8 +62,12 @@ public class TravelToJourneyTarget extends Behavior<WayfinderEntity> {
             entity.setStartBlockPos(Optional.empty());
             brain.eraseMemory(WayfinderMemoryModuleType.JOURNEY_TARGET_POS.get());
             stop(level, entity, gameTime);
-        } else if (entity.distanceToSqr(entity.getOwner()) > 100) {
+        } else if (entity.distanceToSqr(entity.getOwner()) > 200) {
             brain.eraseMemory(MemoryModuleType.WALK_TARGET);
+            if (++teleportTimer > 4) {
+                entity.tryToTeleportToOwner();
+                teleportTimer = 0;
+            }
         } else {
             Vec3 step = entity.position().add(to.normalize().scale(Math.min(24, dist)));
             BlockPos stepPos = BlockPos.containing(step);
