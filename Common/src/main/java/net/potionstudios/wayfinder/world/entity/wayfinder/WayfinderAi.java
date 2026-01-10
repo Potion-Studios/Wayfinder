@@ -35,6 +35,7 @@ public class WayfinderAi {
 				ImmutableList.of(
 						new WayfinderPanicTrigger(),
 						new MoveToTargetSink(),
+						new RestWhenOwnerMissing(),
 						new LookAtTargetSink(10, 50)
 				)
 		);
