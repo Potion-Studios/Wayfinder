@@ -1,5 +1,6 @@
 # 1.0.1
 - Teleport to Owner during Journey if they get too far away
+- Automatically Sit when Owner is Offline, Sleeping or Dying
 
 # 1.0.0
 - First non-beta release

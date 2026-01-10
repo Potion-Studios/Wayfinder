@@ -461,6 +461,8 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         level().getProfiler().push("wayfinderBrain");
         getBrain().tick((ServerLevel) level(), this);
         level().getProfiler().pop();
+        if ((getOwner() == null || getOwner().isSleeping() || getOwner().isDeadOrDying()) && !isResting() && !isPanic())
+            sit();
         level().getProfiler().push("wayfinderActivityUpdate");
         WayfinderAi.updateActivity(this);
         level().getProfiler().pop();

@@ -64,7 +64,7 @@ public class TravelToJourneyTarget extends Behavior<WayfinderEntity> {
             stop(level, entity, gameTime);
         } else if (entity.distanceToSqr(entity.getOwner()) > 200) {
             brain.eraseMemory(MemoryModuleType.WALK_TARGET);
-            if (++teleportTimer > 4) {
+            if (++teleportTimer > 5) {
                 entity.tryToTeleportToOwner();
                 teleportTimer = 0;
             }
