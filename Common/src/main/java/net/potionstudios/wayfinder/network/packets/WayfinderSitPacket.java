@@ -11,7 +11,7 @@ import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.network.packet.MultiloaderPacket;
+import com.geckolib.network.packet.MultiloaderPacket;
 
 import java.util.function.Consumer;
 

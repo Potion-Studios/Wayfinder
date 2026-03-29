@@ -14,7 +14,7 @@ import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.fabric.data.WayfinderFabricAttachmentData;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.network.packet.MultiloaderPacket;
+import com.geckolib.network.packet.MultiloaderPacket;
 
 import java.nio.file.Path;
 import java.util.UUID;

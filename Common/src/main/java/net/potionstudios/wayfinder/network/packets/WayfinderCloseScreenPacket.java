@@ -9,7 +9,7 @@ import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.client.gui.screens.WayfinderScreen;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.network.packet.MultiloaderPacket;
+import com.geckolib.network.packet.MultiloaderPacket;
 
 import java.util.function.Consumer;
 

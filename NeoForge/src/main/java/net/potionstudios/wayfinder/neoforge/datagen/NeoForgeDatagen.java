@@ -15,6 +15,7 @@ import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -48,8 +49,8 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.*;
 import net.neoforged.neoforge.common.data.ItemTagsProvider;
-import net.potionstudios.biomeswevegone.BiomesWeveGone;
-import net.potionstudios.biomeswevegone.world.item.BWGItems;
+//import net.potionstudios.biomeswevegone.BiomesWeveGone;
+//import net.potionstudios.biomeswevegone.world.item.BWGItems;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -221,13 +222,13 @@ class NeoForgeDatagen {
             itemModels.generateFlatItem(WayfinderItems.WAYFINDER_SPAWN_EGG.get(), ModelTemplates.FLAT_ITEM);
 
             MultiVariant activated = BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ORIENTABLE.createWithSuffix(WayfinderBlocks.WAYFINER_HEART.get(), "_activated", TextureMapping.column(Blocks.CHISELED_TUFF)
-                    .copyAndUpdate(TextureSlot.FRONT, Wayfinder.id("block/wayfinder_heart_front_activated"))
-                    .copyAndUpdate(TextureSlot.SIDE, Wayfinder.id("block/wayfinder_heart_side_activated"))
-                    .copyAndUpdate(TextureSlot.TOP, Wayfinder.id("block/wayfinder_heart_top_activated")), blockModels.modelOutput));
+                    .copyAndUpdate(TextureSlot.FRONT, new Material(Wayfinder.id("block/wayfinder_heart_front_activated")))
+                    .copyAndUpdate(TextureSlot.SIDE, new Material(Wayfinder.id("block/wayfinder_heart_side_activated")))
+                    .copyAndUpdate(TextureSlot.TOP, new Material(Wayfinder.id("block/wayfinder_heart_top_activated"))), blockModels.modelOutput));
 
             MultiVariant nonActive = BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ORIENTABLE.create(WayfinderBlocks.WAYFINER_HEART.get(), TextureMapping.column(Blocks.CHISELED_TUFF)
-                    .copyAndUpdate(TextureSlot.SIDE, mcLocation("block/chiseled_tuff"))
-                    .copyAndUpdate(TextureSlot.FRONT, Wayfinder.id("block/wayfinder_heart_front")), blockModels.modelOutput));
+                    .copyAndUpdate(TextureSlot.SIDE, new Material(mcLocation("block/chiseled_tuff")))
+                    .copyAndUpdate(TextureSlot.FRONT, new Material(Wayfinder.id("block/wayfinder_heart_front"))), blockModels.modelOutput));
 
             blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(WayfinderBlocks.WAYFINER_HEART.get())
                     .with(PropertyDispatch.initial(WayfinderHeartBlock.ACTIVATED)
@@ -413,16 +414,16 @@ class NeoForgeDatagen {
                         .parent(soItBegins)
                         .save(writer, Wayfinder.id(Wayfinder.MOD_ID + "/ultimate_betrayal"));
 
-                Advancement.Builder.advancement()
-                        .addCriterion("bwg_biome", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(BiomesWeveGone.MOD_ID))
-                        .display(
-                                BWGItems.BWG_LOGO.get(),
-                                translateAble("boundless_exploration.title"),
-                                translateAble("boundless_exploration.description"),
-                                null, AdvancementType.CHALLENGE, true, false, true
-                        )
-                        .parent(firstOfMany)
-                        .save(writer, Wayfinder.id(BiomesWeveGone.MOD_ID + "/boundless_exploration"));
+//                Advancement.Builder.advancement()
+//                        .addCriterion("bwg_biome", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(BiomesWeveGone.MOD_ID))
+//                        .display(
+//                                BWGItems.BWG_LOGO.get(),
+//                                translateAble("boundless_exploration.title"),
+//                                translateAble("boundless_exploration.description"),
+//                                null, AdvancementType.CHALLENGE, true, false, true
+//                        )
+//                        .parent(firstOfMany)
+//                        .save(writer, Wayfinder.id(BiomesWeveGone.MOD_ID + "/boundless_exploration"));
             }
 
             private static MutableComponent translateAble(String key) {

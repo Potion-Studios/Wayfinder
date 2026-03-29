@@ -7,7 +7,7 @@ import net.potionstudios.wayfinder.network.packets.WayfinderBiomePacket;
 import net.potionstudios.wayfinder.network.packets.WayfinderCloseScreenPacket;
 import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.network.packets.WayfinderSitPacket;
-import software.bernie.geckolib.network.packet.MultiloaderPacket;
+import com.geckolib.network.packet.MultiloaderPacket;
 
 import java.util.function.BiConsumer;
 

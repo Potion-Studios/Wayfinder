@@ -1,9 +1,9 @@
 package net.potionstudios.wayfinder.fabric;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -27,12 +27,12 @@ public class WayfinderFabric implements ModInitializer {
         WayfinderFabricAttachmentData.init();
         Wayfinder.registerEntityAttributes(FabricDefaultAttributeRegistry::register);
         CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> WayfinderCommands.register(dispatcher::register)));
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(group -> group.accept(WayfinderItems.WAYFINDER_SPAWN_EGG.get()));
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(group -> group.accept(WayfinderBlocks.WAYFINER_HEART.get()));
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(group -> group.accept(WayfinderItems.MUSIC_DISC_SWEET_DREAMS.get()));
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.SPAWN_EGGS).register(group -> group.accept(WayfinderItems.WAYFINDER_SPAWN_EGG.get()));
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(group -> group.accept(WayfinderBlocks.WAYFINER_HEART.get()));
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(group -> group.accept(WayfinderItems.MUSIC_DISC_SWEET_DREAMS.get()));
         ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> Wayfinder.onEntityLoad(entity));
-        WayfinderNetworking.registerS2CPackets((PayloadTypeRegistry.playS2C()::register));
-        WayfinderNetworking.registerC2SPackets((PayloadTypeRegistry.playC2S()::register));
+        WayfinderNetworking.registerS2CPackets((PayloadTypeRegistry.clientboundPlay()::register));
+        WayfinderNetworking.registerC2SPackets((PayloadTypeRegistry.serverboundPlay()::register));
         WayfinderNetworking.registerC2SPackets((type, codec) -> ServerPlayNetworking.registerGlobalReceiver(type, (packet, context) -> packet.receiveMessage(context.player(), context.server()::execute)));
         ServerLifecycleEvents.SERVER_STARTING.register(Wayfinder::onServerStart);
     }

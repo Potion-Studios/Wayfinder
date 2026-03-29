@@ -30,16 +30,16 @@ configurations {
 loom.accessWidenerPath.set(project(":Common").loom.accessWidenerPath)
 
 dependencies {
-    modImplementation("net.fabricmc:fabric-loader:${project.properties["fabric_loader_version"]}")
-    modApi("net.fabricmc.fabric-api:fabric-api:${project.properties["fabric_api_version"]}+$minecraftVersion")
+    implementation("net.fabricmc:fabric-loader:${project.properties["fabric_loader_version"]}")
+    api("net.fabricmc.fabric-api:fabric-api:${project.properties["fabric_api_version"]}+$minecraftVersion")
 
-    "common"(project(":Common", "namedElements")) { isTransitive = false }
+    "common"(project(":Common")) { isTransitive = false }
     "shadowBundle"(project(":Common", "transformProductionFabric"))
 
-    modLocalRuntime("me.djtheredstoner:DevAuth-fabric:${project.properties["devauth_version"]}")
+    localRuntime("me.djtheredstoner:DevAuth-fabric:${project.properties["devauth_version"]}")
 
-    modApi("software.bernie.geckolib:geckolib-fabric-$minecraftVersion:${project.properties["geckolib_version"]}")
-    modApi("me.lucko:fabric-permissions-api:0.3.1")
+    api("com.geckolib:geckolib-fabric-$minecraftVersion:${project.properties["geckolib_version"]}")
+    api("me.lucko:fabric-permissions-api:0.7.0")
 }
 
 tasks {
@@ -55,12 +55,6 @@ tasks {
         exclude("architectury.common.json", ".cache/**")
         configurations = listOf(project.configurations.getByName("shadowBundle"))
         archiveClassifier.set("dev-shadow")
-    }
-
-    remapJar {
-        injectAccessWidener.set(true)
-        inputFile.set(shadowJar.get().archiveFile)
-        dependsOn(shadowJar)
     }
 }
 

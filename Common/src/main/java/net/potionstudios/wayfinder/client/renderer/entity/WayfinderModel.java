@@ -4,8 +4,8 @@ import net.minecraft.resources.Identifier;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import org.jspecify.annotations.NonNull;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.base.GeoRenderState;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderState;
 
 class WayfinderModel<T extends WayfinderEntity> extends GeoModel<T> {
 
@@ -29,7 +29,7 @@ class WayfinderModel<T extends WayfinderEntity> extends GeoModel<T> {
     }
 
     @Override
-    public Identifier getAnimationResource(T animatable) {
+    public @NonNull Identifier getAnimationResource(@NonNull T animatable) {
         return Wayfinder.id("wayfinder");
     }
 }

@@ -1,7 +1,7 @@
 package net.potionstudios.wayfinder.client.gui.screens;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
@@ -31,8 +31,7 @@ class BiomeList extends ContainerObjectSelectionList<BiomeList.Entry> {
 	}
 
 	@Override
-	protected void renderListBackground(@NotNull GuiGraphics guiGraphics) {}
-
+	protected void extractListBackground(@NonNull GuiGraphicsExtractor graphics) {}
 
 	class Entry extends ContainerObjectSelectionList.Entry<Entry> {
 		private final String biomeName;
@@ -44,11 +43,11 @@ class BiomeList extends ContainerObjectSelectionList<BiomeList.Entry> {
 		}
 
 		@Override
-		public void renderContent(@NonNull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
-			boolean b = isHovering || getSelected() == this;
+		public void extractContent(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
+			boolean b = isHovered() || getSelected() == this;
 			if (getSelected() == this)
-				guiGraphics.fill(RenderPipelines.GUI, getX(), getY() - 1, getX() + width, getY() + getHeight() + 1, 0x80404040);
-			guiGraphics.drawString(minecraft.font, biomeName, getX() + 5, getY(), b ? 0xFFFFFFA0 : 0xFF000000, false);
+				graphics.fill(RenderPipelines.GUI, getX(), getY() - 1, getX() + width, getY() + getHeight() + 1, 0x80404040);
+			graphics.text(minecraft.font, biomeName, getX() + 5, getY(), b ? 0xFFFFFFA0 : 0xFF000000, false);
 		}
 
 		@Override

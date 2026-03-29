@@ -1,7 +1,7 @@
 package net.potionstudios.wayfinder.client.gui.screens;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -13,7 +13,6 @@ import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.network.packets.WayfinderBiomePacket;
 import net.potionstudios.wayfinder.network.packets.WayfinderSitPacket;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
 import java.util.List;
@@ -32,8 +31,6 @@ public class WayfinderScreen extends Screen {
     private final boolean wasSitting;
     private BiomeList biomeList;
     private Identifier current;
-
-    // Define buttons as fields so we can update them in render()
     private Button submitButton;
     private Button stopButton;
     private Button sitButton;
@@ -54,23 +51,20 @@ public class WayfinderScreen extends Screen {
         this.rightPos = this.leftPos + IMAGE_WIDTH;
         this.topPos = this.bottomPos + IMAGE_HEIGHT;
 
-        // 1. Search Box
         EditBox searchBox = new EditBox(font, (IMAGE_WIDTH / 2) - 25, 15, Component.translatable("gui.wayfinder.search"));
         searchBox.setPosition(rightPos - (IMAGE_WIDTH / 2) + 10, bottomPos + 10);
         searchBox.setResponder(this::updateBiomeList);
         addRenderableWidget(searchBox);
 
-        ScrollableTextWidget descriptionWidget = new ScrollableTextWidget(leftPos + 10, topPos + 10, 116, 86, Component.translatable("gui.wayfinder.description"));
+        ScrollableTextWidget descriptionWidget = new ScrollableTextWidget(leftPos + 10, topPos + 10, 116, 86, Component.translatable("gui.wayfinder.description"), null);
         descriptionWidget.setPosition(leftPos + 15, 100 + (bottomPos + (IMAGE_HEIGHT / 4) - (100 / 2))- 23);
         addRenderableWidget(descriptionWidget);
 
-        // 2. Biome List
         biomeList = new BiomeList(minecraft, (IMAGE_WIDTH / 2) - 25, IMAGE_HEIGHT - 70, 0, 10);
         biomeList.setPosition(rightPos - (IMAGE_WIDTH / 2) + 10, bottomPos + 28);
         biomeList.setBiomes(biomes);
         addRenderableWidget(biomeList);
 
-        // 3. Initialize Buttons ONCE in init()
         int buttonY = bottomPos + IMAGE_HEIGHT - 40;
 
         this.submitButton = addRenderableWidget(Button.builder(Component.translatable("gui.wayfinder.button.search"), (button) -> {
@@ -91,30 +85,25 @@ public class WayfinderScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        // In 1.21.4, renderBackground is often called inside super.render
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+    public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractRenderState(graphics, mouseX, mouseY, a);
 
-        // Update button states every frame
         submitButton.active = biomeList.getFocused() != null;
         stopButton.active = !current.equals(Wayfinder.id("clear_packet"));
         sitButton.active = !isSitting;
         walkButton.active = isSitting;
 
-        // Render the Logo with RenderType
         int logoSize = 100;
         int centerX = leftPos + (IMAGE_WIDTH / 4) - (logoSize / 2);
         int centerY = bottomPos + (IMAGE_HEIGHT / 4) - (logoSize / 2);
 
-        // Use RenderType::guiTextured to fix the missing texture/grid issue
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, LOGO, centerX, centerY, 0, 0, logoSize, logoSize, logoSize, logoSize);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, LOGO, centerX, centerY, 0, 0, logoSize, logoSize, logoSize, logoSize);
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderTransparentBackground(guiGraphics);
-        // FIX: Added RenderType and explicit texture sizes (IMAGE_WIDTH, IMAGE_HEIGHT)
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BOOK_TEXTURE, leftPos, bottomPos, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT);
+    public void extractBackground(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        this.extractTransparentBackground(graphics);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, BOOK_TEXTURE, leftPos, bottomPos, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT);
     }
 
     @Override

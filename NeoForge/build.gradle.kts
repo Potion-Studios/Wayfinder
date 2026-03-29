@@ -41,14 +41,14 @@ loom {
 dependencies {
     neoForge("net.neoforged:neoforge:${project.properties["neoforge_version"]}")
 
-    "common"(project(":Common", "namedElements")) { isTransitive = false }
+    "common"(project(":Common")) { isTransitive = false }
     "shadowBundle"(project(":Common", "transformProductionNeoForge"))
 
-    modLocalRuntime("me.djtheredstoner:DevAuth-neoforge:${project.properties["devauth_version"]}")
+    localRuntime("me.djtheredstoner:DevAuth-neoforge:${project.properties["devauth_version"]}")
 
-    modApi("software.bernie.geckolib:geckolib-neoforge-$minecraftVersion:${project.properties["geckolib_version"]}")
+    api("com.geckolib:geckolib-neoforge-$minecraftVersion:${project.properties["geckolib_version"]}")
 
-    modApi("net.potionstudios:Oh-The-Biomes-Weve-Gone-NeoForge:${project.properties["bwg_version"]}")
+//    api("net.potionstudios:Oh-The-Biomes-Weve-Gone-NeoForge:${project.properties["bwg_version"]}")
 
     compileOnly("net.luckperms:api:5.4")
 }
@@ -66,12 +66,6 @@ tasks {
         exclude("architectury.common.json", "net/potionstudios/wayfinder/neoforge/datagen/**", ".cache/**")
         configurations = listOf(project.configurations.getByName("shadowBundle"))
         archiveClassifier.set("dev-shadow")
-    }
-
-    remapJar {
-        inputFile.set(shadowJar.get().archiveFile)
-        dependsOn(shadowJar)
-        atAccessWideners.add("wayfinder.accesswidener")
     }
 }
 

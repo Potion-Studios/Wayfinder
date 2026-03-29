@@ -39,12 +39,12 @@ loom {
 dependencies {
     forge("net.minecraftforge:forge:$minecraftVersion-${project.properties["forge_version"]}")
 
-    "common"(project(":Common", "namedElements")) { isTransitive = false }
+    "common"(project(":Common")) { isTransitive = false }
     "shadowBundle"(project(":Common", "transformProductionForge"))
 
-    modLocalRuntime("me.djtheredstoner:DevAuth-forge-latest:${project.properties["devauth_version"]}")
+    localRuntime("me.djtheredstoner:DevAuth-forge-latest:${project.properties["devauth_version"]}")
 
-    modApi("software.bernie.geckolib:geckolib-forge-$minecraftVersion:${project.properties["geckolib_version"]}")
+    api("com.geckolib:geckolib-forge-$minecraftVersion:${project.properties["geckolib_version"]}")
 
     compileOnly("net.luckperms:api:5.4")
 }
@@ -62,11 +62,6 @@ tasks {
         exclude("architectury.common.json", ".cache/**")
         configurations = listOf(project.configurations.getByName("shadowBundle"))
         archiveClassifier.set("dev-shadow")
-    }
-
-    remapJar {
-        inputFile.set(shadowJar.get().archiveFile)
-        dependsOn(shadowJar)
     }
 }
 

@@ -7,7 +7,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.network.packet.MultiloaderPacket;
+import com.geckolib.network.packet.MultiloaderPacket;
 
 import java.nio.file.Path;
 import java.util.ServiceLoader;

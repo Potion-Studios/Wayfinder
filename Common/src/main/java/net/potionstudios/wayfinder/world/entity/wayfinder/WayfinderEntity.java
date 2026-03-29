@@ -1,7 +1,6 @@
 package net.potionstudios.wayfinder.world.entity.wayfinder;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.serialization.Dynamic;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -31,7 +30,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.schedule.Activity;
@@ -58,14 +56,14 @@ import net.potionstudios.wayfinder.world.entity.ai.sensing.WayfinderSensorType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animatable.manager.AnimatableManager;
-import software.bernie.geckolib.animation.*;
-import software.bernie.geckolib.animation.object.LoopType;
-import software.bernie.geckolib.animation.object.PlayState;
-import software.bernie.geckolib.animation.state.AnimationTest;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import com.geckolib.animatable.GeoEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.*;
+import com.geckolib.animation.object.LoopType;
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animation.state.AnimationTest;
+import com.geckolib.util.GeckoLibUtil;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -104,30 +102,32 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private static final EntityDataAccessor<Integer> DATA_SHIELD = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> DATA_PANIC = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_REST = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final Brain.Provider<WayfinderEntity> BRAIN_PROVIDER = Brain.provider(
+            List.of(
+                    MemoryModuleType.PATH,
+                    MemoryModuleType.LOOK_TARGET,
+                    MemoryModuleType.NEAREST_LIVING_ENTITIES,
+                    MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES,
+                    MemoryModuleType.NEAREST_PLAYERS,
+                    MemoryModuleType.WALK_TARGET,
+                    MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
+                    MemoryModuleType.HURT_BY,
+                    MemoryModuleType.DANGER_DETECTED_RECENTLY,
+                    MemoryModuleType.IS_PANICKING,
+                    WayfinderMemoryModuleType.IS_RESTING.get(),
+                    WayfinderMemoryModuleType.JOURNEY_TARGET_POS.get()
+            ),
+            List.of(
+                    SensorType.NEAREST_LIVING_ENTITIES,
+                    SensorType.NEAREST_PLAYERS,
+                    SensorType.HURT_BY,
+                    WayfinderSensorType.WAYFINDER_SCARE_DETECTED.get()
+            ),
+            var0 -> WayfinderAi.getActivities()
+    );
 
     private int foundBiomeTick = -20 * Wayfinder.CONFIG.wayfinder.COOLDOWN.value();
     private int completedJourneys;
-
-    protected static final ImmutableList<SensorType<? extends Sensor<? super WayfinderEntity>>> SENSOR_TYPES = ImmutableList.of(
-            SensorType.NEAREST_LIVING_ENTITIES,
-            SensorType.NEAREST_PLAYERS,
-            SensorType.HURT_BY,
-            WayfinderSensorType.WAYFINDER_SCARE_DETECTED.get()
-    );
-    protected static final ImmutableList<MemoryModuleType<?>> MEMORY_TYPES = ImmutableList.of(
-            MemoryModuleType.PATH,
-            MemoryModuleType.LOOK_TARGET,
-            MemoryModuleType.NEAREST_LIVING_ENTITIES,
-            MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES,
-            MemoryModuleType.NEAREST_PLAYERS,
-            MemoryModuleType.WALK_TARGET,
-            MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
-            MemoryModuleType.HURT_BY,
-            MemoryModuleType.DANGER_DETECTED_RECENTLY,
-            MemoryModuleType.IS_PANICKING,
-            WayfinderMemoryModuleType.IS_RESTING.get(),
-            WayfinderMemoryModuleType.JOURNEY_TARGET_POS.get()
-    );
 
     public WayfinderEntity(Level level, Player owner) {
         this(WayfinderEntityType.WAYFINDER.get(), level);
@@ -142,13 +142,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
-    protected Brain.@NotNull Provider<WayfinderEntity> brainProvider() {
-        return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
-    }
-
-    @Override
-    protected @NotNull Brain<?> makeBrain(@NotNull Dynamic<?> dynamic) {
-        return WayfinderAi.makeBrain(this.brainProvider().makeBrain(dynamic));
+    protected @NonNull Brain<WayfinderEntity> makeBrain(Brain.@NonNull Packed packedBrain) {
+        Brain<WayfinderEntity> brain = BRAIN_PROVIDER.makeBrain(this, packedBrain);
+        brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
+        brain.setDefaultActivity(Activity.IDLE);
+        return brain;
     }
 
     @Override
@@ -157,7 +155,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     public boolean isScaredBy(LivingEntity entity) {
-        return entity.getType().is(WayfinderEntityTypeTags.SCARES_WAYFINDER) || this.getLastHurtByMob() == entity;
+        return entity.is(WayfinderEntityTypeTags.SCARES_WAYFINDER) || this.getLastHurtByMob() == entity;
     }
 
     public boolean canScare() {
