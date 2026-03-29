@@ -3,9 +3,9 @@ package net.potionstudios.wayfinder.advancements.critereon;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.advancements.criterion.ContextAwarePredicate;
+import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -74,7 +74,7 @@ public class WayfinderGotToBiomeTrigger extends SimpleCriterionTrigger<Wayfinder
                    this.level.map(l -> l.equals(level)).orElse(true) &&
                    this.distance.map(d -> d <= distance).orElse(true) &&
                    this.threeKJourneys.map(t -> t == PlatformHandler.PLATFORM_HANDLER.get3kJourneys(player)).orElse(true) &&
-                    this.modid.map(m -> biome.location().getNamespace().equals(m)).orElse(true);
+                    this.modid.map(m -> biome.identifier().getNamespace().equals(m)).orElse(true);
         }
     }
 }

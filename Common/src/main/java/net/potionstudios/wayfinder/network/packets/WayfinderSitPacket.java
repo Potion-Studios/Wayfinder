@@ -26,7 +26,7 @@ public record WayfinderSitPacket(boolean sit) implements MultiloaderPacket {
 	@Override
 	public void receiveMessage(@Nullable Player player, Consumer<Runnable> consumer) {
 		consumer.accept(() -> {
-			Entity entity = player.getServer().getLevel(player.getCommandSenderWorld().dimension()).getEntity(PlatformHandler.PLATFORM_HANDLER.getWayfinder(player));
+			Entity entity = player.level().getEntity(PlatformHandler.PLATFORM_HANDLER.getWayfinder(player));
 			if (entity instanceof WayfinderEntity wayfinder)
 				if (sit) wayfinder.sit();
 				else wayfinder.stand();

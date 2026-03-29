@@ -1,15 +1,13 @@
 package net.potionstudios.wayfinder.forge;
 
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.minecraftforge.fml.common.Mod;
 import net.potionstudios.wayfinder.commands.WayfinderCommands;
@@ -24,14 +22,13 @@ import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
 @Mod(Wayfinder.MOD_ID)
 public class WayfinderForge {
     public WayfinderForge(final FMLJavaModLoadingContext context) {
-        IEventBus MOD_BUS = context.getModEventBus();
-        IEventBus EVENT_BUS = MinecraftForge.EVENT_BUS;
+        BusGroup modBusGroup = context.getModBusGroup();
         Wayfinder.init();
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> WayfinderClientForge.init(MOD_BUS));
-        ForgePlatformHandler.register(MOD_BUS);
-        MOD_BUS.addListener((EntityAttributeCreationEvent event) -> Wayfinder.registerEntityAttributes(event::put));
-        EVENT_BUS.addListener((RegisterCommandsEvent event) -> WayfinderCommands.register(event.getDispatcher()::register));
-        MOD_BUS.addListener((BuildCreativeModeTabContentsEvent event) -> {
+        if (FMLEnvironment.dist.isClient()) WayfinderClientForge.init(modBusGroup);
+        ForgePlatformHandler.register(modBusGroup);
+        EntityAttributeCreationEvent.BUS.addListener((EntityAttributeCreationEvent event) -> Wayfinder.registerEntityAttributes(event::put));
+        RegisterCommandsEvent.BUS.addListener((RegisterCommandsEvent event) -> WayfinderCommands.register(event.getDispatcher()::register));
+        BuildCreativeModeTabContentsEvent.BUS.addListener((BuildCreativeModeTabContentsEvent event) -> {
             if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS)
                 event.accept(WayfinderItems.WAYFINDER_SPAWN_EGG.get());
             else if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS)
@@ -39,7 +36,7 @@ public class WayfinderForge {
             else if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES)
                 event.accept(WayfinderItems.MUSIC_DISC_SWEET_DREAMS.get());
         });
-        EVENT_BUS.addListener((EntityJoinLevelEvent event) -> Wayfinder.onEntityLoad(event.getEntity()));
+        EntityJoinLevelEvent.BUS.addListener((EntityJoinLevelEvent event) -> Wayfinder.onEntityLoad(event.getEntity()));
         ForgeNetworking.init();
     }
 }

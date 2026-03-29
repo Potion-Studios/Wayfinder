@@ -6,7 +6,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
@@ -46,7 +46,7 @@ class WayfinderRemoveCommand {
 			if (PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
 				UUID wayfinderId = PlatformHandler.PLATFORM_HANDLER.getWayfinder(player);
 				PlatformHandler.PLATFORM_HANDLER.setWayfinder(player, Util.NIL_UUID);
-				Entity entity = player.serverLevel().getEntity(wayfinderId);
+				Entity entity = player.level().getEntity(wayfinderId);
 				if (entity instanceof WayfinderEntity wayfinder) {
 					wayfinder.discard();
 					context.getSource().sendSuccess(() -> Component.translatable("wayfinder.commands.remove.kill.success", player.getDisplayName()).withStyle(ChatFormatting.GREEN), false);
@@ -64,9 +64,9 @@ class WayfinderRemoveCommand {
 		if (PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
 			UUID wayfinderId = PlatformHandler.PLATFORM_HANDLER.getWayfinder(player);
 			PlatformHandler.PLATFORM_HANDLER.setWayfinder(player, Util.NIL_UUID);
-			Entity entity = player.serverLevel().getEntity(wayfinderId);
+			Entity entity = player.level().getEntity(wayfinderId);
 			if (entity instanceof WayfinderEntity wayfinder)
-				wayfinder.setOwnerUUID(null);
+				wayfinder.setOwner(null);
 			context.getSource().sendSuccess(() -> Component.translatable("wayfinder.commands.remove.success", player.getDisplayName()).withStyle(ChatFormatting.GREEN), false);
 			return 1;
 		}

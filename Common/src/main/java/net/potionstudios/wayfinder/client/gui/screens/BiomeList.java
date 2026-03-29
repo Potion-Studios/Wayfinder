@@ -5,9 +5,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
@@ -16,7 +19,12 @@ class BiomeList extends ContainerObjectSelectionList<BiomeList.Entry> {
 		super(minecraft, width, height, y, itemHeight);
 	}
 
-	public void setBiomes(@NotNull List<ResourceLocation> biomes) {
+	@Override
+	public int getRowWidth() {
+		return this.width;
+	}
+
+	public void setBiomes(@NotNull List<Identifier> biomes) {
 		clearEntries();
 		if (biomes.isEmpty()) return;
 		biomes.stream().sorted().forEach(biome -> addEntry(new Entry(biome)));
@@ -26,26 +34,21 @@ class BiomeList extends ContainerObjectSelectionList<BiomeList.Entry> {
 	protected void renderListBackground(@NotNull GuiGraphics guiGraphics) {}
 
 
-	@Override
-	protected int getScrollbarPosition() {
-		return getX() + getWidth();
-	}
-
 	class Entry extends ContainerObjectSelectionList.Entry<Entry> {
 		private final String biomeName;
-		private final ResourceLocation biome;
+		private final Identifier biome;
 
-		public Entry(@NotNull ResourceLocation location) {
+		public Entry(@NotNull Identifier location) {
 			this.biome = location;
 			this.biomeName = Component.translatable("biome." + location.toLanguageKey()).getString();
 		}
 
 		@Override
-		public void render(@NotNull GuiGraphics guiGraphics, int index, int y, int x, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTicks) {
-			boolean b = hovered || getSelected() == getEntry(index);
-			if (getSelected() == getEntry(index))
-				guiGraphics.fill(x, y - 3, x + width, y + height + 3, 0x80404040);
-			guiGraphics.drawString(minecraft.font, biomeName, x + 50, y, b ? 0xFFFFA0 : 0, b);
+		public void renderContent(@NonNull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+			boolean b = isHovering || getSelected() == this;
+			if (getSelected() == this)
+				guiGraphics.fill(RenderPipelines.GUI, getX(), getY() - 1, getX() + width, getY() + getHeight() + 1, 0x80404040);
+			guiGraphics.drawString(minecraft.font, biomeName, getX() + 5, getY(), b ? 0xFFFFFFA0 : 0xFF000000, false);
 		}
 
 		@Override
@@ -54,7 +57,7 @@ class BiomeList extends ContainerObjectSelectionList<BiomeList.Entry> {
 		}
 
 		@Override
-		public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
 			if (getSelected() == this)
 				setSelected(null);
 			else setSelected(this);
@@ -66,7 +69,7 @@ class BiomeList extends ContainerObjectSelectionList<BiomeList.Entry> {
 			return List.of();
 		}
 
-		public ResourceLocation getBiome() {
+		public Identifier getBiome() {
 			return biome;
 		}
 	}

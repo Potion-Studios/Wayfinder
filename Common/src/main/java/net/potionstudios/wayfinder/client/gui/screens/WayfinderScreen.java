@@ -5,37 +5,42 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.network.packets.WayfinderBiomePacket;
 import net.potionstudios.wayfinder.network.packets.WayfinderSitPacket;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
 public class WayfinderScreen extends Screen {
 
-    private static final ResourceLocation BOOK_TEXTURE = Wayfinder.id("textures/gui/book_gui.png");
-    private static final ResourceLocation LOGO = Wayfinder.id("textures/gui/wayfinder.png");
+    private static final Identifier BOOK_TEXTURE = Wayfinder.id("textures/gui/book_gui.png");
+    private static final Identifier LOGO = Wayfinder.id("textures/gui/wayfinder.png");
 
     protected static final int IMAGE_WIDTH = 288;
     protected static final int IMAGE_HEIGHT = 208;
-    protected int leftPos;
-    protected int bottomPos;
-    protected int rightPos;
-    protected int topPos;
-    protected int startXRightPage;
-    protected int startXLeftPage;
-    private final List<ResourceLocation> biomes;
+    protected int leftPos, bottomPos, rightPos, topPos;
+
+    private final List<Identifier> biomes;
     private boolean isSitting;
     private final boolean wasSitting;
     private BiomeList biomeList;
-    private ResourceLocation current;
+    private Identifier current;
 
-    public WayfinderScreen(List<ResourceLocation> biomeRegistry, ResourceLocation current, boolean isSitting) {
-        super(Component.literal(""));
+    // Define buttons as fields so we can update them in render()
+    private Button submitButton;
+    private Button stopButton;
+    private Button sitButton;
+    private Button walkButton;
+
+    public WayfinderScreen(List<Identifier> biomeRegistry, Identifier current, boolean isSitting) {
+        super(Component.empty());
         this.biomes = biomeRegistry;
         this.isSitting = isSitting;
         this.current = current;
@@ -44,15 +49,14 @@ public class WayfinderScreen extends Screen {
 
     @Override
     protected void init() {
-        this.leftPos = ((this.width - IMAGE_WIDTH) / 2);
+        this.leftPos = (this.width - IMAGE_WIDTH) / 2;
         this.bottomPos = (this.height - IMAGE_HEIGHT) / 2 - 15;
         this.rightPos = this.leftPos + IMAGE_WIDTH;
         this.topPos = this.bottomPos + IMAGE_HEIGHT;
-        this.startXRightPage = (this.leftPos + (IMAGE_WIDTH / 4) + ((IMAGE_WIDTH) / 3)) - 18;
-        this.startXLeftPage = this.leftPos + 15;
 
+        // 1. Search Box
         EditBox searchBox = new EditBox(font, (IMAGE_WIDTH / 2) - 25, 15, Component.translatable("gui.wayfinder.search"));
-        searchBox.setPosition(rightPos - (IMAGE_WIDTH / 2) + 10, topPos - IMAGE_HEIGHT + 10);
+        searchBox.setPosition(rightPos - (IMAGE_WIDTH / 2) + 10, bottomPos + 10);
         searchBox.setResponder(this::updateBiomeList);
         addRenderableWidget(searchBox);
 
@@ -60,59 +64,57 @@ public class WayfinderScreen extends Screen {
         descriptionWidget.setPosition(leftPos + 15, 100 + (bottomPos + (IMAGE_HEIGHT / 4) - (100 / 2))- 23);
         addRenderableWidget(descriptionWidget);
 
+        // 2. Biome List
         biomeList = new BiomeList(minecraft, (IMAGE_WIDTH / 2) - 25, IMAGE_HEIGHT - 70, 0, 10);
-        biomeList.setPosition(rightPos - (IMAGE_WIDTH / 2) + 10, topPos - IMAGE_HEIGHT + 28);
+        biomeList.setPosition(rightPos - (IMAGE_WIDTH / 2) + 10, bottomPos + 28);
         biomeList.setBiomes(biomes);
         addRenderableWidget(biomeList);
+
+        // 3. Initialize Buttons ONCE in init()
+        int buttonY = bottomPos + IMAGE_HEIGHT - 40;
+
+        this.submitButton = addRenderableWidget(Button.builder(Component.translatable("gui.wayfinder.button.search"), (button) -> {
+            PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderBiomePacket(biomeList.getFocused().getBiome()));
+            this.onClose();
+        }).pos(rightPos - (IMAGE_WIDTH / 2) + 10, buttonY).size(50, 20).build());
+
+        this.stopButton = addRenderableWidget(Button.builder(Component.translatable("gui.wayfinder.button.stop"), (button) -> {
+            PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderBiomePacket(Wayfinder.id("clear_packet")));
+            current = Wayfinder.id("clear_packet");
+        }).pos(rightPos - 70, buttonY).size(50, 20).build());
+
+        this.sitButton = addRenderableWidget(Button.builder(Component.translatable("gui.wayfinder.button.sit"), button -> isSitting = true)
+                .pos(leftPos + 20, buttonY).size(50, 20).build());
+
+        this.walkButton = addRenderableWidget(Button.builder(Component.translatable("gui.wayfinder.button.follow"), button -> isSitting = false)
+                .pos(leftPos + (IMAGE_WIDTH / 2) - 60, buttonY).size(50, 20).build());
     }
 
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        // In 1.21.4, renderBackground is often called inside super.render
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        int logoWidth = 100;
-        int logoHeight = 100;
-        int centerX = leftPos + (IMAGE_WIDTH / 4) - (logoWidth / 2);
-        int centerY = bottomPos + (IMAGE_HEIGHT / 4) - (logoHeight / 2);
-        guiGraphics.blit(LOGO, centerX, centerY, 0, 0, logoWidth, logoHeight, logoWidth, logoHeight);
 
-        int buttonY = bottomPos + IMAGE_HEIGHT - 40;
-
-        Button submitButton = new Button(rightPos - (IMAGE_WIDTH / 2) + 10, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.search"), button -> {
-            PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderBiomePacket(biomeList.getFocused().getBiome()));
-            this.onClose();
-        }, Button.DEFAULT_NARRATION);
+        // Update button states every frame
         submitButton.active = biomeList.getFocused() != null;
-        addRenderableWidget(submitButton);
-
-        Button stopButton = new Button(rightPos - 70, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.stop"), button -> {
-            PlatformHandler.PLATFORM_HANDLER.sendToServer(new WayfinderBiomePacket(Wayfinder.id("clear_packet")));
-            current = Wayfinder.id("clear_packet");
-        }, Button.DEFAULT_NARRATION);
-
         stopButton.active = !current.equals(Wayfinder.id("clear_packet"));
-        addRenderableWidget(stopButton);
-
-        // X positions for left and right buttons on the left page
-        int buttonXLeft = leftPos + 20;
-        int buttonXRight = leftPos + (IMAGE_WIDTH / 2) - 60;
-
-        Button sitButton = new Button(buttonXLeft, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.sit"), button -> isSitting = true, Button.DEFAULT_NARRATION);
-
         sitButton.active = !isSitting;
-
-        addRenderableWidget(sitButton);
-
-        Button walkButton = new Button(buttonXRight, buttonY, 50, 20, Component.translatable("gui.wayfinder.button.follow"), button -> isSitting = false, Button.DEFAULT_NARRATION);
-
         walkButton.active = isSitting;
 
-        addRenderableWidget(walkButton);
+        // Render the Logo with RenderType
+        int logoSize = 100;
+        int centerX = leftPos + (IMAGE_WIDTH / 4) - (logoSize / 2);
+        int centerY = bottomPos + (IMAGE_HEIGHT / 4) - (logoSize / 2);
+
+        // Use RenderType::guiTextured to fix the missing texture/grid issue
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, LOGO, centerX, centerY, 0, 0, logoSize, logoSize, logoSize, logoSize);
     }
 
     @Override
     public void renderBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.renderTransparentBackground(guiGraphics);
-        guiGraphics.blit(BOOK_TEXTURE, leftPos, bottomPos, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT);
+        // FIX: Added RenderType and explicit texture sizes (IMAGE_WIDTH, IMAGE_HEIGHT)
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BOOK_TEXTURE, leftPos, bottomPos, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT);
     }
 
     @Override
@@ -123,21 +125,21 @@ public class WayfinderScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (super.mouseClicked(mouseX, mouseY, button)) return true;
-        return biomeList.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDoubleClick) {
+        if (super.mouseClicked(event, isDoubleClick)) return true;
+        return biomeList.mouseClicked(event, isDoubleClick);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (super.mouseReleased(mouseX, mouseY, button)) return true;
-        return biomeList.mouseReleased(mouseX, mouseY, button);
+    public boolean mouseReleased(@NonNull MouseButtonEvent event) {
+        if (super.mouseReleased(event)) return true;
+        return biomeList.mouseReleased(event);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (super.mouseDragged(mouseX, mouseY, button, dragX, dragY)) return true;
-        return biomeList.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    public boolean mouseDragged(@NonNull MouseButtonEvent event, double mouseX, double mouseY) {
+        if (super.mouseDragged(event, mouseX, mouseY)) return true;
+        return biomeList.mouseDragged(event, mouseX, mouseY);
     }
 
     @Override
@@ -146,7 +148,7 @@ public class WayfinderScreen extends Screen {
         return biomeList.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
-    public static void openScreen(List<ResourceLocation> biomeRegistry, ResourceLocation current, boolean isSitting) {
+    public static void openScreen(List<Identifier> biomeRegistry, Identifier current, boolean isSitting) {
         Minecraft.getInstance().setScreen(new WayfinderScreen(biomeRegistry, current, isSitting));
     }
 
@@ -154,7 +156,7 @@ public class WayfinderScreen extends Screen {
         biomeList.setBiomes(getFilteredBiomes(searchText));
     }
 
-    private List<ResourceLocation> getFilteredBiomes(String searchText) {
+    private List<Identifier> getFilteredBiomes(String searchText) {
         return biomes.stream()
                 .filter(biome -> biome.toLanguageKey().toLowerCase().contains(searchText.toLowerCase()))
                 .toList();

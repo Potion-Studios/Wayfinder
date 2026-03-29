@@ -1,3 +1,6 @@
+# 2.0.0
+- Update to Minecraft 1.21.11
+
 # 1.0.1
 - Teleport to Owner during Journey if they get too far away
 - Automatically Sit when Owner is Offline, Sleeping or Dying

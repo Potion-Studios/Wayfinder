@@ -4,7 +4,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.client.gui.screens.WayfinderScreen;
@@ -16,13 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public record WayfinderOpenScreenPacket(List<ResourceLocation> locations, ResourceLocation current, boolean isSitting) implements MultiloaderPacket {
+public record WayfinderOpenScreenPacket(List<Identifier> locations, Identifier current, boolean isSitting) implements MultiloaderPacket {
 
     public static final CustomPacketPayload.Type<WayfinderOpenScreenPacket> TYPE = new Type<>(Wayfinder.id("open_screen"));
 
     public static final StreamCodec<FriendlyByteBuf, WayfinderOpenScreenPacket> CODEC = StreamCodec.composite(
-            ByteBufCodecs.collection(ArrayList::new, ResourceLocation.STREAM_CODEC), WayfinderOpenScreenPacket::locations,
-            ByteBufCodecs.fromCodec(ResourceLocation.CODEC), WayfinderOpenScreenPacket::current,
+            ByteBufCodecs.collection(ArrayList::new, Identifier.STREAM_CODEC), WayfinderOpenScreenPacket::locations,
+            ByteBufCodecs.fromCodec(Identifier.CODEC), WayfinderOpenScreenPacket::current,
             ByteBufCodecs.BOOL, WayfinderOpenScreenPacket::isSitting,
             WayfinderOpenScreenPacket::new);
 

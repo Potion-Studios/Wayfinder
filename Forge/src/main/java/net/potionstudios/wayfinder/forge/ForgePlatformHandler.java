@@ -6,15 +6,11 @@ import net.luckperms.api.LuckPermsProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SpawnEggItem;
-import net.minecraftforge.common.ForgeSpawnEggItem;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
@@ -47,39 +43,34 @@ public final class ForgePlatformHandler implements PlatformHandler {
 	private static final Map<ResourceKey<?>, DeferredRegister> CACHED = new Reference2ObjectOpenHashMap<>();
 
 	@Override
-	public Supplier<SpawnEggItem> createSpawnEgg(Supplier<EntityType<? extends Mob>> entity, int backgroundColor, int highlightColor) {
-		return () -> new ForgeSpawnEggItem(entity, backgroundColor, highlightColor, new Item.Properties());
-	}
-
-	@Override
 	public <T> Supplier<T> register(Registry<? super T> registry, String name, Supplier<T> value) {
-		return CACHED.computeIfAbsent(registry.key(), key -> DeferredRegister.create(registry.key().location(), Wayfinder.MOD_ID)).register(name, value);
+		return CACHED.computeIfAbsent(registry.key(), key -> DeferredRegister.create(registry.key(), Wayfinder.MOD_ID)).register(name, value);
 	}
 
 	@Override
 	public <T> Supplier<Holder.Reference<T>> registerForHolder(Registry<T> registry, String name, Supplier<T> value) {
-		RegistryObject<T> registryObject = CACHED.computeIfAbsent(registry.key(), key -> DeferredRegister.create(registry.key().location(), Wayfinder.MOD_ID)).register(name, value);
+		RegistryObject<T> registryObject = CACHED.computeIfAbsent(registry.key(), key -> DeferredRegister.create(registry.key(), Wayfinder.MOD_ID)).register(name, value);
 		return () -> (Holder.Reference<T>) registryObject.getHolder().get();
 	}
 
 	@Override
 	public boolean hasWayfinder(Player player) {
-		return player.getPersistentData().hasUUID("wayfinder") && PlatformHandler.super.hasWayfinder(player);
+		return player.getPersistentData().contains("wayfinder") && PlatformHandler.super.hasWayfinder(player);
 	}
 
 	@Override
 	public void setWayfinder(Player player, UUID wayfinder) {
-		player.getPersistentData().putUUID("wayfinder", wayfinder);
+		player.getPersistentData().putIntArray("wayfinder", UUIDUtil.uuidToIntArray(wayfinder));
 	}
 
 	@Override
 	public UUID getWayfinder(Player player) {
-		return player.getPersistentData().getUUID("wayfinder");
+		return UUIDUtil.uuidFromIntArray(player.getPersistentData().getIntArray("wayfinder").get());
 	}
 
 	@Override
 	public int getWayfinderDeaths(Player player) {
-		return player.getPersistentData().getInt("wayfinder_deaths");
+		return player.getPersistentData().getIntOr("wayfinder_deaths", 0);
 	}
 
 	@Override
@@ -99,7 +90,7 @@ public final class ForgePlatformHandler implements PlatformHandler {
 
     @Override
     public int get3kJourneys(Player player) {
-        return player.getPersistentData().getInt("3k_journeys");
+        return player.getPersistentData().getIntOr("3k_journeys", 0);
     }
 
     @Override
@@ -112,7 +103,7 @@ public final class ForgePlatformHandler implements PlatformHandler {
 		ForgeNetworking.sendToServer(packet);
 	}
 
-	public static void register(final IEventBus bus) {
+	public static void register(final BusGroup bus) {
 		CACHED.values().forEach(deferredRegister -> deferredRegister.register(bus));
 	}
 }
