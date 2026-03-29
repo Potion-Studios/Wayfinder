@@ -25,7 +25,7 @@ class WayfinderLocateCommand {
         command.executes(context -> {
             ServerPlayer player = context.getSource().getPlayerOrException();
             if (PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
-                if (player.serverLevel().getEntity(PlatformHandler.PLATFORM_HANDLER.getWayfinder(player)) instanceof WayfinderEntity wayfinder) {
+                if (player.level().getEntity(PlatformHandler.PLATFORM_HANDLER.getWayfinder(player)) instanceof WayfinderEntity wayfinder) {
                     context.getSource().sendSuccess(() -> Component.translatable("wayfinder.commands.locate.self.success", clickTeleport(wayfinder)), false);
                     return 1;
                 }
@@ -44,7 +44,7 @@ class WayfinderLocateCommand {
     private static int locateWayfinder(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = EntityArgument.getPlayer(context, "player");
         if (PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
-            if (player.serverLevel().getEntity(PlatformHandler.PLATFORM_HANDLER.getWayfinder(player)) instanceof WayfinderEntity wayfinder) {
+            if (player.level().getEntity(PlatformHandler.PLATFORM_HANDLER.getWayfinder(player)) instanceof WayfinderEntity wayfinder) {
                 context.getSource().sendSuccess(() -> Component.translatable("wayfinder.commands.locate.other.success", player.getDisplayName(), clickTeleport(wayfinder)), false);
                 return 1;
             }
@@ -60,8 +60,8 @@ class WayfinderLocateCommand {
         return ComponentUtils.wrapInSquareBrackets(Component.translatable("chat.coordinates", blockPos.getX(), blockPos.getY(), blockPos.getZ()))
                 .withStyle(
                         style -> style.withColor(ChatFormatting.GREEN)
-                                .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ()))
-                                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip")))
+                                .withClickEvent(new ClickEvent.SuggestCommand("/tp @s " + blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ()))
+                                .withHoverEvent(new HoverEvent.ShowText(Component.translatable("chat.coordinates.tooltip")))
                 );
     }
 }

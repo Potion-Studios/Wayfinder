@@ -2,26 +2,25 @@ package net.potionstudios.wayfinder.world.entity.wayfinder;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Dynamic;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.util.Unit;
+import net.minecraft.util.profiling.Profiler;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -42,6 +41,8 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
@@ -56,11 +57,14 @@ import net.potionstudios.wayfinder.world.entity.ai.memory.WayfinderMemoryModuleT
 import net.potionstudios.wayfinder.world.entity.ai.sensing.WayfinderSensorType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animatable.GeoAnimatable;
+import org.jspecify.annotations.NonNull;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animatable.manager.AnimatableManager;
 import software.bernie.geckolib.animation.*;
-import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.object.LoopType;
+import software.bernie.geckolib.animation.object.PlayState;
+import software.bernie.geckolib.animation.state.AnimationTest;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.*;
@@ -73,23 +77,22 @@ import java.util.function.IntFunction;
  * @see PathfinderMob
  * @see GeoEntity
  * @see OwnableEntity
- * @see VariantHolder
  */
-public class WayfinderEntity extends PathfinderMob implements GeoEntity, OwnableEntity, VariantHolder<WayfinderEntity.Variant> {
+public class WayfinderEntity extends PathfinderMob implements GeoEntity, OwnableEntity {
     private static final EntityDataAccessor<Integer> DATA_TYPE_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.INT);
 
     private final AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
 
-    private static final RawAnimation IDLE_1 = RawAnimation.begin().then("idle1", Animation.LoopType.PLAY_ONCE);
-    private static final RawAnimation IDLE_2 = RawAnimation.begin().then("idle2", Animation.LoopType.PLAY_ONCE);
-    private static final RawAnimation IDLE_3 = RawAnimation.begin().then("idle3", Animation.LoopType.PLAY_ONCE);
-    private static final RawAnimation IDLE_4 = RawAnimation.begin().then("idle4", Animation.LoopType.PLAY_ONCE);
-    private static final RawAnimation IDLE_5 = RawAnimation.begin().then("idle5", Animation.LoopType.PLAY_ONCE);
-    private static final RawAnimation DEATH = RawAnimation.begin().then("death", Animation.LoopType.HOLD_ON_LAST_FRAME);
+    private static final RawAnimation IDLE_1 = RawAnimation.begin().then("idle1", LoopType.PLAY_ONCE);
+    private static final RawAnimation IDLE_2 = RawAnimation.begin().then("idle2", LoopType.PLAY_ONCE);
+    private static final RawAnimation IDLE_3 = RawAnimation.begin().then("idle3", LoopType.PLAY_ONCE);
+    private static final RawAnimation IDLE_4 = RawAnimation.begin().then("idle4", LoopType.PLAY_ONCE);
+    private static final RawAnimation IDLE_5 = RawAnimation.begin().then("idle5", LoopType.PLAY_ONCE);
+    private static final RawAnimation DEATH = RawAnimation.begin().then("death", LoopType.HOLD_ON_LAST_FRAME);
     private static final RawAnimation SEARCHING_START = RawAnimation.begin().thenPlay("searching_start");
-    private static final RawAnimation SEARCHING_END = RawAnimation.begin().then("searching_end", Animation.LoopType.PLAY_ONCE);
+    private static final RawAnimation SEARCHING_END = RawAnimation.begin().then("searching_end", LoopType.PLAY_ONCE);
     private static final RawAnimation SEARCHING_LOOP = RawAnimation.begin().thenLoop("searching_loop");
-    private static final RawAnimation NO = RawAnimation.begin().then("no", Animation.LoopType.PLAY_ONCE);
+    private static final RawAnimation NO = RawAnimation.begin().then("no",LoopType.PLAY_ONCE);
     private static final RawAnimation SIT_IDLE_1 = RawAnimation.begin().thenLoop("sit_idle1");
     private static final RawAnimation SIT_IDLE_2 = RawAnimation.begin().thenLoop("sit_idle2");
     private static final RawAnimation SIT_IDLE_3 = RawAnimation.begin().thenLoop("sit_idle3");
@@ -97,7 +100,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private static final RawAnimation SCARED = RawAnimation.begin().thenLoop("scared");
 
     private static final EntityDataAccessor<Optional<BlockPos>> START_POS = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
-    private static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
     private static final EntityDataAccessor<Integer> DATA_SHIELD = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> DATA_PANIC = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_REST = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
@@ -153,12 +156,6 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         return (Brain<WayfinderEntity>) super.getBrain();
     }
 
-    @Override
-    protected void sendDebugPackets() {
-        super.sendDebugPackets();
-        DebugPackets.sendEntityBrain(this);
-    }
-
     public boolean isScaredBy(LivingEntity entity) {
         return entity.getType().is(WayfinderEntityTypeTags.SCARES_WAYFINDER) || this.getLastHurtByMob() == entity;
     }
@@ -179,35 +176,29 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        if (getOwnerUUID() != null)
-            compound.putUUID("Owner", getOwnerUUID());
-        compound.putString("Type", getVariant().getSerializedName());
-        compound.putInt("Shield", entityData.get(DATA_SHIELD));
+    protected void addAdditionalSaveData(@NonNull ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        EntityReference<LivingEntity> entityReference = this.getOwnerReference();
+        EntityReference.store(entityReference, output, "Owner");
+        output.putString("Type", getVariant().getSerializedName());
+        output.putInt("Shield", entityData.get(DATA_SHIELD));
         if (getStartBlockPos().isPresent())
-            compound.putLong("StartPos", getStartBlockPos().get().asLong());
-        compound.putInt("CompletedJourneys", completedJourneys);
+            output.putLong("StartPos", getStartBlockPos().get().asLong());
+        output.putInt("CompletedJourneys", completedJourneys);
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        UUID uuid;
-        if (compound.hasUUID("Owner"))
-            uuid = compound.getUUID("Owner");
-        else {
-            String s = compound.getString("Owner");
-            uuid = OldUsersConverter.convertMobOwnerIfNecessary(getServer(), s);
-        }
+    protected void readAdditionalSaveData(@NonNull ValueInput input) {
+        super.readAdditionalSaveData(input);
+        EntityReference<LivingEntity> entityreference = EntityReference.readWithOldOwnerConversion(input, "Owner", this.level());
+        if (entityreference != null)
+            this.entityData.set(DATA_OWNERUUID_ID, Optional.of(entityreference));
+        else this.entityData.set(DATA_OWNERUUID_ID, Optional.empty());
 
-        if (uuid != null) setOwnerUUID(uuid);
-
-        setVariant(Variant.byName(compound.getString("Type")));
-        entityData.set(DATA_SHIELD, compound.getInt("Shield"));
-        if (compound.contains("StartPos"))
-            setStartBlockPos(Optional.of(BlockPos.of(compound.getLong("StartPos"))));
-        completedJourneys = compound.getInt("CompletedJourneys");
+        setVariant(Variant.byName(input.getStringOr("Type", "default")));
+        entityData.set(DATA_SHIELD, input.getIntOr("Shield", 2));
+        setStartBlockPos(input.getLong("StartPos").map(BlockPos::of));
+        completedJourneys = input.getIntOr("CompletedJourneys", 0);
     }
 
     @Override
@@ -218,37 +209,26 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         return navigation;
     }
 
-    @Override
-    public @Nullable UUID getOwnerUUID() {
-        return entityData.get(DATA_OWNERUUID_ID).orElse(null);
+    public @Nullable EntityReference<LivingEntity> getOwnerReference() {
+        return (EntityReference) ((Optional) this.entityData.get(DATA_OWNERUUID_ID)).orElse(null);
     }
 
-    public void setOwner(@NotNull Player player) {
-        setOwnerUUID(player.getUUID());
-        PlatformHandler.PLATFORM_HANDLER.setWayfinder(player, getUUID());
+    public void setOwner(@Nullable Player owner) {
+        this.entityData.set(DATA_OWNERUUID_ID, Optional.ofNullable(owner).map(EntityReference::of));
+        PlatformHandler.PLATFORM_HANDLER.setWayfinder(owner, getUUID());
     }
 
-    public void setOwnerUUID(@Nullable UUID uuid) {
-        entityData.set(DATA_OWNERUUID_ID, Optional.ofNullable(uuid));
+    public void setOwnerReference(@Nullable EntityReference<LivingEntity> ownerReference) {
+        this.entityData.set(DATA_OWNERUUID_ID, Optional.ofNullable(ownerReference));
     }
 
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "controller", 0, this::predicate)
-                .triggerableAnim("searching_start", SEARCHING_START)
-                .triggerableAnim("searching_end", SEARCHING_END)
-                .triggerableAnim("idle", IDLE_1)
-                .triggerableAnim("idle2", IDLE_2)
-                .triggerableAnim("idle3", IDLE_3));
-    }
-
-    private <E extends GeoAnimatable> PlayState predicate(AnimationState<E> event) {
+    private PlayState predicate(AnimationTest<WayfinderEntity> event) {
         if (isDeadOrDying())
             return event.setAndContinue(DEATH);
         else if (isPanic())
             return event.setAndContinue(SCARED);
 
-        AnimationController<E> controller = event.getController();
+        AnimationController<WayfinderEntity> controller = event.controller();
         RawAnimation currentAnimation = controller.getCurrentRawAnimation();
         boolean finished = controller.hasAnimationFinished() || currentAnimation == null;
 
@@ -278,7 +258,17 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
 
     @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
+    public void registerControllers(AnimatableManager.@NonNull ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>("controller", 0, this::predicate)
+                .triggerableAnim("searching_start", SEARCHING_START)
+                .triggerableAnim("searching_end", SEARCHING_END)
+                .triggerableAnim("idle", IDLE_1)
+                .triggerableAnim("idle2", IDLE_2)
+                .triggerableAnim("idle3", IDLE_3));
+    }
+
+    @Override
+    public @NonNull AnimatableInstanceCache getAnimatableInstanceCache() {
         return animatableInstanceCache;
     }
 
@@ -287,7 +277,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         if (level() instanceof ServerLevel serverLevel) {
             if (isPanic()) return InteractionResult.FAIL;
 	        if (player.getItemInHand(hand).is(Items.GLOW_BERRIES)) {
-				this.playSound(SoundEvents.GENERIC_EAT);
+				this.playSound(SoundEvents.GENERIC_EAT.value());
 				if (getHealth() < getMaxHealth())
 					setHealth(getHealth() + 1);
 				else level().broadcastEntityEvent(this, (byte) 14);
@@ -295,19 +285,19 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 				player.getItemInHand(hand).shrink(1);
 		        return InteractionResult.SUCCESS;
 	        }
-            if (player.getUUID().equals(getOwnerUUID())) {
+            if (getOwner() != null && player.is(getOwner())) {
                 if ((foundBiomeTick + (Wayfinder.CONFIG.wayfinder.COOLDOWN.value() * 20)) > serverLevel.getServer().getTickCount()) {
                     no();
                     serverLevel.broadcastEntityEvent(this, (byte) 13);
                     return InteractionResult.FAIL;
                 }
-                List<ResourceLocation> biomeList = new ArrayList<>();
+                List<Identifier> biomeList = new ArrayList<>();
                 for (Holder<Biome> key : serverLevel.getChunkSource().getGenerator().getBiomeSource().possibleBiomes())
                     if (!key.is(WayfinderBiomeTags.WAYFINDER_EXCLUDED))
-                        key.unwrapKey().ifPresent(biome -> biomeList.add(biome.location()));
-                ResourceLocation current;
+                        key.unwrapKey().ifPresent(biome -> biomeList.add(biome.identifier()));
+                Identifier current;
                 if (!getBrain().hasMemoryValue(WayfinderMemoryModuleType.JOURNEY_TARGET_POS.get())) current = Wayfinder.id("clear_packet");
-                else current = serverLevel.getBiome(getBrain().getMemory(WayfinderMemoryModuleType.JOURNEY_TARGET_POS.get()).get()).unwrapKey().get().location();
+                else current = serverLevel.getBiome(getBrain().getMemory(WayfinderMemoryModuleType.JOURNEY_TARGET_POS.get()).get()).unwrapKey().get().identifier();
                 PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderOpenScreenPacket(biomeList, current, isResting()), player);
                 return InteractionResult.SUCCESS;
             } else if (getOwner() == null && !PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
@@ -319,7 +309,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         return super.mobInteract(player, hand);
     }
 
-    public void startBiomeSearch(ResourceLocation biome) {
+    public void startBiomeSearch(Identifier biome) {
         ServerLevel serverLevel = (ServerLevel) level();
         if (serverLevel.getBiome(blockPosition()).is(biome)) {
             no();
@@ -457,28 +447,27 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
-    protected void customServerAiStep() {
-        level().getProfiler().push("wayfinderBrain");
-        getBrain().tick((ServerLevel) level(), this);
-        level().getProfiler().pop();
-        level().getProfiler().push("wayfinderActivityUpdate");
+    protected void customServerAiStep(@NonNull ServerLevel level) {
+        ProfilerFiller profilerFiller = Profiler.get();
+        profilerFiller.push("wayfinderBrain");
+        getBrain().tick(level, this);
+        profilerFiller.pop();
+        profilerFiller.push("wayfinderActivityUpdate");
         WayfinderAi.updateActivity(this);
-        level().getProfiler().pop();
+        profilerFiller.pop();
         boolean currentlyPanicking = this.getBrain().isActive(Activity.PANIC);
         if (isPanic() != currentlyPanicking)
             entityData.set(DATA_PANIC, currentlyPanicking);
         boolean currentlyResting = this.getBrain().isActive(Activity.REST);
         if (isResting() != currentlyResting)
             entityData.set(DATA_REST, currentlyResting);
-        super.customServerAiStep();
+        super.customServerAiStep(level);
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource source, float amount) {
-        if (level().isClientSide()) return false;
-
-        if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY))
-            return super.hurt(source, amount);
+    public boolean hurtServer(@NonNull ServerLevel level, @NonNull DamageSource damageSource, float amount) {
+        if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY))
+            return super.hurtServer(level, damageSource, amount);
 
         if (isPanic())
             if (shield() == SHIELD.FULL) {
@@ -491,12 +480,12 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
                 return false;
             }
 
-        boolean hurt = super.hurt(source, amount);
+        boolean hurt = super.hurtServer(level, damageSource, amount);
 
         if (hurt) {
             getBrain().setMemoryWithExpiry(MemoryModuleType.DANGER_DETECTED_RECENTLY, true, 200L);
             if (isDeadOrDying() && getOwner() != null)
-                if (source.getEntity() != null && source.getEntity() instanceof ServerPlayer player && getOwner().is(player))
+                if (damageSource.getEntity() != null && damageSource.getEntity() instanceof ServerPlayer player && getOwner().is(player))
                     WayfinderCriteriaTriggers.WAYFINDER_OWNER_KILLED.get().trigger(player);
         }
 
@@ -559,7 +548,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         if (!canTeleportTo(new BlockPos(x, y, z))) {
             return false;
         } else {
-            moveTo((double)x + 0.5, y, (double)z + 0.5, getYRot(), getXRot());
+            snapTo((double)x + 0.5, y, (double)z + 0.5, getYRot(), getXRot());
             navigation.stop();
             return true;
         }
@@ -570,12 +559,10 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         else return level().noCollision(this, getBoundingBox().move(pos.subtract(blockPosition())));
     }
 
-    @Override
     public void setVariant(@NotNull WayfinderEntity.Variant variant) {
         this.entityData.set(DATA_TYPE_ID, variant.getId());
     }
 
-    @Override
     public @NotNull WayfinderEntity.Variant getVariant() {
         return Variant.byId(this.entityData.get(DATA_TYPE_ID));
     }

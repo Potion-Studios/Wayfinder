@@ -1,8 +1,8 @@
 package net.potionstudios.wayfinder.neoforge.data;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.Util;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -17,9 +17,9 @@ public class WayfinderNeoForgeAttachmentData {
 
     private static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, Wayfinder.MOD_ID);
 
-    private static final Supplier<AttachmentType<UUID>> WAYFINDER = ATTACHMENT_TYPES.register("wayfinder", () -> AttachmentType.builder(() -> Util.NIL_UUID).serialize(UUIDUtil.CODEC).copyOnDeath().build());
-    private static final Supplier<AttachmentType<Integer>> WAYFINDER_DEATHS = ATTACHMENT_TYPES.register("wayfinder_deaths", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
-    private static final Supplier<AttachmentType<Integer>> THREE_K_JOUNEYS = ATTACHMENT_TYPES.register("3k_journeys", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
+    private static final Supplier<AttachmentType<UUID>> WAYFINDER = ATTACHMENT_TYPES.register("wayfinder", () -> AttachmentType.builder(() -> Util.NIL_UUID).serialize(UUIDUtil.CODEC.fieldOf("wayfinder")).copyOnDeath().build());
+    private static final Supplier<AttachmentType<Integer>> WAYFINDER_DEATHS = ATTACHMENT_TYPES.register("wayfinder_deaths", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT.fieldOf("wayfinder_deaths")).copyOnDeath().build());
+    private static final Supplier<AttachmentType<Integer>> THREE_K_JOUNEYS = ATTACHMENT_TYPES.register("3k_journeys", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT.fieldOf("3k_journeys")).copyOnDeath().build());
 
     public static void setWayfinder(Player player, UUID wayfinder) {
         player.setData(WAYFINDER, wayfinder);

@@ -3,7 +3,7 @@ package net.potionstudios.wayfinder;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -12,7 +12,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
-import net.potionstudios.wayfinder.advancements.critereon.WayfinderEntitySubPredicates;
 import net.potionstudios.wayfinder.config.Config;
 import net.potionstudios.wayfinder.config.ConfigUtils;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;
@@ -52,7 +51,6 @@ public class Wayfinder {
         WayfinderSensorType.sensorType();
         WayfinderEntityType.entities();
         WayfinderCriteriaTriggers.criteriaTriggers();
-        WayfinderEntitySubPredicates.entitySubPredicates();
     }
 
     /**
@@ -81,13 +79,13 @@ public class Wayfinder {
     }
 
     /**
-     * Creates a new ResourceLocation with the wayfinder namespace.
+     * Creates a new Identifier with the wayfinder namespace.
      *
      * @param path The path of the resource location.
-     * @return The new ResourceLocation.
+     * @return The new Identifier.
      */
-    public static ResourceLocation id(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 
     /**

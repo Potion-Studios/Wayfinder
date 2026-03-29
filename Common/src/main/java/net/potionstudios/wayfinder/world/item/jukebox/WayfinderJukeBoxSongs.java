@@ -1,7 +1,7 @@
 package net.potionstudios.wayfinder.world.item.jukebox;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -22,7 +22,7 @@ public interface WayfinderJukeBoxSongs {
 
     private static ResourceKey<JukeboxSong> register(String id, Supplier<Holder.Reference<SoundEvent>> soundEvent, int lengthInSeconds, int comparatorOutput) {
         ResourceKey<JukeboxSong> key = Wayfinder.key(Registries.JUKEBOX_SONG, id);
-        JUKEBOX_SONG_FACTORIES.put(key, context -> new JukeboxSong(soundEvent.get(), Component.translatable(Util.makeDescriptionId("jukebox_song", key.location())), lengthInSeconds, comparatorOutput));
+        JUKEBOX_SONG_FACTORIES.put(key, context -> new JukeboxSong(soundEvent.get(), Component.translatable(Util.makeDescriptionId("jukebox_song", key.identifier())), lengthInSeconds, comparatorOutput));
         return key;
     }
 

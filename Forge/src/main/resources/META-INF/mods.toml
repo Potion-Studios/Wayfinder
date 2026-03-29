@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[52,)"
+loaderVersion = "[61,)"
 issueTrackerURL = "https://github.com/Potion-Studios/Wayfinder/issues"
 license = "All Rights Reserved"
 
@@ -17,27 +17,27 @@ logoFile = "wayfinder.png"
 [[dependencies.wayfinder]]
 modId = "forge"
 mandatory = true
-versionRange = "[52.0,)"
+versionRange = "[61.0,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.wayfinder]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.21.1]"
+versionRange = "[1.21.11]"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.wayfinder]]
 modId = "geckolib"
 mandatory = true
-versionRange = "[4.7.3,)"
+versionRange = "[5.4.5,)"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.wayfinder]]
 modId = "biomeswevegone"
 mandatory = false
-versionRange = "[2.4.4,)"
+versionRange = "[4.3.3,)"
 ordering = "AFTER"
 side = "BOTH"

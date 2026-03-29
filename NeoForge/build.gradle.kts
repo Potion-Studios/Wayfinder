@@ -31,7 +31,7 @@ loom {
     accessWidenerPath.set(project(":Common").loom.accessWidenerPath)
 
     runs.create("datagen") {
-        data()
+        clientData()
         programArgs("--all", "--mod", "wayfinder")
         programArgs("--output", project(":Common").file("src/main/generated/resources").absolutePath)
         programArgs("--existing", project(":Common").file("src/main/resources").absolutePath)
@@ -49,8 +49,6 @@ dependencies {
     modApi("software.bernie.geckolib:geckolib-neoforge-$minecraftVersion:${project.properties["geckolib_version"]}")
 
     modApi("net.potionstudios:Oh-The-Biomes-Weve-Gone-NeoForge:${project.properties["bwg_version"]}")
-
-    modLocalRuntime("com.github.Jab125.architectury-data-generation-fix:architectury-data-generation-fix-neoforge:21.0.3")
 
     compileOnly("net.luckperms:api:5.4")
 }

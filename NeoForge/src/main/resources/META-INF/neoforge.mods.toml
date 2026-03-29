@@ -17,27 +17,27 @@ logoFile = "wayfinder.png"
 [[dependencies.wayfinder]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.1.197,)"
+versionRange = "[21.11.1,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.wayfinder]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.1,)"
+versionRange = "[1.21.11,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.wayfinder]]
 modId = "geckolib"
 type = "required"
-versionRange = "[4.7.3,)"
+versionRange = "[5.4.5,)"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.wayfinder]]
 modId = "biomeswevegone"
 type = "optional"
-versionRange = "[2.4.4,)"
+versionRange = "[4.3.3,)"
 ordering = "AFTER"
 side = "BOTH"

@@ -3,7 +3,7 @@ package net.potionstudios.wayfinder.fabric.data;
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.world.entity.player.Player;
 import net.potionstudios.wayfinder.Wayfinder;

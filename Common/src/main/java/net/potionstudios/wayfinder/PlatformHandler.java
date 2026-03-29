@@ -1,14 +1,11 @@
 package net.potionstudios.wayfinder;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SpawnEggItem;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.network.packet.MultiloaderPacket;
 
@@ -39,19 +36,7 @@ public interface PlatformHandler {
 	 * @return True if the player has the permission, false otherwise
 	 */
 	default boolean hasPermission(@NotNull CommandSourceStack sourceStack, @NotNull String permission) {
-		return sourceStack.hasPermission(4);
-	}
-
-	/**
-	 * Creates a spawn egg with the specified parameters
-	 * @see SpawnEggItem
-	 * @param entity The entity to be spawned from the spawn egg
-	 * @param backgroundColor The background color of the spawn egg
-	 * @param highlightColor The highlight color of the spawn egg
-	 * @return Supplier of the SpawnEggItem
-	 */
-	default Supplier<SpawnEggItem> createSpawnEgg(Supplier<EntityType<? extends Mob>> entity, int backgroundColor, int highlightColor) {
-		return () -> new SpawnEggItem(entity.get(), backgroundColor, highlightColor, new Item.Properties());
+		return sourceStack.permissions().hasPermission(Permissions.COMMANDS_OWNER);
 	}
 
 	<T> Supplier<T> register(Registry<? super T> registry, String name, Supplier<T> value);
