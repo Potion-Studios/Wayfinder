@@ -6,7 +6,6 @@ import net.minecraft.client.gui.components.AbstractTextAreaWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ public class ScrollableTextWidget extends AbstractTextAreaWidget {
     }
 
     @Override
-    protected void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {}
+    protected void updateWidgetNarration(@NonNull NarrationElementOutput narrationElementOutput) {}
 
     @Override
     protected void extractBackground(@NonNull GuiGraphicsExtractor graphics) {}

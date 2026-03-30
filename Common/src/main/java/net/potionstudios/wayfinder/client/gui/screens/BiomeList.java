@@ -9,7 +9,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
 import java.util.List;
@@ -24,7 +23,7 @@ class BiomeList extends ContainerObjectSelectionList<BiomeList.Entry> {
 		return this.width;
 	}
 
-	public void setBiomes(@NotNull List<Identifier> biomes) {
+	public void setBiomes(@NonNull List<Identifier> biomes) {
 		clearEntries();
 		if (biomes.isEmpty()) return;
 		biomes.stream().sorted().forEach(biome -> addEntry(new Entry(biome)));
@@ -37,7 +36,7 @@ class BiomeList extends ContainerObjectSelectionList<BiomeList.Entry> {
 		private final String biomeName;
 		private final Identifier biome;
 
-		public Entry(@NotNull Identifier location) {
+		public Entry(@NonNull Identifier location) {
 			this.biome = location;
 			this.biomeName = Component.translatable("biome." + location.toLanguageKey()).getString();
 		}
@@ -51,7 +50,7 @@ class BiomeList extends ContainerObjectSelectionList<BiomeList.Entry> {
 		}
 
 		@Override
-		public @NotNull List<? extends GuiEventListener> children() {
+		public @NonNull List<? extends GuiEventListener> children() {
 			return List.of();
 		}
 
@@ -64,7 +63,7 @@ class BiomeList extends ContainerObjectSelectionList<BiomeList.Entry> {
 		}
 
 		@Override
-		public @NotNull List<? extends NarratableEntry> narratables() {
+		public @NonNull List<? extends NarratableEntry> narratables() {
 			return List.of();
 		}
 

@@ -5,19 +5,19 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.criterion.*;
 import net.minecraft.server.level.ServerPlayer;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;
 
 public class WayfinderOwnerKilledTrigger extends SimpleCriterionTrigger<WayfinderOwnerKilledTrigger.TriggerInstance> {
 
     @Override
-    public @NotNull Codec<TriggerInstance> codec() {
+    public @NonNull Codec<TriggerInstance> codec() {
         return TriggerInstance.CODEC;
     }
 
-    public void trigger(@NotNull ServerPlayer player) {
-        super.trigger(player, triggerInstance -> true);
+    public void trigger(ServerPlayer player) {
+        super.trigger(player, _ -> true);
     }
 
     public record TriggerInstance(Optional<ContextAwarePredicate> player) implements SimpleCriterionTrigger.SimpleInstance {

@@ -44,7 +44,6 @@ subprojects {
     dependencies {
         "minecraft"("com.mojang:minecraft:$minecraftVersion")
 
-        compileOnly("org.jetbrains:annotations:26.1.0")
         compileOnly("com.google.auto.service:auto-service:1.1.1")
         annotationProcessor("com.google.auto.service:auto-service:1.1.1")
     }

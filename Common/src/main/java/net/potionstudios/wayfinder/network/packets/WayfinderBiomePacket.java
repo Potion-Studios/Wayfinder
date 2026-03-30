@@ -12,9 +12,9 @@ import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.world.entity.ai.memory.WayfinderMemoryModuleType;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.geckolib.network.packet.MultiloaderPacket;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 
@@ -41,7 +41,7 @@ public record WayfinderBiomePacket(Identifier biome) implements MultiloaderPacke
 	}
 
 	@Override
-	public @NotNull Type<? extends CustomPacketPayload> type() {
+	public @NonNull Type<? extends CustomPacketPayload> type() {
 		return TYPE;
 	}
 }

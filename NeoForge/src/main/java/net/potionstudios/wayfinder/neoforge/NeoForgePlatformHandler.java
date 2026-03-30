@@ -19,8 +19,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.neoforge.data.WayfinderNeoForgeAttachmentData;
-import org.jetbrains.annotations.NotNull;
 import com.geckolib.network.packet.MultiloaderPacket;
+import org.jspecify.annotations.NonNull;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -37,7 +37,7 @@ public final class NeoForgePlatformHandler implements PlatformHandler {
 	private static final boolean luckPerms = ModList.get().isLoaded("luckperms");
 
 	@Override
-	public boolean hasPermission(@NotNull CommandSourceStack sourceStack, @NotNull String permission) {
+	public boolean hasPermission(@NonNull CommandSourceStack sourceStack, @NonNull String permission) {
 		return PlatformHandler.super.hasPermission(sourceStack, permission) || (luckPerms && LuckPermsProvider.get().getUserManager().getUser(sourceStack.getPlayer().getUUID()).getCachedData().getPermissionData().checkPermission(permission).asBoolean());
 	}
 

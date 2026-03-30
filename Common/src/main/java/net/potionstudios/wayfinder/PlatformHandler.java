@@ -6,8 +6,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.NotNull;
 import com.geckolib.network.packet.MultiloaderPacket;
+import org.jspecify.annotations.NonNull;
 
 import java.nio.file.Path;
 import java.util.ServiceLoader;
@@ -35,7 +35,7 @@ public interface PlatformHandler {
 	 * @param permission The permission to check
 	 * @return True if the player has the permission, false otherwise
 	 */
-	default boolean hasPermission(@NotNull CommandSourceStack sourceStack, @NotNull String permission) {
+	default boolean hasPermission(@NonNull CommandSourceStack sourceStack, @NonNull String permission) {
 		return sourceStack.permissions().hasPermission(Permissions.COMMANDS_OWNER);
 	}
 

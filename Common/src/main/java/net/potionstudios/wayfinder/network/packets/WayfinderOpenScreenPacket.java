@@ -8,9 +8,9 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.client.gui.screens.WayfinderScreen;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import com.geckolib.network.packet.MultiloaderPacket;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ public record WayfinderOpenScreenPacket(List<Identifier> locations, Identifier c
     }
 
     @Override
-    public @NotNull Type<? extends CustomPacketPayload> type() {
+    public @NonNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

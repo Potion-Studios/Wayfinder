@@ -7,18 +7,18 @@ import net.minecraft.advancements.criterion.ContextAwarePredicate;
 import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;
 
 public class WayfinderHeartBlockTrigger extends SimpleCriterionTrigger<WayfinderHeartBlockTrigger.TriggerInstance> {
 	@Override
-	public @NotNull Codec<TriggerInstance> codec() {
+	public @NonNull Codec<TriggerInstance> codec() {
 		return TriggerInstance.CODEC;
 	}
 
-	public void trigger(@NotNull ServerPlayer player) {
-		super.trigger(player, triggerInstance -> true);
+	public void trigger(ServerPlayer player) {
+		super.trigger(player, _ -> true);
 	}
 
 	public record TriggerInstance(Optional<ContextAwarePredicate> player) implements SimpleCriterionTrigger.SimpleInstance {

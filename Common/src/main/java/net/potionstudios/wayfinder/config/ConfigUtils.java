@@ -3,7 +3,7 @@ package net.potionstudios.wayfinder.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.potionstudios.wayfinder.PlatformHandler;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,7 +19,7 @@ public final class ConfigUtils {
      * @param clazz      The class of the config file.
      * @return The config file.
      */
-    public static <T> T loadConfig(@NotNull Class<T> clazz) {
+    public static <T> T loadConfig(@NonNull Class<T> clazz) {
         try {
             Path configPath = PlatformHandler.PLATFORM_HANDLER.configPath().resolve("wayfinder.json");
             T value = clazz.getConstructor().newInstance();

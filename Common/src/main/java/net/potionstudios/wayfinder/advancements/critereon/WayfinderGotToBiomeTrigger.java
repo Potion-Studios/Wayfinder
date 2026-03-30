@@ -12,17 +12,17 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.potionstudios.wayfinder.PlatformHandler;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;
 
 public class WayfinderGotToBiomeTrigger extends SimpleCriterionTrigger<WayfinderGotToBiomeTrigger.TriggerInstance> {
     @Override
-    public @NotNull Codec<TriggerInstance> codec() {
+    public @NonNull Codec<TriggerInstance> codec() {
         return TriggerInstance.CODEC;
     }
 
-    public void trigger(@NotNull ServerPlayer player, ResourceKey<Biome> biome, ResourceKey<Level> level, int distance) {
+    public void trigger(ServerPlayer player, ResourceKey<Biome> biome, ResourceKey<Level> level, int distance) {
         super.trigger(player, triggerInstance -> triggerInstance.matches(player, biome, level, distance));
     }
 

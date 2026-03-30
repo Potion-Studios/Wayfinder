@@ -13,8 +13,8 @@ import net.minecraft.world.entity.player.Player;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.fabric.data.WayfinderFabricAttachmentData;
-import org.jetbrains.annotations.NotNull;
 import com.geckolib.network.packet.MultiloaderPacket;
+import org.jspecify.annotations.NonNull;
 
 import java.nio.file.Path;
 import java.util.UUID;
@@ -30,7 +30,7 @@ public final class FabricPlatformHandler implements PlatformHandler {
 	private static final boolean fabricPermissionsApi = FabricLoader.getInstance().isModLoaded("fabric-permissions-api-v0");
 
 	@Override
-	public boolean hasPermission(@NotNull CommandSourceStack sourceStack, @NotNull String permission) {
+	public boolean hasPermission(@NonNull CommandSourceStack sourceStack, @NonNull String permission) {
 		return PlatformHandler.super.hasPermission(sourceStack, permission) || (fabricPermissionsApi && Permissions.check(sourceStack, permission));
 	}
 

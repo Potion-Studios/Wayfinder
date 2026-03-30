@@ -35,9 +35,8 @@ import net.potionstudios.wayfinder.sounds.WayfinderSounds;
 import net.potionstudios.wayfinder.world.entity.block.WayfinderBlockEntityType;
 import net.potionstudios.wayfinder.world.entity.block.WayfinderHeartBlockEntity;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class WayfinderHeartBlock extends BaseEntityBlock {
     public static final MapCodec<WayfinderHeartBlock> CODEC = simpleCodec(WayfinderHeartBlock::new);
@@ -52,12 +51,12 @@ public class WayfinderHeartBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
+    protected @NonNull MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
 
     @Override
-    protected @NonNull InteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
+    protected @NonNull InteractionResult useItemOn(@NonNull ItemStack stack, @NonNull BlockState state, @NonNull Level level, @NonNull BlockPos pos, @NonNull Player player, @NonNull InteractionHand hand, @NonNull BlockHitResult hitResult) {
         if (level.isClientSide()) return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
         if (!state.getValue(ACTIVATED) && stack.is(EMERALD_TAG) && !PlatformHandler.PLATFORM_HANDLER.hasWayfinder(player)) {
             int cost = getCost(player);
@@ -74,13 +73,13 @@ public class WayfinderHeartBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected void tick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
+    protected void tick(@NonNull BlockState state, @NonNull ServerLevel level, @NonNull BlockPos pos, @NonNull RandomSource random) {
         if (state.getValue(ACTIVATED))
             level.setBlockAndUpdate(pos, state.setValue(ACTIVATED, false));
     }
 
     @Override
-    public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull RandomSource random) {
+    public void animateTick(@NonNull BlockState state, @NonNull Level level, @NonNull BlockPos pos, @NonNull RandomSource random) {
         if (state.getValue(ACTIVATED) && random.nextBoolean())
             for (int i = 0; i < random.nextInt(5, 10); i++)
                 level.addParticle(
@@ -92,46 +91,46 @@ public class WayfinderHeartBlock extends BaseEntityBlock {
                 );
     }
 
-    private static void spawnWayfinder(@NotNull Level level , @NotNull BlockPos pos, @NotNull ServerPlayer player) {
+    private static void spawnWayfinder(@NonNull Level level , @NonNull BlockPos pos, @NonNull ServerPlayer player) {
         WayfinderEntity wayfinder = new WayfinderEntity(level, player);
         wayfinder.setPos(pos.getX(), pos.getY() + 1, pos.getZ());
         level.addFreshEntity(wayfinder);
         CriteriaTriggers.SUMMONED_ENTITY.trigger(player, wayfinder);
     }
 
-    private static int getCost(@NotNull Player player) {
+    private static int getCost(@NonNull Player player) {
         int deaths = PlatformHandler.PLATFORM_HANDLER.getWayfinderDeaths(player);
         if (deaths == 0) return 1;
         else return deaths * Math.abs(Wayfinder.CONFIG.wayfinderHeartBlock.EMERALD_DEATH_COST_MULTIPLIER.value());
     }
 
     @Override
-    public @Nullable BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
+    public BlockState getStateForPlacement(@NonNull BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.@NonNull Builder<Block, BlockState> builder) {
         builder.add(ACTIVATED).add(FACING);
     }
 
     @Override
-    protected @NotNull BlockState rotate(BlockState state, Rotation rotation) {
+    protected @NonNull BlockState rotate(@NonNull BlockState state, @NonNull Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected @NotNull BlockState mirror(BlockState state, Mirror mirror) {
+    protected @NonNull BlockState mirror(@NonNull BlockState state, @NonNull Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
     @Override
-    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
+    public @Nullable BlockEntity newBlockEntity(@NonNull BlockPos pos, @NonNull BlockState state) {
         return WayfinderBlockEntityType.WAYFINDER_HEART.get().create(pos, state);
     }
 
     @Override
-    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType) {
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NonNull Level level, @NonNull BlockState state, @NonNull BlockEntityType<T> blockEntityType) {
         return createTickerHelper(level, blockEntityType, WayfinderBlockEntityType.WAYFINDER_HEART.get());
     }
 
@@ -142,7 +141,7 @@ public class WayfinderHeartBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
+    protected @NonNull RenderShape getRenderShape(@NonNull BlockState state) {
         return RenderShape.MODEL;
     }
 }

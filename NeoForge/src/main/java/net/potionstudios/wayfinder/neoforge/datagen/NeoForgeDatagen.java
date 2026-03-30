@@ -67,7 +67,6 @@ import net.potionstudios.wayfinder.world.item.jukebox.WayfinderJukeBoxSongs;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
 import net.potionstudios.wayfinder.world.level.block.WayfinderHeartBlock;
 import net.potionstudios.wayfinder.world.level.levelgen.structure.processor.WayfinderStructureProcessorLists;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
 import java.util.*;
@@ -260,13 +259,13 @@ class NeoForgeDatagen {
         }
 
         @Override
-        protected void add(@NotNull EntityType<?> entityType, LootTable.@NotNull Builder builder) {
+        protected void add(@NonNull EntityType<?> entityType, LootTable.@NonNull Builder builder) {
             super.add(entityType, builder);
             knownEntities.add(entityType);
         }
 
         @Override
-        protected @NotNull Stream<EntityType<?>> getKnownEntityTypes() {
+        protected @NonNull Stream<EntityType<?>> getKnownEntityTypes() {
             return knownEntities.stream();
         }
     }
@@ -279,7 +278,7 @@ class NeoForgeDatagen {
         private AdvancementLootGenerator(HolderLookup.Provider registries) {}
 
         @Override
-        public void generate(@NotNull BiConsumer<ResourceKey<LootTable>, LootTable.Builder> output) {
+        public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> output) {
             output.accept(bookTable, LootTable.lootTable().withPool(LootPool.lootPool()
                     .add(LootItem.lootTableItem(Items.WRITTEN_BOOK)
                             .apply(SetWrittenBookPagesFunction.simpleBuilder(list ->
@@ -438,7 +437,7 @@ class NeoForgeDatagen {
         }
 
         @Override
-        protected void addTags(HolderLookup.@NotNull Provider provider) {
+        protected void addTags(HolderLookup.@NonNull Provider provider) {
 
         }
     }
@@ -449,7 +448,7 @@ class NeoForgeDatagen {
         }
 
         @Override
-        protected void addTags(HolderLookup.@NotNull Provider provider) {
+        protected void addTags(HolderLookup.@NonNull Provider provider) {
             tag(Tags.Items.MUSIC_DISCS).add(WayfinderItems.MUSIC_DISC_SWEET_DREAMS.get());
         }
     }
@@ -460,7 +459,7 @@ class NeoForgeDatagen {
         }
 
         @Override
-        protected void addTags(HolderLookup.@NotNull Provider provider) {
+        protected void addTags(HolderLookup.@NonNull Provider provider) {
             tag(WayfinderEntityTypeTags.SCARES_WAYFINDER).add(EntityType.WITCH, EntityType.GHAST, EntityType.BLAZE, EntityType.WITHER, EntityType.PILLAGER).addTag(EntityTypeTags.SKELETONS);
             tag(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(WayfinderEntityType.WAYFINDER.get());
             tag(EntityTypeTags.NOT_SCARY_FOR_PUFFERFISH).add(WayfinderEntityType.WAYFINDER.get());
@@ -473,7 +472,7 @@ class NeoForgeDatagen {
         }
 
         @Override
-        protected void addTags(HolderLookup.@NotNull Provider provider) {
+        protected void addTags(HolderLookup.@NonNull Provider provider) {
             tag(WayfinderBiomeTags.WAYFINDER_EXCLUDED).addTag(Tags.Biomes.HIDDEN_FROM_LOCATOR_SELECTION);
         }
     }
