@@ -12,5 +12,5 @@ sourceSets.main.get().resources.srcDir("src/main/generated/resources")
 dependencies {
     implementation("net.fabricmc:fabric-loader:${project.properties["fabric_loader_version"]}")
 
-    compileOnly("com.geckolib:geckolib-fabric-$minecraftVersion:${project.properties["geckolib_version"]}")
+    compileOnly("com.geckolib:geckolib-common-$minecraftVersion:${project.properties["geckolib_version"]}")
 }
