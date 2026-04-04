@@ -18,8 +18,8 @@ import net.minecraftforge.registries.RegistryObject;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.forge.networking.ForgeNetworking;
-import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.network.packet.MultiloaderPacket;
+import com.geckolib.network.packet.MultiloaderPacket;
+import org.jspecify.annotations.NonNull;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -36,7 +36,7 @@ public final class ForgePlatformHandler implements PlatformHandler {
 	private static final boolean luckPerms = ModList.get().isLoaded("luckperms");
 
 	@Override
-	public boolean hasPermission(@NotNull CommandSourceStack sourceStack, @NotNull String permission) {
+	public boolean hasPermission(@NonNull CommandSourceStack sourceStack, @NonNull String permission) {
 		return PlatformHandler.super.hasPermission(sourceStack, permission) || (luckPerms && LuckPermsProvider.get().getUserManager().getUser(sourceStack.getPlayer().getUUID()).getCachedData().getPermissionData().checkPermission(permission).asBoolean());
 	}
 

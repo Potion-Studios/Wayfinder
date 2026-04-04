@@ -11,7 +11,7 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.payload.PayloadProtocol;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.network.protocol.WayfinderNetworking;
-import software.bernie.geckolib.network.packet.MultiloaderPacket;
+import com.geckolib.network.packet.MultiloaderPacket;
 
 public class ForgeNetworking {
 
