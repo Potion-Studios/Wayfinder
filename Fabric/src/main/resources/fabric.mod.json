@@ -32,9 +32,6 @@
   "suggests": {
     "biomeswevegone": ">=2.4.4"
   },
-  "mixins": [
-    "wayfinder-common.mixins.json"
-  ],
   "custom": {
     "modmenu": {
       "links": {

@@ -12,6 +12,8 @@ import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
+import net.potionstudios.wayfinder.Wayfinder;
+import net.potionstudios.wayfinder.world.level.levelgen.structure.processor.WayfinderStructureProcessorLists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,11 @@ public class PlaceInVillage {
      * @param server The server to add the structures to.
      */
     public static void addStructuresToVillages(MinecraftServer server) {
-
+        RegistryAccess.Frozen registryAccess = server.registryAccess();
+        addBuildingToPool(registryAccess, ResourceLocation.withDefaultNamespace("village/plains/houses"), WayfinderStructureProcessorLists.PLAINS_SHRINE, Wayfinder.id("wayfinder_plains_shrine"), StructureTemplatePool.Projection.RIGID, 1);
+        addBuildingToPool(registryAccess, ResourceLocation.withDefaultNamespace("village/snowy/houses"), WayfinderStructureProcessorLists.SNOWY_SHRINE, Wayfinder.id("wayfinder_snowy_shrine"), StructureTemplatePool.Projection.RIGID, 1);
+        addBuildingToPool(registryAccess, ResourceLocation.withDefaultNamespace("village/taiga/houses"), WayfinderStructureProcessorLists.TAIGA_SHRINE, Wayfinder.id("wayfinder_taiga_shrine"), StructureTemplatePool.Projection.RIGID, 1);
+        addBuildingToPool(registryAccess, ResourceLocation.withDefaultNamespace("village/desert/houses"), WayfinderStructureProcessorLists.DESERT_SHRINE, Wayfinder.id("wayfinder_desert_shrine"), StructureTemplatePool.Projection.RIGID, 1);
     }
 
     /**
@@ -43,7 +49,7 @@ public class PlaceInVillage {
         Holder<StructureProcessorList> processorList1 = processorListRegistry.getHolderOrThrow(processorList);
         if (pool == null) return;
 
-        SinglePoolElement piece = SinglePoolElement.legacy(nbtPieceRL.toString(), processorList1).apply(projection);
+        SinglePoolElement piece = SinglePoolElement.single(nbtPieceRL.toString(), processorList1).apply(projection);
 
         for (int i = 0; i < weight; i++)
             pool.templates.add(piece);
