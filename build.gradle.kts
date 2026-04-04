@@ -81,7 +81,7 @@ subprojects {
             maven {
                 val releasesRepoUrl = "https://maven.jt-dev.tech/releases"
                 val snapshotsRepoUrl = "https://maven.jt-dev.tech/snapshots"
-                url = uri(if (project.version.toString().endsWith("SNAPSHOT") || project.version.toString().startsWith("0")) snapshotsRepoUrl else releasesRepoUrl)
+                url = uri(if (project.version.toString().contains("SNAPSHOT") || project.version.toString().startsWith("0")) snapshotsRepoUrl else releasesRepoUrl)
                 name = "JTDev-Maven-Repository"
                 credentials {
                     username = project.properties["repoLogin"]?.toString()
