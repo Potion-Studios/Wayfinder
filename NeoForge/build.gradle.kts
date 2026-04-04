@@ -46,7 +46,7 @@ dependencies {
 
     localRuntime("me.djtheredstoner:DevAuth-neoforge:${project.properties["devauth_version"]}")
 
-    api("com.geckolib:geckolib-neoforge-$minecraftVersion:${project.properties["geckolib_version"]}")
+    api("com.geckolib:geckolib-neoforge-26.1:${project.properties["geckolib_version"]}")
 
 //    api("net.potionstudios:Oh-The-Biomes-Weve-Gone-NeoForge:${project.properties["bwg_version"]}")
 

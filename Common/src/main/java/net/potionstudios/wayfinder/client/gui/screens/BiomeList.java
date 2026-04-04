@@ -43,7 +43,7 @@ class BiomeList extends ContainerObjectSelectionList<BiomeList.Entry> {
 
 		@Override
 		public void extractContent(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
-			boolean b = isHovered() || getSelected() == this;
+			boolean b = hovered || getSelected() == this;
 			if (getSelected() == this)
 				graphics.fill(RenderPipelines.GUI, getX(), getY() - 1, getX() + width, getY() + getHeight() + 1, 0x80404040);
 			graphics.text(minecraft.font, biomeName, getX() + 5, getY(), b ? 0xFFFFFFA0 : 0xFF000000, false);

@@ -2,6 +2,7 @@ package net.potionstudios.wayfinder.client.gui.screens;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -56,7 +57,7 @@ public class WayfinderScreen extends Screen {
         searchBox.setResponder(this::updateBiomeList);
         addRenderableWidget(searchBox);
 
-        ScrollableTextWidget descriptionWidget = new ScrollableTextWidget(leftPos + 10, topPos + 10, 116, 86, Component.translatable("gui.wayfinder.description"), null);
+        ScrollableTextWidget descriptionWidget = new ScrollableTextWidget(leftPos + 10, topPos + 10, 116, 86, Component.translatable("gui.wayfinder.description"), AbstractScrollArea.defaultSettings((int)(9.0 / 2.0)));
         descriptionWidget.setPosition(leftPos + 15, 100 + (bottomPos + (IMAGE_HEIGHT / 4) - (100 / 2))- 23);
         addRenderableWidget(descriptionWidget);
 
