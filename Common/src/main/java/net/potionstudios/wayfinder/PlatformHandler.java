@@ -87,4 +87,6 @@ public interface PlatformHandler {
 		Wayfinder.LOGGER.debug("Loaded {} for service {}", loadedService, clazz);
 		return loadedService;
 	}
+
+	boolean isModLoaded(String modid);
 }
