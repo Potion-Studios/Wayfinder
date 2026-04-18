@@ -38,7 +38,7 @@ dependencies {
 
     localRuntime("me.djtheredstoner:DevAuth-fabric:${project.properties["devauth_version"]}")
 
-    api("com.geckolib:geckolib-fabric-26.1:${project.properties["geckolib_version"]}")
+    api("com.geckolib:geckolib-fabric-$minecraftVersion:${project.properties["geckolib_version"]}")
     api("me.lucko:fabric-permissions-api:0.7.0")
 }
 

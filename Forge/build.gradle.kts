@@ -44,7 +44,7 @@ dependencies {
 
     localRuntime("me.djtheredstoner:DevAuth-forge-latest:${project.properties["devauth_version"]}")
 
-    api("com.geckolib:geckolib-forge-26.1:${project.properties["geckolib_version"]}")
+    api("com.geckolib:geckolib-forge-$minecraftVersion:${project.properties["geckolib_version"]}")
 
     compileOnly("net.luckperms:api:5.4")
 }
