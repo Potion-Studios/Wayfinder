@@ -37,7 +37,7 @@ public class PlaceInVillage {
         if (PlatformHandler.PLATFORM_HANDLER.isModLoaded(BiomesWeveGone.MOD_ID)) {
             addBuildingToPool(registryAccess, BWGVillageTemplatePools.RED_ROCK_HOUSES.location(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_red_rock_shrine"), StructureTemplatePool.Projection.RIGID, 2);
             addBuildingToPool(registryAccess, BWGVillageTemplatePools.SALEM_HOUSES.location(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_salem_shrine"), StructureTemplatePool.Projection.RIGID, 2);
-            addBuildingToPool(registryAccess, BWGVillageTemplatePools.SALEM_HOUSES.location(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_salem_shrine_2"), StructureTemplatePool.Projection.RIGID, 2);
+            addBuildingToPool(registryAccess, BWGVillageTemplatePools.SWAMP_HOUSES.location(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_swamp_shrine"), StructureTemplatePool.Projection.RIGID, 2);
             addBuildingToPool(registryAccess, BWGVillageTemplatePools.SKYRIS_HOUSES.location(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_skyris_shrine"), StructureTemplatePool.Projection.RIGID, 2);
         }
     }
