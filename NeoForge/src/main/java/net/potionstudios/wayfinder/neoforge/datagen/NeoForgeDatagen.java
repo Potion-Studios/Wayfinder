@@ -57,7 +57,6 @@ import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.item.jukebox.WayfinderJukeBoxSongs;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
 import net.potionstudios.wayfinder.world.level.block.WayfinderHeartBlock;
-import net.potionstudios.wayfinder.world.level.levelgen.structure.WayfinderTemplatePools;
 import net.potionstudios.wayfinder.world.level.levelgen.structure.processor.WayfinderStructureProcessorLists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -109,6 +108,8 @@ class NeoForgeDatagen {
             add("subtitles.entity.wayfinder.shield_hit", "Wayfinder shield hit");
             add("subtitles.entity.wayfinder.shield_break", "Wayfinder shield breaks");
             add("subtitles.entity.wayfinder.no", "Wayfinder declines");
+            add("subtitles.entity.wayfinder.scared", "");
+            add("subtitles.entity.wayfinder.summon", "");
 
             addItem(WayfinderItems.WAYFINDER_SPAWN_EGG, "Wayfinder Spawn Egg");
             addItem(WayfinderItems.MUSIC_DISC_SWEET_DREAMS, "Music Disc");
@@ -479,7 +480,6 @@ class NeoForgeDatagen {
     }
 
     private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
-            .add(Registries.TEMPLATE_POOL, context -> WayfinderTemplatePools.TEMPLATE_POOL_FACTORIES.forEach((templatePoolResourceKey, templatePoolFactory) -> context.register(templatePoolResourceKey, templatePoolFactory.generate(context))))
             .add(Registries.PROCESSOR_LIST, pContext -> WayfinderStructureProcessorLists.STRUCTURE_PROCESSOR_LIST_FACTORIES.forEach((structureProcessorListResourceKey, processorListFactory) -> pContext.register(structureProcessorListResourceKey, processorListFactory.generate(pContext.lookup(Registries.PROCESSOR_LIST)))))
             .add(Registries.JUKEBOX_SONG, pContext -> WayfinderJukeBoxSongs.JUKEBOX_SONG_FACTORIES.forEach((songResourceKey, songFactory) -> pContext.register(songResourceKey, songFactory.generate(pContext))));
 }

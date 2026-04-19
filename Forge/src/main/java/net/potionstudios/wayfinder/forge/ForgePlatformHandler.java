@@ -112,6 +112,11 @@ public final class ForgePlatformHandler implements PlatformHandler {
 		ForgeNetworking.sendToServer(packet);
 	}
 
+	@Override
+	public boolean isModLoaded(String modid) {
+		return ModList.get().isLoaded(modid);
+	}
+
 	public static void register(final IEventBus bus) {
 		CACHED.values().forEach(deferredRegister -> deferredRegister.register(bus));
 	}

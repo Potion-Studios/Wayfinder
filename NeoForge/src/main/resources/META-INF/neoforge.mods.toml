@@ -41,6 +41,3 @@ type = "optional"
 versionRange = "[2.4.4,)"
 ordering = "AFTER"
 side = "BOTH"
-
-[[mixins]]
-config = "wayfinder-common.mixins.json"

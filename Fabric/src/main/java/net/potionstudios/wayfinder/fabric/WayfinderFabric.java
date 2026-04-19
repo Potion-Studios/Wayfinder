@@ -2,6 +2,7 @@ package net.potionstudios.wayfinder.fabric;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -33,5 +34,6 @@ public class WayfinderFabric implements ModInitializer {
         WayfinderNetworking.registerS2CPackets((PayloadTypeRegistry.playS2C()::register));
         WayfinderNetworking.registerC2SPackets((PayloadTypeRegistry.playC2S()::register));
         WayfinderNetworking.registerC2SPackets((type, codec) -> ServerPlayNetworking.registerGlobalReceiver(type, (packet, context) -> packet.receiveMessage(context.player(), context.server()::execute)));
+        ServerLifecycleEvents.SERVER_STARTING.register(Wayfinder::onServerStart);
     }
 }

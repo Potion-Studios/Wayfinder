@@ -90,4 +90,9 @@ public final class FabricPlatformHandler implements PlatformHandler {
 	public void sendToServer(MultiloaderPacket packet) {
 		ClientPlayNetworking.send(packet);
 	}
+
+	@Override
+	public boolean isModLoaded(String modid) {
+		return FabricLoader.getInstance().isModLoaded(modid);
+	}
 }

@@ -98,6 +98,11 @@ public final class NeoForgePlatformHandler implements PlatformHandler {
 		PacketDistributor.sendToServer(packet);
 	}
 
+	@Override
+	public boolean isModLoaded(String modid) {
+		return ModList.get().isLoaded(modid);
+	}
+
 	public static void register(final IEventBus bus) {
 		CACHED.values().forEach(deferredRegister -> deferredRegister.register(bus));
 	}
