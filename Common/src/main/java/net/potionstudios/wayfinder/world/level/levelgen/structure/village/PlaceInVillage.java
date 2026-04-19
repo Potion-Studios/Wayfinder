@@ -7,7 +7,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.ProcessorLists;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
@@ -30,15 +30,15 @@ public class PlaceInVillage {
      */
     public static void addStructuresToVillages(MinecraftServer server) {
         RegistryAccess.Frozen registryAccess = server.registryAccess();
-        addBuildingToPool(registryAccess, ResourceLocation.withDefaultNamespace("village/plains/houses"), WayfinderStructureProcessorLists.PLAINS_SHRINE, Wayfinder.id("wayfinder_plains_shrine"), StructureTemplatePool.Projection.RIGID, 2);
-        addBuildingToPool(registryAccess, ResourceLocation.withDefaultNamespace("village/snowy/houses"), WayfinderStructureProcessorLists.SNOWY_SHRINE, Wayfinder.id("wayfinder_snowy_shrine"), StructureTemplatePool.Projection.RIGID, 2);
-        addBuildingToPool(registryAccess, ResourceLocation.withDefaultNamespace("village/taiga/houses"), WayfinderStructureProcessorLists.TAIGA_SHRINE, Wayfinder.id("wayfinder_taiga_shrine"), StructureTemplatePool.Projection.RIGID, 2);
-        addBuildingToPool(registryAccess, ResourceLocation.withDefaultNamespace("village/desert/houses"), WayfinderStructureProcessorLists.DESERT_SHRINE, Wayfinder.id("wayfinder_desert_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+        addBuildingToPool(registryAccess, Identifier.withDefaultNamespace("village/plains/houses"), WayfinderStructureProcessorLists.PLAINS_SHRINE, Wayfinder.id("wayfinder_plains_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+        addBuildingToPool(registryAccess, Identifier.withDefaultNamespace("village/snowy/houses"), WayfinderStructureProcessorLists.SNOWY_SHRINE, Wayfinder.id("wayfinder_snowy_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+        addBuildingToPool(registryAccess, Identifier.withDefaultNamespace("village/taiga/houses"), WayfinderStructureProcessorLists.TAIGA_SHRINE, Wayfinder.id("wayfinder_taiga_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+        addBuildingToPool(registryAccess, Identifier.withDefaultNamespace("village/desert/houses"), WayfinderStructureProcessorLists.DESERT_SHRINE, Wayfinder.id("wayfinder_desert_shrine"), StructureTemplatePool.Projection.RIGID, 2);
         if (PlatformHandler.PLATFORM_HANDLER.isModLoaded(BiomesWeveGone.MOD_ID)) {
-            addBuildingToPool(registryAccess, BWGVillageTemplatePools.RED_ROCK_HOUSES.location(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_red_rock_shrine"), StructureTemplatePool.Projection.RIGID, 2);
-            addBuildingToPool(registryAccess, BWGVillageTemplatePools.SALEM_HOUSES.location(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_salem_shrine"), StructureTemplatePool.Projection.RIGID, 2);
-            addBuildingToPool(registryAccess, BWGVillageTemplatePools.SWAMP_HOUSES.location(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_swamp_shrine"), StructureTemplatePool.Projection.RIGID, 2);
-            addBuildingToPool(registryAccess, BWGVillageTemplatePools.SKYRIS_HOUSES.location(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_skyris_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+            addBuildingToPool(registryAccess, BWGVillageTemplatePools.RED_ROCK_HOUSES.identifier(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_red_rock_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+            addBuildingToPool(registryAccess, BWGVillageTemplatePools.SALEM_HOUSES.identifier(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_salem_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+            addBuildingToPool(registryAccess, BWGVillageTemplatePools.SWAMP_HOUSES.identifier(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_swamp_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+            addBuildingToPool(registryAccess, BWGVillageTemplatePools.SKYRIS_HOUSES.identifier(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_skyris_shrine"), StructureTemplatePool.Projection.RIGID, 2);
         }
     }
 
@@ -52,11 +52,11 @@ public class PlaceInVillage {
      * @param projection     The projection to use.
      * @param weight         The weight of the building.
      */
-    private static void addBuildingToPool(RegistryAccess.Frozen serverRegistry, ResourceLocation poolRL, ResourceKey<StructureProcessorList> processorList, ResourceLocation nbtPieceRL, StructureTemplatePool.Projection projection, int weight) {
-        Registry<StructureTemplatePool> templatePoolRegistry = serverRegistry.registry(Registries.TEMPLATE_POOL).orElseThrow();
-        Registry<StructureProcessorList> processorListRegistry = serverRegistry.registry(Registries.PROCESSOR_LIST).orElseThrow();
-        StructureTemplatePool pool = templatePoolRegistry.get(poolRL);
-        Holder<StructureProcessorList> processorList1 = processorListRegistry.getHolderOrThrow(processorList);
+    private static void addBuildingToPool(RegistryAccess.Frozen serverRegistry, Identifier poolRL, ResourceKey<StructureProcessorList> processorList, Identifier nbtPieceRL, StructureTemplatePool.Projection projection, int weight) {
+        Registry<StructureTemplatePool> templatePoolRegistry = serverRegistry.lookup(Registries.TEMPLATE_POOL).orElseThrow();
+        Registry<StructureProcessorList> processorListRegistry = serverRegistry.lookup(Registries.PROCESSOR_LIST).orElseThrow();
+        StructureTemplatePool pool = templatePoolRegistry.getValue(poolRL);
+        Holder<StructureProcessorList> processorList1 = processorListRegistry.getOrThrow(processorList);
         if (pool == null) return;
 
         SinglePoolElement piece = SinglePoolElement.single(nbtPieceRL.toString(), processorList1).apply(projection);
