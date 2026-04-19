@@ -7,9 +7,8 @@ public class Config {
     public static class Wayfinder {
         public ConfigUtils.CommentValue<Integer> MAX_SEARCH_DISTANCE =
                 ConfigUtils.CommentValue.of("Max Biome Search Distance in Blocks as a radius around the Wayfinder's current position",10000);
-        public ConfigUtils.CommentValue<Integer> COOLDOWN = ConfigUtils.CommentValue.of("Cooldown in seconds before the player can use the Wayfinder again", 15);
-        public ConfigUtils.CommentValue<Integer> SCARED_PROJECTILE_MOB_DISTANCE =
-                ConfigUtils.CommentValue.of("Block distance around the Wayfinder as a radius to which they wayfinder will become scared if a projectile mob is in", 10);
+        public ConfigUtils.CommentValue<Integer> COOLDOWN =
+                ConfigUtils.CommentValue.of("Cooldown in seconds before the player can use the Wayfinder again", 15);
         public ConfigUtils.CommentValue<Integer> TELEPORT_TO_OWNER =
                 ConfigUtils.CommentValue.of("Amount of time in Seconds before the wayfinder attempts to teleport to it's owner if it's out of range",5);
         public ConfigUtils.CommentValue<Boolean> ENABLE_SOUNDS =
@@ -22,7 +21,7 @@ public class Config {
 
     public static class WayfinderHeartBlock {
         public ConfigUtils.CommentValue<Integer> EMERALD_DEATH_COST_MULTIPLIER =
-                ConfigUtils.CommentValue.of("Amount of Wayfinder Deaths the player has mulplied by the number set here will calculate the emerald cost for them to summon a new wayfinder", 2);
+                ConfigUtils.CommentValue.of("Amount of Wayfinder Deaths the player has multiplied by the number set here will calculate the emerald cost for them to summon a new wayfinder", 2);
         public ConfigUtils.CommentValue<Integer> ACTIVATION_COOLDOWN =
                 ConfigUtils.CommentValue.of("Amount Of Time in Seconds till the Wayfinder Heart Block can be Activated (Spawn in wayfinder) again after the last time", 15);
     }

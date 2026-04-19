@@ -1,7 +1,8 @@
 # 1.0.2
 - Rewrite Village Shrine Generation logic to move away from buggy Mixin placement
   - Now we add to the Village's House Structure Pool instead of trying to place the Shrine ourselves, which should fix a lot of the issues with Shrines not generating properly
-  - However, this does mean that we no longer are attempting to spawn a single shrine in every village, it is now possible for some villages to spawn with 0 shrines and some to spawn with multiple shrines, but overall this should lead to more consistent shrine generation across all villages
+  - However, this does mean that we no longer are attempting to spawn a single shrine in every village, it is now possible for some villages to spawn with zero shrines, and some might spawn with multiple shrines, but overall this should lead to a more consistent shrine generation across all villages
+- Remove SCARED_PROJECTILE_MOB_DISTANCE config option as it is unused due to the usage of Vanilla's Sensor for detecting nearby mobs
 
 # 1.0.1
 - Teleport to Owner during Journey if they get too far away
