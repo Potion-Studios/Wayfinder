@@ -13,8 +13,8 @@ import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
-import net.potionstudios.biomeswevegone.BiomesWeveGone;
-import net.potionstudios.biomeswevegone.world.level.levelgen.structure.BWGVillageTemplatePools;
+//import net.potionstudios.biomeswevegone.BiomesWeveGone;
+//import net.potionstudios.biomeswevegone.world.level.levelgen.structure.BWGVillageTemplatePools;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.world.level.levelgen.structure.processor.WayfinderStructureProcessorLists;
@@ -34,11 +34,11 @@ public class PlaceInVillage {
         addBuildingToPool(registryAccess, Identifier.withDefaultNamespace("village/snowy/houses"), WayfinderStructureProcessorLists.SNOWY_SHRINE, Wayfinder.id("wayfinder_snowy_shrine"), StructureTemplatePool.Projection.RIGID, 2);
         addBuildingToPool(registryAccess, Identifier.withDefaultNamespace("village/taiga/houses"), WayfinderStructureProcessorLists.TAIGA_SHRINE, Wayfinder.id("wayfinder_taiga_shrine"), StructureTemplatePool.Projection.RIGID, 2);
         addBuildingToPool(registryAccess, Identifier.withDefaultNamespace("village/desert/houses"), WayfinderStructureProcessorLists.DESERT_SHRINE, Wayfinder.id("wayfinder_desert_shrine"), StructureTemplatePool.Projection.RIGID, 2);
-        if (PlatformHandler.PLATFORM_HANDLER.isModLoaded(BiomesWeveGone.MOD_ID)) {
-            addBuildingToPool(registryAccess, BWGVillageTemplatePools.RED_ROCK_HOUSES.identifier(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_red_rock_shrine"), StructureTemplatePool.Projection.RIGID, 2);
-            addBuildingToPool(registryAccess, BWGVillageTemplatePools.SALEM_HOUSES.identifier(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_salem_shrine"), StructureTemplatePool.Projection.RIGID, 2);
-            addBuildingToPool(registryAccess, BWGVillageTemplatePools.SWAMP_HOUSES.identifier(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_swamp_shrine"), StructureTemplatePool.Projection.RIGID, 2);
-            addBuildingToPool(registryAccess, BWGVillageTemplatePools.SKYRIS_HOUSES.identifier(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_skyris_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+        if (PlatformHandler.PLATFORM_HANDLER.isModLoaded("biomeswevegone")) { //TODO: Once BWG Updates to 26.1+ remove the identifier hard coding move back to vars
+            addBuildingToPool(registryAccess, Identifier.fromNamespaceAndPath("biomeswevegone", "village/red_rock/houses"), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_red_rock_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+            addBuildingToPool(registryAccess, Identifier.fromNamespaceAndPath("biomeswevegone", "village/salem/houses"), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_salem_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+            addBuildingToPool(registryAccess, Identifier.fromNamespaceAndPath("biomeswevegone", "village/swamp/houses"), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_swamp_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+            addBuildingToPool(registryAccess, Identifier.fromNamespaceAndPath("biomeswevegone", "village/skyris/houses"), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_skyris_shrine"), StructureTemplatePool.Projection.RIGID, 2);
         }
     }
 

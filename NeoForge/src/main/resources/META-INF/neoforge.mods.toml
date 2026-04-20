@@ -17,21 +17,21 @@ logoFile = "wayfinder.png"
 [[dependencies.wayfinder]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.11.1,)"
+versionRange = "[26.1.0,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.wayfinder]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.11,)"
+versionRange = "[26.1,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.wayfinder]]
 modId = "geckolib"
 type = "required"
-versionRange = "[5.4.5,)"
+versionRange = "[5.5,)"
 ordering = "AFTER"
 side = "BOTH"
 

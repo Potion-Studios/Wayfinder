@@ -46,7 +46,7 @@ dependencies {
 
     api("com.geckolib:geckolib-forge-$minecraftVersion:${project.properties["geckolib_version"]}")
 
-    compileOnly("net.luckperms:api:5.4")
+    compileOnly("net.luckperms:api:5.5")
 }
 
 tasks {

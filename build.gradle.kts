@@ -95,7 +95,7 @@ subprojects {
             modrinthID.set("909sOSOR")
             githubRepo.set("https://github.com/Potion-Studios/Wayfinder")
             setReleaseType(ReleaseType.RELEASE)
-            setGameVersions(minecraftVersion)
+            setGameVersions(minecraftVersion, "26.1.1", "26.1")
             setCurseEnvironment(CurseEnvironment.BOTH)
             setJavaVersions(JavaVersion.VERSION_25)
         }
