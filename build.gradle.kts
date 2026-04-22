@@ -88,7 +88,7 @@ subprojects {
                 github(project.properties["github_token"].toString())
             }
             displayName.set(base.archivesName.get() + "-${project.version}")
-            artifact.set(project.tasks.getByName("jar"))
+            artifact.set(project.tasks.matching { it.name == "shadowJar" })
             projectVersion.set(project.version.toString() + "-${project.name}")
             changelog.set(projectDir.toPath().parent.resolve("CHANGELOG.md").toFile().readLines().take(100).joinToString("\n"))
             curseID.set("1204282")

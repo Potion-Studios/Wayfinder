@@ -63,9 +63,9 @@ tasks {
     }
 
     shadowJar {
-        exclude("architectury.common.json", "net/potionstudios/wayfinder/neoforge/datagen/**", ".cache/**")
+        exclude("architectury.common.json", "net/potionstudios/wayfinder/neoforge/datagen/**", ".cache/**", "wayfinder.accesswidener")
         configurations = listOf(project.configurations.getByName("shadowBundle"))
-        archiveClassifier.set("dev-shadow")
+        archiveClassifier.set(null)
     }
 }
 
