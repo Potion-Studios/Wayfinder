@@ -3,8 +3,8 @@ import com.hypherionmc.modpublisher.properties.ReleaseType
 
 plugins {
     id("architectury-plugin") version "3.5-SNAPSHOT"
-    id("dev.architectury.loom-no-remap") version "1.14-SNAPSHOT" apply false
-    id("com.gradleup.shadow") version "9.4.1" apply false
+    id("dev.architectury.loom-no-remap") version "1.17-SNAPSHOT" apply false
+    id("com.gradleup.shadow") version "9.4.2" apply false
     id("com.hypherionmc.modutils.modpublisher") version "2.+"
     java
     idea
@@ -88,7 +88,7 @@ subprojects {
                 github(project.properties["github_token"].toString())
             }
             displayName.set(base.archivesName.get() + "-${project.version}")
-            artifact.set(project.tasks.matching { it.name == "shadowJar" })
+            artifact.set(project.provider { project.tasks.named("shadowJar").get() })
             projectVersion.set(project.version.toString() + "-${project.name}")
             changelog.set(projectDir.toPath().parent.resolve("CHANGELOG.md").toFile().readLines().take(100).joinToString("\n"))
             curseID.set("1204282")
