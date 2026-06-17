@@ -32,9 +32,11 @@ loom {
 
     runs.create("datagen") {
         clientData()
-        programArgs("--all", "--mod", "wayfinder")
-        programArgs("--output", project(":Common").file("src/main/generated/resources").absolutePath)
-        programArgs("--existing", project(":Common").file("src/main/resources").absolutePath)
+        programArguments.addAll(
+            "--all", "--mod", "wayfinder",
+            "--output", project(":Common").file("src/main/generated/resources").absolutePath,
+            "--existing", project(":Common").file("src/main/resources").absolutePath
+        )
     }
 }
 
