@@ -12,21 +12,25 @@ plugins {
     `maven-publish`
 }
 
-val minecraftVersion = project.properties["minecraft_version"] as String
+val minecraftVersion = providers.gradleProperty("minecraft_version").get()
 architectury.minecraft = minecraftVersion
 
 allprojects {
-    version = "${project.properties["mod_version"]}-$minecraftVersion"
-    group = project.properties["maven_group"] as String
+    version = providers.gradleProperty("mod_version").get()
+    group = providers.gradleProperty("maven_group").get()
 }
 
 subprojects {
-    apply(plugin = "dev.architectury.loom")
-    apply(plugin = "architectury-plugin")
-    apply(plugin = "maven-publish")
-    apply(plugin = "com.hypherionmc.modutils.modpublisher")
+    pluginManager.apply("dev.architectury.loom")
+    pluginManager.apply("architectury-plugin")
+    pluginManager.apply("maven-publish")
+    pluginManager.apply("com.hypherionmc.modutils.modpublisher")
 
-    base.archivesName.set(project.properties["archives_base_name"] as String + "-${project.name}")
+    base.archivesName.set(providers.gradleProperty("archives_base_name").get() + "-${project.name}")
+
+    tasks.withType<AbstractArchiveTask>().configureEach {
+        archiveVersion.set("${project.version}-mc$minecraftVersion")
+    }
 
     val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
     loom.silentMojangMappingsLicense()
@@ -51,7 +55,7 @@ subprojects {
         "minecraft"("com.mojang:minecraft:$minecraftVersion")
         "mappings"(loom.layered{
             officialMojangMappings()
-            parchment("org.parchmentmc.data:parchment-$minecraftVersion:${project.properties["parchment"]}@zip")
+            parchment("org.parchmentmc.data:parchment-$minecraftVersion:${providers.gradleProperty("parchment").get()}@zip")
         })
 
         compileOnly("org.jetbrains:annotations:26.1.0")
@@ -84,8 +88,8 @@ subprojects {
                 url = uri(if (project.version.toString().contains("SNAPSHOT") || project.version.toString().startsWith("0")) snapshotsRepoUrl else releasesRepoUrl)
                 name = "JTDev-Maven-Repository"
                 credentials {
-                    username = project.properties["repoLogin"]?.toString()
-                    password = project.properties["repoPassword"]?.toString()
+                    username = providers.gradleProperty("repoLogin").orNull
+                    password = providers.gradleProperty("repoPassword").orNull
                 }
             }
         }
@@ -96,7 +100,7 @@ subprojects {
             apiKeys {
                 curseforge(getPublishingCredentials().first)
                 modrinth(getPublishingCredentials().second)
-                github(project.properties["github_token"].toString())
+                github(providers.gradleProperty("github_token").orNull)
             }
             displayName.set(base.archivesName.get() + "-${project.version}")
             artifact.set(project.tasks.getByName("remapJar"))

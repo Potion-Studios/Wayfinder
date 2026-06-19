@@ -65,8 +65,23 @@ jobs:
         if: steps.gate.outputs.is_release == 'true'
         run: ./gradlew :neoforge:publishMod
 
-      - name: Extract Changelog Section
+      - name: Check if release exists
         if: steps.gate.outputs.is_release == 'true'
+        id: release_check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="v${{ steps.gate.outputs.version }}"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            echo "release_exists=true" >> $GITHUB_OUTPUT
+            echo "Release $TAG already exists, will append jars."
+          else
+            echo "release_exists=false" >> $GITHUB_OUTPUT
+            echo "Release $TAG does not exist, will create new release."
+          fi
+
+      - name: Extract Changelog Section
+        if: steps.gate.outputs.is_release == 'true' && steps.release_check.outputs.release_exists == 'false'
         run: |
           VERSION="${{ steps.gate.outputs.version }}"
           sed -n "/# $VERSION/,/#/p" CHANGELOG.md | grep -v "#" > release_notes.txt
@@ -74,7 +89,7 @@ jobs:
           cat release_notes.txt
 
       - name: Create GitHub Release
-        if: steps.gate.outputs.is_release == 'true'
+        if: steps.gate.outputs.is_release == 'true' && steps.release_check.outputs.release_exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.gate.outputs.version }}
@@ -90,8 +105,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Upload Jars to Existing Release
+        if: steps.gate.outputs.is_release == 'true' && steps.release_check.outputs.release_exists == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="v${{ steps.gate.outputs.version }}"
+          find Fabric/build/libs NeoForge/build/libs Forge/build/libs \
+            -name "*.jar" \
+            ! -name "*-dev-shadow.jar" \
+            ! -name "*-sources.jar" \
+            ! -name "*-dev.jar" \
+            2>/dev/null | xargs gh release upload "$TAG" --clobber
+
       - name: Bump patch version and add SNAPSHOT
-        if: steps.gate.outputs.is_release == 'true'
+        if: steps.gate.outputs.is_release == 'true' && steps.release_check.outputs.release_exists == 'false'
         id: bump_version
         run: |
           VERSION="${{ steps.gate.outputs.version }}"

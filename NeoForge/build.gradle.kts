@@ -9,7 +9,7 @@ architectury {
     neoForge()
 }
 
-val minecraftVersion = project.properties["minecraft_version"] as String
+val minecraftVersion = providers.gradleProperty("minecraft_version").get()
 
 configurations {
     create("common")
@@ -41,16 +41,16 @@ loom {
 }
 
 dependencies {
-    neoForge("net.neoforged:neoforge:${project.properties["neoforge_version"]}")
+    neoForge("net.neoforged:neoforge:${providers.gradleProperty("neoforge_version").get()}")
 
     "common"(project(":Common", "namedElements")) { isTransitive = false }
     "shadowBundle"(project(":Common", "transformProductionNeoForge"))
 
-    modLocalRuntime("me.djtheredstoner:DevAuth-neoforge:${project.properties["devauth_version"]}")
+    modLocalRuntime("me.djtheredstoner:DevAuth-neoforge:${providers.gradleProperty("devauth_version").get()}")
 
-    modApi("software.bernie.geckolib:geckolib-neoforge-$minecraftVersion:${project.properties["geckolib_version"]}")
+    modApi("software.bernie.geckolib:geckolib-neoforge-$minecraftVersion:${providers.gradleProperty("geckolib_version").get()}")
 
-    modApi("net.potionstudios:Oh-The-Biomes-Weve-Gone-NeoForge:${project.properties["bwg_version"]}")
+    modApi("net.potionstudios:Oh-The-Biomes-Weve-Gone-NeoForge:${providers.gradleProperty("bwg_version").get()}")
 
     compileOnly("net.luckperms:api:5.4")
 }
