@@ -44,22 +44,24 @@ public final class ForgePlatformHandler implements PlatformHandler {
 		return PlatformHandler.super.hasPermission(sourceStack, permission) || (luckPerms && LuckPermsProvider.get().getUserManager().getUser(sourceStack.getPlayer().getUUID()).getCachedData().getPermissionData().checkPermission(permission).asBoolean());
 	}
 
-	private static final Map<ResourceKey<?>, DeferredRegister> CACHED = new Reference2ObjectOpenHashMap<>();
-
 	@Override
 	public Supplier<SpawnEggItem> createSpawnEgg(Supplier<EntityType<? extends Mob>> entity, int backgroundColor, int highlightColor) {
 		return () -> new ForgeSpawnEggItem(entity, backgroundColor, highlightColor, new Item.Properties());
 	}
 
+	private static final Map<ResourceKey<?>, DeferredRegister<?>> CACHED = new Reference2ObjectOpenHashMap<>();
+
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> Supplier<T> register(Registry<? super T> registry, String name, Supplier<T> value) {
-		return CACHED.computeIfAbsent(registry.key(), key -> DeferredRegister.create(registry.key().location(), Wayfinder.MOD_ID)).register(name, value);
+		return ((DeferredRegister<T>) CACHED.computeIfAbsent(registry.key(), key -> DeferredRegister.create(key.location(), Wayfinder.MOD_ID))).register(name, value);
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> Supplier<Holder.Reference<T>> registerForHolder(Registry<T> registry, String name, Supplier<T> value) {
-		RegistryObject<T> registryObject = CACHED.computeIfAbsent(registry.key(), key -> DeferredRegister.create(registry.key().location(), Wayfinder.MOD_ID)).register(name, value);
-		return () -> (Holder.Reference<T>) registryObject.getHolder().get();
+		RegistryObject<T> registryObject = ((DeferredRegister<T>) CACHED.computeIfAbsent(registry.key(), key -> DeferredRegister.create(key.location(), Wayfinder.MOD_ID))).register(name, value);
+		return () -> (Holder.Reference<T>) registryObject.getHolder().orElse(null);
 	}
 
 	@Override
