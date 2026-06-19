@@ -1,4 +1,4 @@
-package net.potionstudios.wayfinder.world.item.jukebox;
+package net.potionstudios.wayfinder.world.item;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.Util;
@@ -15,7 +15,7 @@ import net.potionstudios.wayfinder.sounds.WayfinderSoundEvents;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public interface WayfinderJukeBoxSongs {
+public interface WayfinderJukeboxSongs {
     Map<ResourceKey<JukeboxSong>, JukeBoxSongFactory> JUKEBOX_SONG_FACTORIES = new Reference2ObjectOpenHashMap<>();
 
     ResourceKey<JukeboxSong> SWEET_DREAMS = register("pixie_club", WayfinderSoundEvents.MUSIC_DISC_SWEET_DREAMS, 162, 4);
