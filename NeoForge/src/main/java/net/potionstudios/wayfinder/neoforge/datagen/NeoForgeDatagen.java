@@ -63,7 +63,7 @@ import net.potionstudios.wayfinder.tags.WayfinderBiomeTags;
 import net.potionstudios.wayfinder.tags.WayfinderEntityTypeTags;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntityType;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
-import net.potionstudios.wayfinder.world.item.jukebox.WayfinderJukeBoxSongs;
+import net.potionstudios.wayfinder.world.item.WayfinderJukeboxSongs;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
 import net.potionstudios.wayfinder.world.level.block.WayfinderHeartBlock;
 import net.potionstudios.wayfinder.data.worldgen.WayfinderProcessorLists;
@@ -480,5 +480,5 @@ class NeoForgeDatagen {
 
     private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
             .add(Registries.PROCESSOR_LIST, pContext -> WayfinderProcessorLists.PROCESSOR_LIST_FACTORIES.forEach((structureProcessorListResourceKey, processorListFactory) -> pContext.register(structureProcessorListResourceKey, processorListFactory.generate(pContext.lookup(Registries.PROCESSOR_LIST)))))
-            .add(Registries.JUKEBOX_SONG, pContext -> WayfinderJukeBoxSongs.JUKEBOX_SONG_FACTORIES.forEach((songResourceKey, songFactory) -> pContext.register(songResourceKey, songFactory.generate(pContext))));
+            .add(Registries.JUKEBOX_SONG, pContext -> WayfinderJukeboxSongs.JUKEBOX_SONG_FACTORIES.forEach((songResourceKey, songFactory) -> pContext.register(songResourceKey, songFactory.generate(pContext))));
 }
