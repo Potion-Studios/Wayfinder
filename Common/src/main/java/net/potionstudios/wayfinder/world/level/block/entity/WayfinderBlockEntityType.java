@@ -1,4 +1,4 @@
-package net.potionstudios.wayfinder.world.entity.block;
+package net.potionstudios.wayfinder.world.level.block.entity;
 
 import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;

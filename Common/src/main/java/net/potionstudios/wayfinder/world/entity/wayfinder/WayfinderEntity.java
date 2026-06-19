@@ -44,7 +44,7 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
-import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
+import net.potionstudios.wayfinder.advancements.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.network.packets.WayfinderCloseScreenPacket;
 import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.sounds.WayfinderSounds;

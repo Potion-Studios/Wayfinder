@@ -7,6 +7,7 @@ import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
+import net.potionstudios.wayfinder.advancements.WayfinderCriteriaTriggers;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;

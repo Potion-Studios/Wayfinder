@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.server.level.ServerPlayer;
+import net.potionstudios.wayfinder.advancements.WayfinderCriteriaTriggers;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;

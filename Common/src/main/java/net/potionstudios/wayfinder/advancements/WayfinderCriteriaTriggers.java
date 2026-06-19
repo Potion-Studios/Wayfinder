@@ -1,9 +1,12 @@
-package net.potionstudios.wayfinder.advancements.critereon;
+package net.potionstudios.wayfinder.advancements;
 
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
+import net.potionstudios.wayfinder.advancements.critereon.WayfinderGotToBiomeTrigger;
+import net.potionstudios.wayfinder.advancements.critereon.WayfinderHeartBlockTrigger;
+import net.potionstudios.wayfinder.advancements.critereon.WayfinderOwnerKilledTrigger;
 
 import java.util.function.Supplier;
 

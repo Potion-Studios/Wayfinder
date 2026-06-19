@@ -17,7 +17,7 @@ import net.potionstudios.biomeswevegone.BiomesWeveGone;
 import net.potionstudios.biomeswevegone.world.level.levelgen.structure.BWGVillageTemplatePools;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
-import net.potionstudios.wayfinder.world.level.levelgen.structure.processor.WayfinderStructureProcessorLists;
+import net.potionstudios.wayfinder.data.worldgen.WayfinderProcessorLists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +30,10 @@ public class PlaceInVillage {
      */
     public static void addStructuresToVillages(MinecraftServer server) {
         RegistryAccess.Frozen registryAccess = server.registryAccess();
-        addBuildingToPool(registryAccess, ResourceLocation.withDefaultNamespace("village/plains/houses"), WayfinderStructureProcessorLists.PLAINS_SHRINE, Wayfinder.id("wayfinder_plains_shrine"), StructureTemplatePool.Projection.RIGID, 2);
-        addBuildingToPool(registryAccess, ResourceLocation.withDefaultNamespace("village/snowy/houses"), WayfinderStructureProcessorLists.SNOWY_SHRINE, Wayfinder.id("wayfinder_snowy_shrine"), StructureTemplatePool.Projection.RIGID, 2);
-        addBuildingToPool(registryAccess, ResourceLocation.withDefaultNamespace("village/taiga/houses"), WayfinderStructureProcessorLists.TAIGA_SHRINE, Wayfinder.id("wayfinder_taiga_shrine"), StructureTemplatePool.Projection.RIGID, 2);
-        addBuildingToPool(registryAccess, ResourceLocation.withDefaultNamespace("village/desert/houses"), WayfinderStructureProcessorLists.DESERT_SHRINE, Wayfinder.id("wayfinder_desert_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+        addBuildingToPool(registryAccess, ResourceLocation.withDefaultNamespace("village/plains/houses"), WayfinderProcessorLists.PLAINS_SHRINE, Wayfinder.id("wayfinder_plains_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+        addBuildingToPool(registryAccess, ResourceLocation.withDefaultNamespace("village/snowy/houses"), WayfinderProcessorLists.SNOWY_SHRINE, Wayfinder.id("wayfinder_snowy_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+        addBuildingToPool(registryAccess, ResourceLocation.withDefaultNamespace("village/taiga/houses"), WayfinderProcessorLists.TAIGA_SHRINE, Wayfinder.id("wayfinder_taiga_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+        addBuildingToPool(registryAccess, ResourceLocation.withDefaultNamespace("village/desert/houses"), WayfinderProcessorLists.DESERT_SHRINE, Wayfinder.id("wayfinder_desert_shrine"), StructureTemplatePool.Projection.RIGID, 2);
         if (PlatformHandler.PLATFORM_HANDLER.isModLoaded(BiomesWeveGone.MOD_ID)) {
             addBuildingToPool(registryAccess, BWGVillageTemplatePools.RED_ROCK_HOUSES.location(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_red_rock_shrine"), StructureTemplatePool.Projection.RIGID, 2);
             addBuildingToPool(registryAccess, BWGVillageTemplatePools.SALEM_HOUSES.location(), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_salem_shrine"), StructureTemplatePool.Projection.RIGID, 2);

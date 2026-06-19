@@ -1,4 +1,4 @@
-package net.potionstudios.wayfinder.world.entity.block;
+package net.potionstudios.wayfinder.world.level.block.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -7,7 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.potionstudios.wayfinder.advancements.critereon.WayfinderCriteriaTriggers;
+import net.potionstudios.wayfinder.advancements.WayfinderCriteriaTriggers;
 
 public class WayfinderHeartBlockEntity extends BlockEntity {
 	public WayfinderHeartBlockEntity(BlockPos pos, BlockState blockState) {
