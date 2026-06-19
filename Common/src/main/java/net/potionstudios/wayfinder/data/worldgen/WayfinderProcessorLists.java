@@ -1,4 +1,4 @@
-package net.potionstudios.wayfinder.world.level.levelgen.structure.processor;
+package net.potionstudios.wayfinder.data.worldgen;
 
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
@@ -14,9 +14,9 @@ import net.potionstudios.wayfinder.Wayfinder;
 
 import java.util.Map;
 
-public class WayfinderStructureProcessorLists {
+public class WayfinderProcessorLists {
 
-	public static final Map<ResourceKey<StructureProcessorList>, StructureProcessorListFactory> STRUCTURE_PROCESSOR_LIST_FACTORIES = new Reference2ObjectOpenHashMap<>();
+	public static final Map<ResourceKey<StructureProcessorList>, StructureProcessorListFactory> PROCESSOR_LIST_FACTORIES = new Reference2ObjectOpenHashMap<>();
 
 	public static final ResourceKey<StructureProcessorList> DESERT_SHRINE = register("desert_shrine", structureProcessorListHolderGetter -> new StructureProcessorList(
 			ImmutableList.of(
@@ -107,7 +107,7 @@ public class WayfinderStructureProcessorLists {
 
 	private static ResourceKey<StructureProcessorList> register(String id, StructureProcessorListFactory factory) {
 		ResourceKey<StructureProcessorList> structureProcessorListResourceKey = Wayfinder.key(Registries.PROCESSOR_LIST, id);
-		STRUCTURE_PROCESSOR_LIST_FACTORIES.put(structureProcessorListResourceKey, factory);
+		PROCESSOR_LIST_FACTORIES.put(structureProcessorListResourceKey, factory);
 		return structureProcessorListResourceKey;
 	}
 

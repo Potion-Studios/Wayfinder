@@ -17,7 +17,7 @@ import net.potionstudios.biomeswevegone.BiomesWeveGone;
 import net.potionstudios.biomeswevegone.world.level.levelgen.structure.BWGVillageTemplatePools;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
-import net.potionstudios.wayfinder.world.level.levelgen.structure.processor.WayfinderStructureProcessorLists;
+import net.potionstudios.wayfinder.data.worldgen.WayfinderProcessorLists;
 
 import java.util.ArrayList;
 import java.util.List;

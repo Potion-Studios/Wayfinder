@@ -1,4 +1,5 @@
-# 1.1.1
+# 1.2.0
+- Major Internal Refactoring to better Match Minecraft's package structure 
 
 # 1.1.0
 - Rewrite Village Shrine Generation logic to move away from buggy Mixin placement
