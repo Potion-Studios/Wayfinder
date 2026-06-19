@@ -9,6 +9,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
+import net.potionstudios.wayfinder.client.gui.components.BiomeList;
+import net.potionstudios.wayfinder.client.gui.components.ScrollableTextWidget;
 import net.potionstudios.wayfinder.network.packets.WayfinderBiomePacket;
 import net.potionstudios.wayfinder.network.packets.WayfinderSitPacket;
 import org.jetbrains.annotations.NotNull;

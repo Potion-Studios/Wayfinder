@@ -1,4 +1,4 @@
-package net.potionstudios.wayfinder.client.gui.screens;
+package net.potionstudios.wayfinder.client.gui.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;

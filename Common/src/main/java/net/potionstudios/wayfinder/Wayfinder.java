@@ -15,7 +15,7 @@ import net.potionstudios.wayfinder.advancements.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderEntitySubPredicates;
 import net.potionstudios.wayfinder.config.Config;
 import net.potionstudios.wayfinder.config.ConfigUtils;
-import net.potionstudios.wayfinder.sounds.WayfinderSounds;
+import net.potionstudios.wayfinder.sounds.WayfinderSoundEvents;
 import net.potionstudios.wayfinder.tags.WayfinderEntityTypeTags;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntityType;
 import net.potionstudios.wayfinder.world.entity.ai.memory.WayfinderMemoryModuleType;
@@ -47,7 +47,7 @@ public class Wayfinder {
         WayfinderItems.items();
         WayfinderBlocks.blocks();
         WayfinderBlockEntityType.blockEntities();
-        WayfinderSounds.sounds();
+        WayfinderSoundEvents.soundEvents();
         WayfinderMemoryModuleType.memoryModuleTypes();
         WayfinderSensorType.sensorType();
         WayfinderEntityType.entities();

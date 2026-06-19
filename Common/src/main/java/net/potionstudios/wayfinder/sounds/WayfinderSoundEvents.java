@@ -8,7 +8,7 @@ import net.potionstudios.wayfinder.Wayfinder;
 
 import java.util.function.Supplier;
 
-public class WayfinderSounds {
+public class WayfinderSoundEvents {
 
     public static final Supplier<SoundEvent> WAYFINDER_IDLE0 = createVariableRangeEvent("wayfinder.idle0");
     public static final Supplier<SoundEvent> WAYFINDER_IDLE1 = createVariableRangeEvent("wayfinder.idle1");
@@ -35,7 +35,7 @@ public class WayfinderSounds {
         return PlatformHandler.PLATFORM_HANDLER.registerForHolder(BuiltInRegistries.SOUND_EVENT, id, () -> SoundEvent.createVariableRangeEvent(Wayfinder.id(id)));
     }
 
-    public static void sounds() {
-        Wayfinder.LOGGER.info("Registering Wayfinder Sounds");
+    public static void soundEvents() {
+        Wayfinder.LOGGER.info("Registering Wayfinder Sound Events");
     }
 }

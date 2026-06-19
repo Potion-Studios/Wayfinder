@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.JukeboxSong;
 import net.potionstudios.wayfinder.Wayfinder;
-import net.potionstudios.wayfinder.sounds.WayfinderSounds;
+import net.potionstudios.wayfinder.sounds.WayfinderSoundEvents;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 public interface WayfinderJukeBoxSongs {
     Map<ResourceKey<JukeboxSong>, JukeBoxSongFactory> JUKEBOX_SONG_FACTORIES = new Reference2ObjectOpenHashMap<>();
 
-    ResourceKey<JukeboxSong> SWEET_DREAMS = register("pixie_club", WayfinderSounds.MUSIC_DISC_SWEET_DREAMS, 162, 4);
+    ResourceKey<JukeboxSong> SWEET_DREAMS = register("pixie_club", WayfinderSoundEvents.MUSIC_DISC_SWEET_DREAMS, 162, 4);
 
     private static ResourceKey<JukeboxSong> register(String id, Supplier<Holder.Reference<SoundEvent>> soundEvent, int lengthInSeconds, int comparatorOutput) {
         ResourceKey<JukeboxSong> key = Wayfinder.key(Registries.JUKEBOX_SONG, id);

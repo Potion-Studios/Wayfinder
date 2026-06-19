@@ -31,7 +31,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
-import net.potionstudios.wayfinder.sounds.WayfinderSounds;
+import net.potionstudios.wayfinder.sounds.WayfinderSoundEvents;
 import net.potionstudios.wayfinder.world.level.block.entity.WayfinderBlockEntityType;
 import net.potionstudios.wayfinder.world.level.block.entity.WayfinderHeartBlockEntity;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
@@ -64,7 +64,7 @@ public class WayfinderHeartBlock extends BaseEntityBlock {
                 level.scheduleTick(pos, this, 20 * Wayfinder.CONFIG.wayfinderHeartBlock.ACTIVATION_COOLDOWN.value());
                 level.setBlockAndUpdate(pos, state.setValue(ACTIVATED, true));
                 if (!player.isCreative()) stack.shrink(cost);
-                level.playSound(null, pos, WayfinderSounds.WAYFINDER_SUMMON.get(), SoundSource.BLOCKS);
+                level.playSound(null, pos, WayfinderSoundEvents.WAYFINDER_SUMMON.get(), SoundSource.BLOCKS);
                 spawnWayfinder(level, pos.above(), (ServerPlayer) player);
                 return ItemInteractionResult.SUCCESS;
             }
