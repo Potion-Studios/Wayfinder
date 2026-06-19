@@ -19,7 +19,7 @@ import net.potionstudios.wayfinder.tags.WayfinderEntityTypeTags;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntityType;
 import net.potionstudios.wayfinder.world.entity.ai.memory.WayfinderMemoryModuleType;
 import net.potionstudios.wayfinder.world.entity.ai.sensing.WayfinderSensorType;
-import net.potionstudios.wayfinder.world.entity.block.WayfinderBlockEntityType;
+import net.potionstudios.wayfinder.world.level.block.entity.WayfinderBlockEntityType;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;

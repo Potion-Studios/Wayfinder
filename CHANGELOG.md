@@ -1,3 +1,6 @@
+# 1.2.0
+- Major Internal Refactoring to better Match Minecraft's package structure 
+
 # 1.1.0
 - Rewrite Village Shrine Generation logic to move away from buggy Mixin placement
   - Now we add to the Village's House Structure Pool instead of trying to place the Shrine ourselves, which should fix a lot of the issues with Shrines not generating properly
@@ -28,4 +31,4 @@
 
 # 1.0.0-Beta
 - Initial release
-- Expect Bugs, Please report them on our Github page  
+- Expect Bugs, Please report them on our GitHub page  

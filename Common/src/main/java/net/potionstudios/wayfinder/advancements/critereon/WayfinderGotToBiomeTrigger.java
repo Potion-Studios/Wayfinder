@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.potionstudios.wayfinder.PlatformHandler;
+import net.potionstudios.wayfinder.advancements.WayfinderCriteriaTriggers;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;
