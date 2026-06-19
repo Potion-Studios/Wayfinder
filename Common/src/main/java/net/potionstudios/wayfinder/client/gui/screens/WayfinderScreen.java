@@ -141,7 +141,7 @@ public class WayfinderScreen extends Screen {
     }
 
     public static void openScreen(List<Identifier> biomeRegistry, Identifier current, boolean isSitting) {
-        Minecraft.getInstance().setScreen(new WayfinderScreen(biomeRegistry, current, isSitting));
+        Minecraft.getInstance().gui.setScreen(new WayfinderScreen(biomeRegistry, current, isSitting));
     }
 
     private void updateBiomeList(String searchText) {

@@ -9,9 +9,9 @@ import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 
 import java.util.function.Supplier;
 
-public class WayfinderEntityType {
+public class WayfinderEntityTypes {
 
-    public static final Supplier<EntityType<WayfinderEntity>> WAYFINDER = PlatformHandler.PLATFORM_HANDLER.register(BuiltInRegistries.ENTITY_TYPE, "wayfinder", ()-> EntityType.Builder.<WayfinderEntity>of(WayfinderEntity::new, MobCategory.AMBIENT).sized(0.6F, 1.09F).eyeHeight(0.36F).build(Wayfinder.key(BuiltInRegistries.ENTITY_TYPE.key(), "wayfinder")));
+    public static final Supplier<EntityType<WayfinderEntity>> WAYFINDER = PlatformHandler.PLATFORM_HANDLER.register(BuiltInRegistries.ENTITY_TYPE, "wayfinder", ()-> EntityType.Builder.<WayfinderEntity>of(WayfinderEntity::new, MobCategory.AMBIENT).sized(0.6F, 1.09F).eyeHeight(0.36F).build(WayfinderEntityTypeIds.WAYFINDER));
 
     public static void entities() {
         Wayfinder.LOGGER.info("Registering Wayfinder Entity");

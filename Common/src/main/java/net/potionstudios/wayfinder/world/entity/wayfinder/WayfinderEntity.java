@@ -49,7 +49,7 @@ import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.sounds.WayfinderSoundEvents;
 import net.potionstudios.wayfinder.tags.WayfinderBiomeTags;
 import net.potionstudios.wayfinder.tags.WayfinderEntityTypeTags;
-import net.potionstudios.wayfinder.world.entity.WayfinderEntityType;
+import net.potionstudios.wayfinder.world.entity.WayfinderEntityTypes;
 import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
 import net.potionstudios.wayfinder.world.entity.ai.memory.WayfinderMemoryModuleType;
 import net.potionstudios.wayfinder.world.entity.ai.sensing.WayfinderSensorType;
@@ -130,7 +130,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private int completedJourneys;
 
     public WayfinderEntity(Level level, Player owner) {
-        this(WayfinderEntityType.WAYFINDER.get(), level);
+        this(WayfinderEntityTypes.WAYFINDER.get(), level);
         setOwner(owner);
     }
 

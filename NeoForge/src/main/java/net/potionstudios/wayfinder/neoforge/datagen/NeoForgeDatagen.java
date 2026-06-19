@@ -5,7 +5,8 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementType;
-import net.minecraft.advancements.criterion.*;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.advancements.triggers.SummonedEntityTrigger;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
@@ -35,6 +36,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.network.Filterable;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypeIds;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -58,16 +60,17 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderGotToBiomeTrigger;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderHeartBlockTrigger;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderOwnerKilledTrigger;
+import net.potionstudios.wayfinder.references.WayfinderItemIds;
 import net.potionstudios.wayfinder.sounds.WayfinderSoundEvents;
 import net.potionstudios.wayfinder.tags.WayfinderBiomeTags;
 import net.potionstudios.wayfinder.tags.WayfinderEntityTypeTags;
-import net.potionstudios.wayfinder.world.entity.WayfinderEntityType;
+import net.potionstudios.wayfinder.world.entity.WayfinderEntityTypeIds;
+import net.potionstudios.wayfinder.world.entity.WayfinderEntityTypes;
 import net.potionstudios.wayfinder.world.item.WayfinderItems;
 import net.potionstudios.wayfinder.world.item.WayfinderJukeboxSongs;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
 import net.potionstudios.wayfinder.world.level.block.WayfinderHeartBlock;
 import net.potionstudios.wayfinder.data.worldgen.WayfinderProcessorLists;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
 import java.util.*;
@@ -107,7 +110,7 @@ class NeoForgeDatagen {
 
         @Override
         protected void addTranslations() {
-            addEntityType(WayfinderEntityType.WAYFINDER, "Wayfinder");
+            addEntityType(WayfinderEntityTypes.WAYFINDER, "Wayfinder");
             add("subtitles.entity.wayfinder.idle", "Wayfinder Giggles");
             add("subtitles.entity.wayfinder.death", "Wayfinder dies");
             add("subtitles.entity.wayfinder.hurt0", "Wayfinder hurts");
@@ -256,7 +259,7 @@ class NeoForgeDatagen {
 
         @Override
         public void generate() {
-            add(WayfinderEntityType.WAYFINDER.get(), LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(LootItem.lootTableItem(Items.BOOK))));
+            add(WayfinderEntityTypes.WAYFINDER.get(), LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(LootItem.lootTableItem(Items.BOOK))));
         }
 
         @Override
@@ -282,7 +285,7 @@ class NeoForgeDatagen {
         public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> output) {
             output.accept(bookTable, LootTable.lootTable().withPool(LootPool.lootPool()
                     .add(LootItem.lootTableItem(Items.WRITTEN_BOOK)
-                            .apply(SetWrittenBookPagesFunction.simpleBuilder(list ->
+                            .apply(SetWrittenBookPagesFunction.simpleBuilder(_ ->
                                     new SetWrittenBookPagesFunction(List.of(),
                                             List.of(
                                                     Filterable.passThrough(Component.translatable("wayfinder.book.story.page1")),
@@ -315,7 +318,7 @@ class NeoForgeDatagen {
                         .save(writer, Wayfinder.id(Wayfinder.MOD_ID + "/a_tale_as_old_as_time"));
 
                 AdvancementHolder soItBegins = Advancement.Builder.advancement()
-                        .addCriterion("summon_wayfinder", SummonedEntityTrigger.TriggerInstance.summonedEntity(EntityPredicate.Builder.entity().of(registries.lookupOrThrow(Registries.ENTITY_TYPE), WayfinderEntityType.WAYFINDER.get())))
+                        .addCriterion("summon_wayfinder", SummonedEntityTrigger.TriggerInstance.summonedEntity(EntityPredicate.Builder.entity().of(registries.lookupOrThrow(Registries.ENTITY_TYPE), WayfinderEntityTypes.WAYFINDER.get())))
                         .display(
                                 Items.EMERALD,
                                 translateAble("so_it_begins.title"),
@@ -450,7 +453,7 @@ class NeoForgeDatagen {
 
         @Override
         protected void addTags(HolderLookup.@NonNull Provider provider) {
-            tag(Tags.Items.MUSIC_DISCS).add(WayfinderItems.MUSIC_DISC_SWEET_DREAMS.get());
+            tag(Tags.Items.MUSIC_DISCS).add(WayfinderItemIds.MUSIC_DISC_SWEET_DREAMS);
         }
     }
 
@@ -461,9 +464,9 @@ class NeoForgeDatagen {
 
         @Override
         protected void addTags(HolderLookup.@NonNull Provider provider) {
-            tag(WayfinderEntityTypeTags.SCARES_WAYFINDER).add(EntityType.WITCH, EntityType.GHAST, EntityType.BLAZE, EntityType.WITHER, EntityType.PILLAGER).addTag(EntityTypeTags.SKELETONS);
-            tag(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(WayfinderEntityType.WAYFINDER.get());
-            tag(EntityTypeTags.NOT_SCARY_FOR_PUFFERFISH).add(WayfinderEntityType.WAYFINDER.get());
+            tag(WayfinderEntityTypeTags.SCARES_WAYFINDER).add(EntityTypeIds.WITCH).add(EntityTypeIds.GHAST).add(EntityTypeIds.BLAZE).add(EntityTypeIds.WITHER).add(EntityTypeIds.PILLAGER).addTag(EntityTypeTags.SKELETONS);
+            tag(EntityTypeTags.FALL_DAMAGE_IMMUNE).add(WayfinderEntityTypeIds.WAYFINDER);
+            tag(EntityTypeTags.NOT_SCARY_FOR_PUFFERFISH).add(WayfinderEntityTypeIds.WAYFINDER);
         }
     }
 

@@ -21,7 +21,7 @@ public record WayfinderCloseScreenPacket() implements MultiloaderPacket {
 
     @Override
     public void receiveMessage(@Nullable Player player, Consumer<Runnable> consumer) {
-        if (Minecraft.getInstance().screen instanceof WayfinderScreen screen)
+        if (Minecraft.getInstance().gui.screen() instanceof WayfinderScreen screen)
             consumer.accept(screen::onClose);
     }
 
