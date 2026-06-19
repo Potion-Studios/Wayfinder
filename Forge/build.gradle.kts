@@ -68,6 +68,10 @@ tasks {
         inputFile.set(shadowJar.get().archiveFile)
         dependsOn(shadowJar)
     }
+
+    runClient {
+        systemProperty("bsl.debug", "true")
+    }
 }
 
 publisher {
