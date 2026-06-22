@@ -1,4 +1,4 @@
-package net.potionstudios.wayfinder.client.gui.screens;
+package net.potionstudios.wayfinder.client.gui.components;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;

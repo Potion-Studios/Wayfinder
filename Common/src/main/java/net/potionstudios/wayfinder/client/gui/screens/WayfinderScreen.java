@@ -11,6 +11,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
+import net.potionstudios.wayfinder.client.gui.components.BiomeList;
+import net.potionstudios.wayfinder.client.gui.components.ScrollableTextWidget;
 import net.potionstudios.wayfinder.network.packets.WayfinderBiomePacket;
 import net.potionstudios.wayfinder.network.packets.WayfinderSitPacket;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +35,6 @@ public class WayfinderScreen extends Screen {
     private BiomeList biomeList;
     private Identifier current;
 
-    // Define buttons as fields so we can update them in render()
     private Button submitButton;
     private Button stopButton;
     private Button sitButton;
@@ -92,28 +93,23 @@ public class WayfinderScreen extends Screen {
 
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        // In 1.21.4, renderBackground is often called inside super.render
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
-        // Update button states every frame
         submitButton.active = biomeList.getFocused() != null;
         stopButton.active = !current.equals(Wayfinder.id("clear_packet"));
         sitButton.active = !isSitting;
         walkButton.active = isSitting;
 
-        // Render the Logo with RenderType
         int logoSize = 100;
         int centerX = leftPos + (IMAGE_WIDTH / 4) - (logoSize / 2);
         int centerY = bottomPos + (IMAGE_HEIGHT / 4) - (logoSize / 2);
 
-        // Use RenderType::guiTextured to fix the missing texture/grid issue
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, LOGO, centerX, centerY, 0, 0, logoSize, logoSize, logoSize, logoSize);
     }
 
     @Override
     public void renderBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         this.renderTransparentBackground(guiGraphics);
-        // FIX: Added RenderType and explicit texture sizes (IMAGE_WIDTH, IMAGE_HEIGHT)
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BOOK_TEXTURE, leftPos, bottomPos, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT);
     }
 

@@ -48,7 +48,7 @@ import net.potionstudios.wayfinder.Wayfinder;
 import net.potionstudios.wayfinder.advancements.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.network.packets.WayfinderCloseScreenPacket;
 import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
-import net.potionstudios.wayfinder.sounds.WayfinderSounds;
+import net.potionstudios.wayfinder.sounds.WayfinderSoundEvents;
 import net.potionstudios.wayfinder.tags.WayfinderBiomeTags;
 import net.potionstudios.wayfinder.tags.WayfinderEntityTypeTags;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntityType;
@@ -340,7 +340,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     public void no() {
         triggerAnim("controller", "no");
-        playSound(WayfinderSounds.WAYFINDER_NO.get());
+        playSound(WayfinderSoundEvents.WAYFINDER_NO.get());
     }
 
     @Override
@@ -416,12 +416,12 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
 
     @Override
     protected @Nullable SoundEvent getDeathSound() {
-        return WayfinderSounds.WAYFINDER_DEATH.get();
+        return WayfinderSoundEvents.WAYFINDER_DEATH.get();
     }
 
     @Override
     protected @Nullable SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return getRandom().nextBoolean() ? WayfinderSounds.WAYFINDER_HURT0.get() : WayfinderSounds.WAYFINDER_HURT1.get();
+        return getRandom().nextBoolean() ? WayfinderSoundEvents.WAYFINDER_HURT0.get() : WayfinderSoundEvents.WAYFINDER_HURT1.get();
     }
 
     @Override
@@ -429,14 +429,14 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         if (Wayfinder.CONFIG.wayfinder.DISABLE_SOUNDS_WHEN_SITTING.value() || getRandom().nextBoolean())
             return SoundEvents.EMPTY;
         else if (isPanic())
-            return WayfinderSounds.WAYFINDER_SCARED.get();
+            return WayfinderSoundEvents.WAYFINDER_SCARED.get();
         return switch (getRandom().nextInt(7)) {
-            case 0 -> WayfinderSounds.WAYFINDER_IDLE0.get();
-            case 1 -> WayfinderSounds.WAYFINDER_IDLE1.get();
-            case 2 -> WayfinderSounds.WAYFINDER_IDLE2.get();
-            case 3 -> WayfinderSounds.WAYFINDER_IDLE3.get();
-            case 4 -> WayfinderSounds.WAYFINDER_IDLE4.get();
-            case 5 -> WayfinderSounds.WAYFINDER_IDLE5.get();
+            case 0 -> WayfinderSoundEvents.WAYFINDER_IDLE0.get();
+            case 1 -> WayfinderSoundEvents.WAYFINDER_IDLE1.get();
+            case 2 -> WayfinderSoundEvents.WAYFINDER_IDLE2.get();
+            case 3 -> WayfinderSoundEvents.WAYFINDER_IDLE3.get();
+            case 4 -> WayfinderSoundEvents.WAYFINDER_IDLE4.get();
+            case 5 -> WayfinderSoundEvents.WAYFINDER_IDLE5.get();
             default -> SoundEvents.AMETHYST_BLOCK_CHIME;
         };
     }
@@ -472,11 +472,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         if (isPanic())
             if (shield() == SHIELD.FULL) {
                 setShield(SHIELD.HALF);
-                playSound(WayfinderSounds.WAYFINDER_SHIELD_HIT.get());
+                playSound(WayfinderSoundEvents.WAYFINDER_SHIELD_HIT.get());
                 return false;
             } else if (shield() == SHIELD.HALF) {
                 setShield(SHIELD.NONE);
-                playSound(WayfinderSounds.WAYFINDER_SHIELD_BREAK.get());
+                playSound(WayfinderSoundEvents.WAYFINDER_SHIELD_BREAK.get());
                 return false;
             }
 
