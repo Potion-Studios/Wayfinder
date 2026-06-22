@@ -1,6 +1,7 @@
 # 1.2.0
 - Major Internal Refactoring to better Match Minecraft's package structure
 - Remove TELEPORT_TO_OWNER Config option 
+- Add Spawn Egg Texture
 
 # 1.1.0
 - Rewrite Village Shrine Generation logic to move away from buggy Mixin placement

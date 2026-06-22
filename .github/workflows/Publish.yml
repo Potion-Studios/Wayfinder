@@ -57,10 +57,6 @@ jobs:
         if: steps.gate.outputs.is_release == 'true'
         run: ./gradlew :fabric:publishMod
 
-      - name: Publish Forge
-        if: steps.gate.outputs.is_release == 'true'
-        run: ./gradlew :forge:publishMod
-
       - name: Publish NeoForge
         if: steps.gate.outputs.is_release == 'true'
         run: ./gradlew :neoforge:publishMod
@@ -92,26 +88,17 @@ jobs:
         if: steps.gate.outputs.is_release == 'true' && steps.release_check.outputs.release_exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.gate.outputs.version }}
+          tag_name: ${{ steps.gate.outputs.version }}
           name: ${{ steps.gate.outputs.version }}
           body_path: release_notes.txt
-          files: |
-            Fabric/build/libs/*.jar
-            Forge/build/libs/*.jar
-            NeoForge/build/libs/*.jar
-            !**/build/libs/*-dev-shadow.jar
-            !**/build/libs/*-sources.jar
-            !**/build/libs/*-dev.jar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Jars to Existing Release
-        if: steps.gate.outputs.is_release == 'true' && steps.release_check.outputs.release_exists == 'true'
+      - name: Upload Jars to Release
+        if: steps.gate.outputs.is_release == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG="v${{ steps.gate.outputs.version }}"
-          find Fabric/build/libs NeoForge/build/libs Forge/build/libs \
+          TAG="${{ steps.gate.outputs.version }}"
+          find Fabric/build/libs NeoForge/build/libs \
             -name "*.jar" \
             ! -name "*-dev-shadow.jar" \
             ! -name "*-sources.jar" \

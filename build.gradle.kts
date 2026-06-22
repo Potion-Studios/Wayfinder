@@ -26,6 +26,10 @@ subprojects {
 
     base.archivesName.set(providers.gradleProperty("archives_base_name").get() + "-${project.name}")
 
+    tasks.withType<AbstractArchiveTask>().configureEach {
+        archiveVersion.set("${project.version}-mc$minecraftVersion")
+    }
+
     repositories {
         mavenCentral()
         mavenLocal()
