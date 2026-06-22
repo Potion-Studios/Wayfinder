@@ -33,7 +33,7 @@ public final class ForgePlatformHandler implements PlatformHandler {
 		return FMLPaths.CONFIGDIR.get().resolve(Wayfinder.MOD_ID);
 	}
 
-	private static final boolean luckPerms = ModList.get().isLoaded("luckperms");
+	private static final boolean luckPerms = ModList.isLoaded("luckperms");
 
 	@Override
 	public boolean hasPermission(@NonNull CommandSourceStack sourceStack, @NonNull String permission) {
@@ -107,7 +107,7 @@ public final class ForgePlatformHandler implements PlatformHandler {
 
 	@Override
 	public boolean isModLoaded(String modid) {
-		return ModList.get().isLoaded(modid);
+		return ModList.isLoaded(modid);
 	}
 
 	public static void register(final BusGroup bus) {
