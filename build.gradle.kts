@@ -8,7 +8,6 @@ plugins {
     id("com.gradleup.shadow") version "9.4.2" apply false
     id("com.hypherionmc.modutils.modpublisher") version "2.+"
     java
-    idea
     `maven-publish`
 }
 
@@ -77,6 +76,7 @@ subprojects {
     publishing {
         publications.create<MavenPublication>("mavenJava") {
             artifactId = base.archivesName.get()
+            version = "${version}-mc$minecraftVersion"
             from(components["java"])
         }
 
@@ -102,7 +102,7 @@ subprojects {
                 modrinth(getPublishingCredentials().second)
                 github(providers.gradleProperty("github_token").orNull)
             }
-            displayName.set(base.archivesName.get() + "-${project.version}")
+            displayName.set(base.archivesName.get() + "-${project.version}-mc$minecraftVersion")
             artifact.set(project.tasks.getByName("remapJar"))
             projectVersion.set(project.version.toString() + "-${project.name}")
             changelog.set(projectDir.toPath().parent.resolve("CHANGELOG.md").toFile().readLines().take(100).joinToString("\n"))
