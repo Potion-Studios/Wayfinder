@@ -1,4 +1,4 @@
-package net.potionstudios.wayfinder.client.gui.screens;
+package net.potionstudios.wayfinder.client.gui.components;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -13,8 +13,8 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
-class BiomeList extends ContainerObjectSelectionList<BiomeList.Entry> {
-	BiomeList(Minecraft minecraft, int width, int height, int y, int itemHeight) {
+public class BiomeList extends ContainerObjectSelectionList<BiomeList.Entry> {
+	public BiomeList(Minecraft minecraft, int width, int height, int y, int itemHeight) {
 		super(minecraft, width, height, y, itemHeight);
 	}
 
@@ -32,7 +32,7 @@ class BiomeList extends ContainerObjectSelectionList<BiomeList.Entry> {
 	@Override
 	protected void extractListBackground(@NonNull GuiGraphicsExtractor graphics) {}
 
-	class Entry extends ContainerObjectSelectionList.Entry<Entry> {
+	public class Entry extends ContainerObjectSelectionList.Entry<Entry> {
 		private final String biomeName;
 		private final Identifier biome;
 

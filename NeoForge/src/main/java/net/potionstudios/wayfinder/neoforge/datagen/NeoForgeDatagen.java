@@ -58,7 +58,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderGotToBiomeTrigger;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderHeartBlockTrigger;
 import net.potionstudios.wayfinder.advancements.critereon.WayfinderOwnerKilledTrigger;
-import net.potionstudios.wayfinder.sounds.WayfinderSounds;
+import net.potionstudios.wayfinder.sounds.WayfinderSoundEvents;
 import net.potionstudios.wayfinder.tags.WayfinderBiomeTags;
 import net.potionstudios.wayfinder.tags.WayfinderEntityTypeTags;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntityType;
@@ -123,7 +123,7 @@ class NeoForgeDatagen {
             addBlock(WayfinderBlocks.WAYFINER_HEART, "Wayfinder Heart");
 
             add("item." + Wayfinder.MOD_ID + ".music_disc_sweet_dreams.desc", "AOCAWOL - Sweet Dreams");
-            add("jukebox_song." + WayfinderJukeBoxSongs.SWEET_DREAMS.identifier().toLanguageKey(), "AOCAWOL - Sweet Dreams");
+            add("jukebox_song." + WayfinderJukeboxSongs.SWEET_DREAMS.identifier().toLanguageKey(), "AOCAWOL - Sweet Dreams");
 
             add("wayfinder.commands.reload.success", "Wayfinder config reloaded");
             add("wayfinder.commands.deaths", "%s has %s Wayfinder deaths");
@@ -189,21 +189,21 @@ class NeoForgeDatagen {
 
         @Override
         public void registerSounds() {
-            add(WayfinderSounds.WAYFINDER_IDLE0.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle0"))).subtitle(subtitle("entity.wayfinder.idle")));
-            add(WayfinderSounds.WAYFINDER_IDLE1.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle1"))).subtitle(subtitle("entity.wayfinder.idle")));
-            add(WayfinderSounds.WAYFINDER_IDLE2.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle2"))).subtitle(subtitle("entity.wayfinder.idle")));
-            add(WayfinderSounds.WAYFINDER_IDLE3.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle3"))).subtitle(subtitle("entity.wayfinder.idle")));
-            add(WayfinderSounds.WAYFINDER_IDLE4.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle4"))).subtitle(subtitle("entity.wayfinder.idle")));
-            add(WayfinderSounds.WAYFINDER_IDLE5.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle5"))).subtitle(subtitle("entity.wayfinder.idle")));
-            add(WayfinderSounds.WAYFINDER_DEATH.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/death"))).subtitle(subtitle("entity.wayfinder.death")));
-            add(WayfinderSounds.WAYFINDER_HURT0.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/hurt0"))).subtitle(subtitle("entity.wayfinder.hurt0")));
-            add(WayfinderSounds.WAYFINDER_HURT1.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/hurt1"))).subtitle(subtitle("entity.wayfinder.hurt1")));
-            add(WayfinderSounds.WAYFINDER_SHIELD_HIT.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/shield_hit"))).subtitle(subtitle("entity.wayfinder.shield_hit")));
-            add(WayfinderSounds.WAYFINDER_SHIELD_BREAK.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/shield_break"))).subtitle(subtitle("entity.wayfinder.shield_break")));
-            add(WayfinderSounds.WAYFINDER_SUMMON.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/summon"))).subtitle(subtitle("entity.wayfinder.summon")));
-            add(WayfinderSounds.WAYFINDER_NO.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/no"))).subtitle(subtitle("entity.wayfinder.no")));
-            add(WayfinderSounds.WAYFINDER_SCARED.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/scared"))).subtitle(subtitle("entity.wayfinder.scared")));
-            add(WayfinderSounds.MUSIC_DISC_SWEET_DREAMS.get().value(), definition().with(sound(Wayfinder.id("music/disc/sweet_dreams"))));
+            add(WayfinderSoundEvents.WAYFINDER_IDLE0.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle0"))).subtitle(subtitle("entity.wayfinder.idle")));
+            add(WayfinderSoundEvents.WAYFINDER_IDLE1.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle1"))).subtitle(subtitle("entity.wayfinder.idle")));
+            add(WayfinderSoundEvents.WAYFINDER_IDLE2.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle2"))).subtitle(subtitle("entity.wayfinder.idle")));
+            add(WayfinderSoundEvents.WAYFINDER_IDLE3.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle3"))).subtitle(subtitle("entity.wayfinder.idle")));
+            add(WayfinderSoundEvents.WAYFINDER_IDLE4.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle4"))).subtitle(subtitle("entity.wayfinder.idle")));
+            add(WayfinderSoundEvents.WAYFINDER_IDLE5.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/idle5"))).subtitle(subtitle("entity.wayfinder.idle")));
+            add(WayfinderSoundEvents.WAYFINDER_DEATH.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/death"))).subtitle(subtitle("entity.wayfinder.death")));
+            add(WayfinderSoundEvents.WAYFINDER_HURT0.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/hurt0"))).subtitle(subtitle("entity.wayfinder.hurt0")));
+            add(WayfinderSoundEvents.WAYFINDER_HURT1.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/hurt1"))).subtitle(subtitle("entity.wayfinder.hurt1")));
+            add(WayfinderSoundEvents.WAYFINDER_SHIELD_HIT.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/shield_hit"))).subtitle(subtitle("entity.wayfinder.shield_hit")));
+            add(WayfinderSoundEvents.WAYFINDER_SHIELD_BREAK.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/shield_break"))).subtitle(subtitle("entity.wayfinder.shield_break")));
+            add(WayfinderSoundEvents.WAYFINDER_SUMMON.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/summon"))).subtitle(subtitle("entity.wayfinder.summon")));
+            add(WayfinderSoundEvents.WAYFINDER_NO.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/no"))).subtitle(subtitle("entity.wayfinder.no")));
+            add(WayfinderSoundEvents.WAYFINDER_SCARED.get(), definition().with(sound(Wayfinder.id("entity/wayfinder/scared"))).subtitle(subtitle("entity.wayfinder.scared")));
+            add(WayfinderSoundEvents.MUSIC_DISC_SWEET_DREAMS.get().value(), definition().with(sound(Wayfinder.id("music/disc/sweet_dreams"))));
         }
 
         private String subtitle(String subtitle) {

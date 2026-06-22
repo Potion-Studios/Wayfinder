@@ -30,10 +30,10 @@ public class PlaceInVillage {
      */
     public static void addStructuresToVillages(MinecraftServer server) {
         RegistryAccess.Frozen registryAccess = server.registryAccess();
-        addBuildingToPool(registryAccess, Identifier.withDefaultNamespace("village/plains/houses"), WayfinderStructureProcessorLists.PLAINS_SHRINE, Wayfinder.id("wayfinder_plains_shrine"), StructureTemplatePool.Projection.RIGID, 2);
-        addBuildingToPool(registryAccess, Identifier.withDefaultNamespace("village/snowy/houses"), WayfinderStructureProcessorLists.SNOWY_SHRINE, Wayfinder.id("wayfinder_snowy_shrine"), StructureTemplatePool.Projection.RIGID, 2);
-        addBuildingToPool(registryAccess, Identifier.withDefaultNamespace("village/taiga/houses"), WayfinderStructureProcessorLists.TAIGA_SHRINE, Wayfinder.id("wayfinder_taiga_shrine"), StructureTemplatePool.Projection.RIGID, 2);
-        addBuildingToPool(registryAccess, Identifier.withDefaultNamespace("village/desert/houses"), WayfinderStructureProcessorLists.DESERT_SHRINE, Wayfinder.id("wayfinder_desert_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+        addBuildingToPool(registryAccess, Identifier.withDefaultNamespace("village/plains/houses"), WayfinderProcessorLists.PLAINS_SHRINE, Wayfinder.id("wayfinder_plains_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+        addBuildingToPool(registryAccess, Identifier.withDefaultNamespace("village/snowy/houses"), WayfinderProcessorLists.SNOWY_SHRINE, Wayfinder.id("wayfinder_snowy_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+        addBuildingToPool(registryAccess, Identifier.withDefaultNamespace("village/taiga/houses"), WayfinderProcessorLists.TAIGA_SHRINE, Wayfinder.id("wayfinder_taiga_shrine"), StructureTemplatePool.Projection.RIGID, 2);
+        addBuildingToPool(registryAccess, Identifier.withDefaultNamespace("village/desert/houses"), WayfinderProcessorLists.DESERT_SHRINE, Wayfinder.id("wayfinder_desert_shrine"), StructureTemplatePool.Projection.RIGID, 2);
         if (PlatformHandler.PLATFORM_HANDLER.isModLoaded("biomeswevegone")) { //TODO: Once BWG Updates to 26.1+ remove the identifier hard coding move back to vars
             addBuildingToPool(registryAccess, Identifier.fromNamespaceAndPath("biomeswevegone", "village/red_rock/houses"), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_red_rock_shrine"), StructureTemplatePool.Projection.RIGID, 2);
             addBuildingToPool(registryAccess, Identifier.fromNamespaceAndPath("biomeswevegone", "village/salem/houses"), ProcessorLists.EMPTY, Wayfinder.id("wayfinder_salem_shrine"), StructureTemplatePool.Projection.RIGID, 2);

@@ -29,7 +29,6 @@ public record WayfinderBiomePacket(Identifier biome) implements MultiloaderPacke
 	@Override
 	public void receiveMessage(@Nullable Player player, Consumer<Runnable> consumer) {
 		consumer.accept(() -> {
-			// Use Given Player to get the Server and then the Level of the Player's World then the wayfinder based on the UUID then set the biome to find
 			Entity entity = player.level().getEntity(PlatformHandler.PLATFORM_HANDLER.getWayfinder(player));
 			if (entity instanceof WayfinderEntity wayfinder)
 				if (biome.equals(Wayfinder.id("clear_packet"))) {
