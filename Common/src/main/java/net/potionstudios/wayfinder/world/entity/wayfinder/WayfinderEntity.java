@@ -43,7 +43,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.Wayfinder;
-import net.potionstudios.wayfinder.advancements.WayfinderCriteriaTriggers;
+import net.potionstudios.wayfinder.advancements.triggers.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.network.packets.WayfinderCloseScreenPacket;
 import net.potionstudios.wayfinder.network.packets.WayfinderOpenScreenPacket;
 import net.potionstudios.wayfinder.sounds.WayfinderSoundEvents;

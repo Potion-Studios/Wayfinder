@@ -1,4 +1,4 @@
-package net.potionstudios.wayfinder.advancements.critereon;
+package net.potionstudios.wayfinder.advancements.triggers;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -12,7 +12,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.potionstudios.wayfinder.PlatformHandler;
-import net.potionstudios.wayfinder.advancements.WayfinderCriteriaTriggers;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;

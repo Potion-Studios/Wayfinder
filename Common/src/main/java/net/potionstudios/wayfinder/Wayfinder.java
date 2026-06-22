@@ -11,7 +11,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.potionstudios.wayfinder.advancements.WayfinderCriteriaTriggers;
+import net.potionstudios.wayfinder.advancements.triggers.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.config.Config;
 import net.potionstudios.wayfinder.config.ConfigUtils;
 import net.potionstudios.wayfinder.sounds.WayfinderSoundEvents;

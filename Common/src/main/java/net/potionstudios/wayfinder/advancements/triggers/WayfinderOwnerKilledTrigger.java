@@ -1,4 +1,4 @@
-package net.potionstudios.wayfinder.advancements.critereon;
+package net.potionstudios.wayfinder.advancements.triggers;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -7,7 +7,6 @@ import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
-import net.potionstudios.wayfinder.advancements.WayfinderCriteriaTriggers;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;

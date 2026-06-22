@@ -10,7 +10,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.phys.Vec3;
-import net.potionstudios.wayfinder.advancements.WayfinderCriteriaTriggers;
+import net.potionstudios.wayfinder.advancements.triggers.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.world.entity.ai.memory.WayfinderMemoryModuleType;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import org.jetbrains.annotations.NotNull;
