@@ -9,7 +9,7 @@ architectury {
     forge()
 }
 
-val minecraftVersion = project.properties["minecraft_version"] as String
+val minecraftVersion = providers.gradleProperty("minecraft_version").get()
 
 configurations {
     create("common")

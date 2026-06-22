@@ -9,7 +9,7 @@ architectury {
     fabric()
 }
 
-val minecraftVersion = project.properties["minecraft_version"] as String
+val minecraftVersion = providers.gradleProperty("minecraft_version").get()
 
 configurations {
     create("common")
@@ -30,15 +30,15 @@ configurations {
 loom.accessWidenerPath.set(project(":Common").loom.accessWidenerPath)
 
 dependencies {
-    implementation("net.fabricmc:fabric-loader:${project.properties["fabric_loader_version"]}")
-    api("net.fabricmc.fabric-api:fabric-api:${project.properties["fabric_api_version"]}+$minecraftVersion")
+    implementation("net.fabricmc:fabric-loader:${providers.gradleProperty("fabric_loader_version").get()}")
+    api("net.fabricmc.fabric-api:fabric-api:${providers.gradleProperty("fabric_api_version").get()}+$minecraftVersion")
 
     "common"(project(":Common")) { isTransitive = false }
     "shadowBundle"(project(":Common", "transformProductionFabric"))
 
-    localRuntime("me.djtheredstoner:DevAuth-fabric:${project.properties["devauth_version"]}")
+    localRuntime("me.djtheredstoner:DevAuth-fabric:${providers.gradleProperty("devauth_version").get()}")
 
-    api("com.geckolib:geckolib-fabric-$minecraftVersion:${project.properties["geckolib_version"]}")
+    api("com.geckolib:geckolib-fabric-$minecraftVersion:${providers.gradleProperty("geckolib_version").get()}")
     api("me.lucko:fabric-permissions-api:0.7.0")
 }
 

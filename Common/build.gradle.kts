@@ -3,14 +3,14 @@ architectury {
     platformSetupLoomIde()
 }
 
-val minecraftVersion = project.properties["minecraft_version"] as String
+val minecraftVersion = providers.gradleProperty("minecraft_version").get()
 
 loom.accessWidenerPath.set(file("src/main/resources/wayfinder.accesswidener"))
 
 sourceSets.main.get().resources.srcDir("src/main/generated/resources")
 
 dependencies {
-    implementation("net.fabricmc:fabric-loader:${project.properties["fabric_loader_version"]}")
+    implementation("net.fabricmc:fabric-loader:${providers.gradleProperty("fabric_loader_version").get()}")
 
-    compileOnly("com.geckolib:geckolib-common-$minecraftVersion:${project.properties["geckolib_version"]}")
+    compileOnly("com.geckolib:geckolib-common-$minecraftVersion:${providers.gradleProperty("geckolib_version").get()}")
 }
