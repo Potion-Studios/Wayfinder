@@ -50,6 +50,7 @@ tasks {
 
     shadowJar {
         dependsOn(jar)
+        from(zipTree(jar.get().archiveFile))
         exclude("architectury.common.json", ".cache/**")
         configurations = listOf(project.configurations.getByName("shadowCommon"))
         archiveClassifier.set(null)

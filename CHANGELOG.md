@@ -1,3 +1,6 @@
+# 1.2.2
+- Fix Fabric AW Not injecting causing Crashes
+
 # 1.2.1
 - Major Jar Building Overhaul
 - Texture Compression

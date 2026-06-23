@@ -19,7 +19,10 @@ configurations {
     named("developmentFabric") { extendsFrom(common.get()) }
 }
 
-loom.accessWidenerPath.set(project(":Common").loom.accessWidenerPath)
+loom {
+    accessWidenerPath.set(project(":Common").loom.accessWidenerPath)
+    injectAccessWidener(tasks.shadowJar)
+}
 
 dependencies {
     implementation("net.fabricmc:fabric-loader:${providers.gradleProperty("fabric_loader_version").get()}")
@@ -47,6 +50,7 @@ tasks {
 
     shadowJar {
         dependsOn(jar)
+        from(zipTree(jar.get().archiveFile))
         exclude("architectury.common.json", ".cache/**")
         configurations = listOf(project.configurations.getByName("shadowCommon"))
         archiveClassifier.set(null)
