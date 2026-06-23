@@ -10,7 +10,7 @@ import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.potionstudios.wayfinder.world.entity.ai.memory.WayfinderMemoryModuleType;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public class FollowOwner extends Behavior<WayfinderEntity> {
     private ServerPlayer owner;
@@ -24,7 +24,7 @@ public class FollowOwner extends Behavior<WayfinderEntity> {
     }
 
     @Override
-    protected boolean checkExtraStartConditions(@NotNull ServerLevel level, @NotNull WayfinderEntity entity) {
+    protected boolean checkExtraStartConditions(@NonNull ServerLevel level, @NonNull WayfinderEntity entity) {
         if (entity.unableToMoveToOwner()) return false;
 
         if (!(entity.getOwner() instanceof ServerPlayer player)) return false;
@@ -36,19 +36,19 @@ public class FollowOwner extends Behavior<WayfinderEntity> {
     }
 
     @Override
-    protected void start(@NotNull ServerLevel level, @NotNull WayfinderEntity entity, long gameTime) {
+    protected void start(@NonNull ServerLevel level, @NonNull WayfinderEntity entity, long gameTime) {
         this.timeToRecalcPath = 0;
     }
 
     @Override
-    protected void stop(@NotNull ServerLevel level, @NotNull WayfinderEntity entity, long gameTime) {
+    protected void stop(@NonNull ServerLevel level, @NonNull WayfinderEntity entity, long gameTime) {
         this.owner = null;
         entity.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
         entity.getNavigation().stop();
     }
 
     @Override
-    protected void tick(@NotNull ServerLevel level, @NotNull WayfinderEntity entity, long gameTime) {
+    protected void tick(@NonNull ServerLevel level, @NonNull WayfinderEntity entity, long gameTime) {
         if (this.owner == null) return;
 
         if (this.timeToRecalcPath-- > 0) return;
@@ -67,7 +67,7 @@ public class FollowOwner extends Behavior<WayfinderEntity> {
     }
 
     @Override
-    protected boolean canStillUse(@NotNull ServerLevel level, @NotNull WayfinderEntity entity, long gameTime) {
+    protected boolean canStillUse(@NonNull ServerLevel level, @NonNull WayfinderEntity entity, long gameTime) {
         if (entity.unableToMoveToOwner()) return false;
 
         return entity.distanceToSqr(this.owner) > 16;

@@ -53,8 +53,6 @@ import net.potionstudios.wayfinder.world.entity.WayfinderEntityTypes;
 import net.potionstudios.wayfinder.world.entity.ai.control.WayfinderMoveControl;
 import net.potionstudios.wayfinder.world.entity.ai.memory.WayfinderMemoryModuleType;
 import net.potionstudios.wayfinder.world.entity.ai.sensing.WayfinderSensorType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -150,7 +148,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
-    public @NotNull Brain<WayfinderEntity> getBrain() {
+    public @NonNull Brain<WayfinderEntity> getBrain() {
         return (Brain<WayfinderEntity>) super.getBrain();
     }
 
@@ -163,7 +161,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
+    protected void defineSynchedData(SynchedEntityData.@NonNull Builder builder) {
         super.defineSynchedData(builder);
         builder.define(DATA_TYPE_ID, 0);
         builder.define(DATA_OWNERUUID_ID, Optional.empty());
@@ -200,23 +198,23 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
-    protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
+    protected @NonNull PathNavigation createNavigation(@NonNull Level level) {
         FlyingPathNavigation navigation = new FlyingPathNavigation(this, level);
         navigation.setCanOpenDoors(false);
         navigation.setCanFloat(true);
         return navigation;
     }
 
-    public @Nullable EntityReference<LivingEntity> getOwnerReference() {
+    public EntityReference<LivingEntity> getOwnerReference() {
         return (EntityReference) ((Optional) this.entityData.get(DATA_OWNERUUID_ID)).orElse(null);
     }
 
-    public void setOwner(@Nullable Player owner) {
+    public void setOwner(Player owner) {
         this.entityData.set(DATA_OWNERUUID_ID, Optional.ofNullable(owner).map(EntityReference::of));
         PlatformHandler.PLATFORM_HANDLER.setWayfinder(owner, getUUID());
     }
 
-    public void setOwnerReference(@Nullable EntityReference<LivingEntity> ownerReference) {
+    public void setOwnerReference(EntityReference<LivingEntity> ownerReference) {
         this.entityData.set(DATA_OWNERUUID_ID, Optional.ofNullable(ownerReference));
     }
 
@@ -271,7 +269,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
-    protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
+    protected @NonNull InteractionResult mobInteract(@NonNull Player player, @NonNull InteractionHand hand) {
         if (level() instanceof ServerLevel serverLevel) {
             if (isPanic()) return InteractionResult.FAIL;
 	        if (player.getItemInHand(hand).is(Items.GLOW_BERRIES)) {
@@ -413,17 +411,17 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
-    protected @Nullable SoundEvent getDeathSound() {
+    protected SoundEvent getDeathSound() {
         return WayfinderSoundEvents.WAYFINDER_DEATH.get();
     }
 
     @Override
-    protected @Nullable SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
+    protected SoundEvent getHurtSound(@NonNull DamageSource damageSource) {
         return getRandom().nextBoolean() ? WayfinderSoundEvents.WAYFINDER_HURT0.get() : WayfinderSoundEvents.WAYFINDER_HURT1.get();
     }
 
     @Override
-    protected @Nullable SoundEvent getAmbientSound() {
+    protected SoundEvent getAmbientSound() {
         if (Wayfinder.CONFIG.wayfinder.DISABLE_SOUNDS_WHEN_SITTING.value() || getRandom().nextBoolean())
             return SoundEvents.EMPTY;
         else if (isPanic())
@@ -491,7 +489,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
-    public void gameEvent(@NotNull Holder<GameEvent> gameEvent, @Nullable Entity entity) {
+    public void gameEvent(@NonNull Holder<GameEvent> gameEvent, Entity entity) {
         super.gameEvent(gameEvent, entity);
         if (entity != null && entity.is(this) && gameEvent.is(GameEvent.ENTITY_DIE.key())) {
             Player owner = (Player) getOwner();
@@ -557,11 +555,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         else return level().noCollision(this, getBoundingBox().move(pos.subtract(blockPosition())));
     }
 
-    public void setVariant(@NotNull WayfinderEntity.Variant variant) {
+    public void setVariant(WayfinderEntity.Variant variant) {
         this.entityData.set(DATA_TYPE_ID, variant.getId());
     }
 
-    public @NotNull WayfinderEntity.Variant getVariant() {
+    public WayfinderEntity.Variant getVariant() {
         return Variant.byId(this.entityData.get(DATA_TYPE_ID));
     }
 
@@ -582,7 +580,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         }
 
         @Override
-        public @NotNull String getSerializedName() {
+        public @NonNull String getSerializedName() {
             return this.name;
         }
 

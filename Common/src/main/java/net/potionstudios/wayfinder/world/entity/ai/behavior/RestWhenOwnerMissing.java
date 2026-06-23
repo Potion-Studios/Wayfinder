@@ -5,8 +5,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 public class RestWhenOwnerMissing extends Behavior<WayfinderEntity> {
     public RestWhenOwnerMissing() {
@@ -14,13 +13,13 @@ public class RestWhenOwnerMissing extends Behavior<WayfinderEntity> {
     }
 
     @Override
-    protected void start(@NotNull ServerLevel level, @NotNull WayfinderEntity entity, long gameTime) {
+    protected void start(@NonNull ServerLevel level, @NonNull WayfinderEntity entity, long gameTime) {
         entity.sit();
     }
 
     @Override
-    protected boolean checkExtraStartConditions(@NotNull ServerLevel level, @NotNull WayfinderEntity entity) {
-        @Nullable LivingEntity owner = entity.getOwner();
+    protected boolean checkExtraStartConditions(@NonNull ServerLevel level, @NonNull WayfinderEntity entity) {
+        LivingEntity owner = entity.getOwner();
         return (owner == null || owner.isSleeping() || !owner.isAlive()) && !entity.isResting();
     }
 }
