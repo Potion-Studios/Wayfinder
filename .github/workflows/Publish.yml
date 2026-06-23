@@ -71,7 +71,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG="v${{ steps.gate.outputs.version }}"
+          TAG="${{ steps.gate.outputs.version }}"
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
             echo "release_exists=true" >> $GITHUB_OUTPUT
             echo "Release $TAG already exists, will append jars."
