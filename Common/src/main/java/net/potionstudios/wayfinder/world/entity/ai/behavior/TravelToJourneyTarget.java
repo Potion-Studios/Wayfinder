@@ -13,7 +13,7 @@ import net.minecraft.world.phys.Vec3;
 import net.potionstudios.wayfinder.advancements.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.world.entity.ai.memory.WayfinderMemoryModuleType;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;
 
@@ -30,14 +30,14 @@ public class TravelToJourneyTarget extends Behavior<WayfinderEntity> {
     }
 
     @Override
-    protected void start(@NotNull ServerLevel level, @NotNull WayfinderEntity entity, long gameTime) {
+    protected void start(@NonNull ServerLevel level, @NonNull WayfinderEntity entity, long gameTime) {
         timeToRecalc = 0;
         teleportTimer = 0;
         entity.getBrain().eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
     }
 
     @Override
-    protected void tick(@NotNull ServerLevel level, @NotNull WayfinderEntity entity, long gameTime) {
+    protected void tick(@NonNull ServerLevel level, @NonNull WayfinderEntity entity, long gameTime) {
         if (this.timeToRecalc-- > 0) return;
         this.timeToRecalc = 10;
 
@@ -78,13 +78,13 @@ public class TravelToJourneyTarget extends Behavior<WayfinderEntity> {
     }
 
     @Override
-    protected void stop(@NotNull ServerLevel level, @NotNull WayfinderEntity entity, long gameTime) {
+    protected void stop(@NonNull ServerLevel level, @NonNull WayfinderEntity entity, long gameTime) {
         entity.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
         entity.getBrain().eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE);
     }
 
     @Override
-    protected boolean canStillUse(@NotNull ServerLevel level, @NotNull WayfinderEntity entity, long gameTime) {
+    protected boolean canStillUse(@NonNull ServerLevel level, @NonNull WayfinderEntity entity, long gameTime) {
         return entity.getBrain().hasMemoryValue(WayfinderMemoryModuleType.JOURNEY_TARGET_POS.get());
     }
 }

@@ -9,7 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.potionstudios.wayfinder.PlatformHandler;
 import net.potionstudios.wayfinder.network.packets.WayfinderCloseScreenPacket;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Behavior that closes a wayfinder screen if open when the entity is panicking
@@ -22,7 +22,7 @@ public class CloseScreenOnPanic extends Behavior<WayfinderEntity> {
     }
 
     @Override
-    protected void start(@NotNull ServerLevel level, @NotNull WayfinderEntity entity, long gameTime) {
+    protected void start(@NonNull ServerLevel level, @NonNull WayfinderEntity entity, long gameTime) {
         if (entity.getOwner() != null)
             PlatformHandler.PLATFORM_HANDLER.sendToPlayer(new WayfinderCloseScreenPacket(), (Player) entity.getOwner());
     }

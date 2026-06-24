@@ -8,7 +8,7 @@ import net.minecraft.world.entity.ai.behavior.Behavior;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.schedule.Activity;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public class WayfinderPanicTrigger extends Behavior<WayfinderEntity> {
 	public WayfinderPanicTrigger() {
@@ -16,12 +16,12 @@ public class WayfinderPanicTrigger extends Behavior<WayfinderEntity> {
 	}
 
 	@Override
-	protected boolean canStillUse(@NotNull ServerLevel level, @NotNull WayfinderEntity entity, long gameTime) {
+	protected boolean canStillUse(@NonNull ServerLevel level, @NonNull WayfinderEntity entity, long gameTime) {
 		return dangerNear(entity) || isHurt(entity);
 	}
 
 	@Override
-	protected void start(@NotNull ServerLevel level, @NotNull WayfinderEntity entity, long gameTime) {
+	protected void start(@NonNull ServerLevel level, @NonNull WayfinderEntity entity, long gameTime) {
 		if (isHurt(entity) || dangerNear(entity)) {
 			Brain<WayfinderEntity> brain = entity.getBrain();
 			if (!brain.isActive(Activity.PANIC)) {

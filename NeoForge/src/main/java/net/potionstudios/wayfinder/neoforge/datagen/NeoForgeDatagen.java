@@ -48,7 +48,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.*;
-import net.neoforged.neoforge.common.data.ItemTagsProvider;
 //import net.potionstudios.biomeswevegone.BiomesWeveGone;
 //import net.potionstudios.biomeswevegone.world.item.BWGItems;
 import net.potionstudios.wayfinder.Wayfinder;
@@ -67,7 +66,6 @@ import net.potionstudios.wayfinder.world.item.WayfinderJukeboxSongs;
 import net.potionstudios.wayfinder.world.level.block.WayfinderBlocks;
 import net.potionstudios.wayfinder.world.level.block.WayfinderHeartBlock;
 import net.potionstudios.wayfinder.data.worldgen.WayfinderProcessorLists;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
 import java.util.*;
