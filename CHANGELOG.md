@@ -1,3 +1,6 @@
+# 1.2.2
+- Texture Compression
+
 # 1.2.1
 - Fix Wayfinder Heart Item showing full lang key instead of translated text in the Wayfinder Locator GUI
 - Fix Missing Texture in Advancement Menu
