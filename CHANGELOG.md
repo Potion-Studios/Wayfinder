@@ -1,3 +1,10 @@
+# 1.2.2
+- Fix Fabric AW Not injecting causing Crashes
+
+# 1.2.1
+- Major Jar Building Overhaul
+- Texture Compression
+
 # 1.2.0
 - Major Internal Refactoring to better Match Minecraft's package structure
 - Remove TELEPORT_TO_OWNER Config option 
