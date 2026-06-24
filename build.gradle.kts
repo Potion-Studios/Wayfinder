@@ -93,7 +93,7 @@ subprojects {
             }
             displayName.set(base.archivesName.get() + "-${project.version}-mc$minecraftVersion")
             artifact.set(project.provider { project.tasks.named("shadowJar").get() })
-            projectVersion.set(project.version.toString() + "-${project.name}")
+            projectVersion.set(project.version.toString() + "-${project.name}-mc$minecraftVersion")
             changelog.set(projectDir.toPath().parent.resolve("CHANGELOG.md").toFile().readLines().take(100).joinToString("\n"))
             curseID.set("1204282")
             modrinthID.set("909sOSOR")
