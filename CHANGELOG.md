@@ -1,3 +1,6 @@
+# 1.2.2
+- Texture Compression
+
 # 1.2.0
 - Major Internal Refactoring to better Match Minecraft's package structure
 - Remove TELEPORT_TO_OWNER Config option 
