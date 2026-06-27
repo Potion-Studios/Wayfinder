@@ -12,39 +12,28 @@ architectury {
 val minecraftVersion = providers.gradleProperty("minecraft_version").get()
 
 configurations {
-    create("common")
-    "common" {
-        isCanBeResolved = true
-        isCanBeConsumed = false
-    }
-    create("shadowBundle")
-    compileClasspath.get().extendsFrom(configurations["common"])
-    runtimeClasspath.get().extendsFrom(configurations["common"])
-    getByName("developmentForge").extendsFrom(configurations["common"])
-    "shadowBundle" {
-        isCanBeResolved = true
-        isCanBeConsumed = false
-    }
+    val common = register("common")
+    register("shadowCommon")
+    compileClasspath.get().extendsFrom(common.get())
+    runtimeClasspath.get().extendsFrom(common.get())
+    named("developmentForge") { extendsFrom(common.get()) }
 }
 
 loom {
     accessWidenerPath.set(project(":Common").loom.accessWidenerPath)
 
-    forge {
-        convertAccessWideners.set(true)
-        extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
-    }
+    forge.convertAccessWideners(tasks.shadowJar, "wayfinder.accessWidener")
 }
 
 dependencies {
-    forge("net.minecraftforge:forge:$minecraftVersion-${project.properties["forge_version"]}")
+    forge("net.minecraftforge:forge:$minecraftVersion-${providers.gradleProperty("forge_version").get()}")
 
     "common"(project(":Common")) { isTransitive = false }
-    "shadowBundle"(project(":Common", "transformProductionForge"))
+    "shadowCommon"(project(":Common", "transformProductionForge"))
 
-    localRuntime("me.djtheredstoner:DevAuth-forge-latest:${project.properties["devauth_version"]}")
+    localRuntime("me.djtheredstoner:DevAuth-forge-latest:${providers.gradleProperty("devauth_version").get()}")
 
-    api("com.geckolib:geckolib-forge-$minecraftVersion:${project.properties["geckolib_version"]}")
+    api("com.geckolib:geckolib-forge-$minecraftVersion:${providers.gradleProperty("geckolib_version").get()}")
 
     compileOnly("net.luckperms:api:5.5")
 }
@@ -58,10 +47,14 @@ tasks {
         }
     }
 
+    jar.get().archiveClassifier.set("raw")
+
     shadowJar {
+        dependsOn(jar)
+        from(zipTree(jar.get().archiveFile))
         exclude("architectury.common.json", ".cache/**")
-        configurations = listOf(project.configurations.getByName("shadowBundle"))
-        archiveClassifier.set("dev-shadow")
+        configurations = listOf(project.configurations.getByName("shadowCommon"))
+        archiveClassifier.set(null)
     }
 }
 

@@ -31,7 +31,7 @@ side = "BOTH"
 [[dependencies.wayfinder]]
 modId = "geckolib"
 mandatory = true
-versionRange = "[5.4.5,)"
+versionRange = "[5.5.2,)"
 ordering = "AFTER"
 side = "BOTH"
 
