@@ -311,7 +311,7 @@ class NeoForgeDatagen {
                                 Items.WRITTEN_BOOK,
                                 translateAble("a_tale_as_old_as_time.title"),
                                 translateAble("a_tale_as_old_as_time.description"),
-                                Identifier.withDefaultNamespace("textures/block/moss_block.png"), AdvancementType.TASK, true, false, true
+                                Identifier.withDefaultNamespace("block/moss_block"), AdvancementType.TASK, true, false, true
                         )
                         .rewards(AdvancementRewards.Builder.loot(bookTable))
                         .save(writer, Wayfinder.id(Wayfinder.MOD_ID + "/a_tale_as_old_as_time"));
