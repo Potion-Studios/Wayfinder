@@ -1,5 +1,6 @@
 # 1.2.1
 - Fix Wayfinder Heart Item showing full lang key instead of translated text in the Wayfinder Locator GUI
+- Fix Missing Texture in Advancement Menu
 
 # 1.2.0
 - Major Internal Refactoring to better Match Minecraft's package structure
