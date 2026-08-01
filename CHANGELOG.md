@@ -1,3 +1,6 @@
+# 1.2.3
+- Fix Wayfinder Heart Item showing full lang key instead of translated text in the Wayfinder Locator GUI
+
 # 1.2.2
 - Fix Fabric AW Not injecting causing Crashes
 

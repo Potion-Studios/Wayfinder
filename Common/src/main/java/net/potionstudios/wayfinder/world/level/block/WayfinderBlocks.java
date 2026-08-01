@@ -20,7 +20,7 @@ public class WayfinderBlocks {
 
     private static <B extends Block> Supplier<B> registerBlockItem(String key, Supplier<B> blockSupplier) {
         Supplier<B> block = PlatformHandler.PLATFORM_HANDLER.register(BuiltInRegistries.BLOCK, key, blockSupplier);
-        WayfinderItems.register(key, () -> new BlockItem(block.get(), new Item.Properties().setId(Wayfinder.key(Registries.ITEM, key))));
+        WayfinderItems.register(key, () -> new BlockItem(block.get(), new Item.Properties().useBlockDescriptionPrefix().setId(Wayfinder.key(Registries.ITEM, key))));
         return block;
     }
 
