@@ -241,7 +241,7 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
         if (isSearching() && (currentAnimation != null && !currentAnimation.equals(SEARCHING_START) && !currentAnimation.equals(SEARCHING_END)))
           return event.setAndContinue(SEARCHING_LOOP);
         else if (finished || (!currentAnimation.equals(IDLE_1) && !currentAnimation.equals(IDLE_2) && !currentAnimation.equals(IDLE_3) && !currentAnimation.equals(IDLE_4) && !currentAnimation.equals(IDLE_5)))
-            return switch (getRandom().nextInt(35)) {
+            return switch (getRandom().nextInt(50)) {
             case 0 -> event.setAndContinue(IDLE_3);
             case 1, 2, 3, 4, 5 -> event.setAndContinue(IDLE_4);
             case 6, 7, 8, 9, 10 -> event.setAndContinue(IDLE_5);
