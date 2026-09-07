@@ -13,10 +13,10 @@ import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
-import net.minecraft.client.data.models.model.ModelTemplates;
-import net.minecraft.client.data.models.model.TextureMapping;
-import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.data.models.model.*;
+import net.minecraft.client.renderer.item.ClientItem;
 import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -27,6 +27,10 @@ import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.data.loot.EntityLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.loot.LootTableSubProvider;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
 import net.minecraft.network.chat.Component;
@@ -38,6 +42,7 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypeIds;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -99,6 +104,7 @@ class NeoForgeDatagen {
         generator.addProvider(true, new BlockTagsGenerator(output, lookupProvider));
         generator.addProvider(true, new ItemTagsGenerator(output, lookupProvider));
         generator.addProvider(true, new BiomeTagsGenerator(output, lookupProvider));
+        generator.addProvider(true, new RecipeGeneratorRunner(output, lookupProvider));
     }
 
 
@@ -222,6 +228,14 @@ class NeoForgeDatagen {
         protected void registerModels(@NonNull BlockModelGenerators blockModels, @NonNull ItemModelGenerators itemModels) {
             itemModels.generateFlatItem(WayfinderItems.MUSIC_DISC_SWEET_DREAMS.get(), ModelTemplates.MUSIC_DISC);
             itemModels.generateFlatItem(WayfinderItems.WAYFINDER_SPAWN_EGG.get(), ModelTemplates.FLAT_ITEM);
+            itemModels.generateFlatItem(WayfinderItems.SCROLL.get(), ModelTemplates.FLAT_ITEM);
+
+            for (String scrollSkin : List.of("lush_scroll", "mushroom_scroll", "warped_scroll", "bwg_scroll")) {
+                Identifier itemId = Wayfinder.id(scrollSkin);
+                Identifier modelId = Wayfinder.id("item/" + scrollSkin);
+                ModelTemplates.FLAT_ITEM.create(modelId, new TextureMapping().put(TextureSlot.LAYER0, new Material(modelId)), itemModels.modelOutput);
+                itemModels.itemModelOutput.register(itemId, new ClientItem(ItemModelUtils.plainModel(modelId), ClientItem.Properties.DEFAULT));
+            }
 
             MultiVariant activated = BlockModelGenerators.plainVariant(ModelTemplates.CUBE_ORIENTABLE.createWithSuffix(WayfinderBlocks.WAYFINER_HEART.get(), "_activated", TextureMapping.column(Blocks.CHISELED_TUFF)
                     .copyAndUpdate(TextureSlot.FRONT, new Material(Wayfinder.id("block/wayfinder_heart_front_activated")))
@@ -239,7 +253,6 @@ class NeoForgeDatagen {
                     .with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
         }
     }
-
 
     private static class LootGenerator extends LootTableProvider {
         private LootGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
@@ -477,6 +490,39 @@ class NeoForgeDatagen {
         @Override
         protected void addTags(HolderLookup.@NonNull Provider provider) {
             tag(WayfinderBiomeTags.WAYFINDER_EXCLUDED).addTag(Tags.Biomes.HIDDEN_FROM_LOCATOR_SELECTION);
+        }
+    }
+
+    private static class RecipeGeneratorRunner extends RecipeProvider.Runner {
+        private RecipeGeneratorRunner(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
+            super(packOutput, registries);
+        }
+
+        @Override
+        protected @NonNull RecipeProvider createRecipeProvider(HolderLookup.@NonNull Provider provider, @NonNull RecipeOutput recipeOutput) {
+            return new RecipeGenerator(provider, recipeOutput);
+        }
+
+        @Override
+        public @NonNull String getName() {
+            return Wayfinder.MOD_ID;
+        }
+    }
+
+    private static class RecipeGenerator extends RecipeProvider {
+        private RecipeGenerator(HolderLookup.Provider registries, RecipeOutput output) {
+            super(registries, output);
+        }
+
+        @Override
+        protected void buildRecipes() {
+            HolderGetter<Item> itemRegistry = registries.lookupOrThrow(Registries.ITEM);
+            ShapedRecipeBuilder.shaped(itemRegistry, RecipeCategory.MISC, WayfinderItems.SCROLL.get())
+                    .define('X', Items.STRING)
+                    .define('Y', Items.PAPER)
+                    .pattern("XYX")
+                    .unlockedBy(getHasName(Items.PAPER), has(Items.PAPER))
+                    .save(output, Wayfinder.key(Registries.RECIPE, "blank_scroll"));
         }
     }
 

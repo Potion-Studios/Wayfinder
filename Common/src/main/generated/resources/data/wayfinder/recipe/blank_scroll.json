@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "X": "minecraft:string",
+    "Y": "minecraft:paper"
+  },
+  "pattern": [
+    "XYX"
+  ],
+  "result": {
+    "id": "wayfinder:scroll"
+  }
+}

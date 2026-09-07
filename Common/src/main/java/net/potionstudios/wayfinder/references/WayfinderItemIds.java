@@ -8,6 +8,7 @@ import net.potionstudios.wayfinder.Wayfinder;
 public class WayfinderItemIds {
     public static final ResourceKey<Item> WAYFINDER_SPAWN_EGG = create("wayfinder_spawn_egg");
     public static final ResourceKey<Item> MUSIC_DISC_SWEET_DREAMS = create("music_disc_sweet_dreams");
+    public static final ResourceKey<Item> SCROLL = create("scroll");
 
     private static ResourceKey<Item> create(String name) {
         return Wayfinder.key(Registries.ITEM, name);

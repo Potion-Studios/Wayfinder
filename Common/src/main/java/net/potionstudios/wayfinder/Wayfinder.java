@@ -14,6 +14,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.potionstudios.wayfinder.advancements.triggers.WayfinderCriteriaTriggers;
 import net.potionstudios.wayfinder.config.Config;
 import net.potionstudios.wayfinder.config.ConfigUtils;
+import net.potionstudios.wayfinder.core.component.WayfinderDataComponents;
 import net.potionstudios.wayfinder.sounds.WayfinderSoundEvents;
 import net.potionstudios.wayfinder.tags.WayfinderEntityTypeTags;
 import net.potionstudios.wayfinder.world.entity.WayfinderEntityTypes;
@@ -43,6 +44,7 @@ public class Wayfinder {
      * Initializes the mod.
      */
     public static void init() {
+        WayfinderDataComponents.dataComponents();
         WayfinderItems.items();
         WayfinderBlocks.blocks();
         WayfinderBlockEntityType.blockEntities();
