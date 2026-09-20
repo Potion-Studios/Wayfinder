@@ -40,7 +40,7 @@ dependencies {
     "common"(project(":Common")) { isTransitive = false }
     "shadowCommon"(project(":Common", "transformProductionNeoForge"))
 
-    localRuntime("me.djtheredstoner:DevAuth-neoforge:${providers.gradleProperty("devauth_version").get()}")
+//    localRuntime("me.djtheredstoner:DevAuth-neoforge:${providers.gradleProperty("devauth_version").get()}")
 
     api("com.geckolib:geckolib-neoforge-$minecraftVersion:${providers.gradleProperty("geckolib_version").get()}")
 

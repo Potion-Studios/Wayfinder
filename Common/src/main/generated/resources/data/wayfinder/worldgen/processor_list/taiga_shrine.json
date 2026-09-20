@@ -12,9 +12,7 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:moss_block"
-          }
+          "output_state": "minecraft:moss_block"
         },
         {
           "input_predicate": {
@@ -25,12 +23,7 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:grass_block",
-            "Properties": {
-              "snowy": "false"
-            }
-          }
+          "output_state": "minecraft:grass_block"
         },
         {
           "input_predicate": {
@@ -41,9 +34,7 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:cracked_stone_bricks"
-          }
+          "output_state": "minecraft:cracked_stone_bricks"
         },
         {
           "input_predicate": {
@@ -54,9 +45,7 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:mossy_stone_bricks"
-          }
+          "output_state": "minecraft:mossy_stone_bricks"
         },
         {
           "input_predicate": {
@@ -67,9 +56,7 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:moss_block"
-          }
+          "output_state": "minecraft:moss_block"
         },
         {
           "input_predicate": {
@@ -81,8 +68,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:candle",
-            "Properties": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "2",
               "lit": "false",
               "waterlogged": "false"
@@ -99,8 +86,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:candle",
-            "Properties": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "3",
               "lit": "false",
               "waterlogged": "false"
@@ -117,8 +104,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:candle",
-            "Properties": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "4",
               "lit": "false",
               "waterlogged": "false"
@@ -135,8 +122,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:candle",
-            "Properties": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "1",
               "lit": "true",
               "waterlogged": "false"
@@ -153,8 +140,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:candle",
-            "Properties": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "2",
               "lit": "true",
               "waterlogged": "false"
@@ -171,8 +158,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:candle",
-            "Properties": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "3",
               "lit": "true",
               "waterlogged": "false"
@@ -189,8 +176,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:candle",
-            "Properties": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "4",
               "lit": "true",
               "waterlogged": "false"

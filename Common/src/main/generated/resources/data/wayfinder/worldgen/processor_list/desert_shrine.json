@@ -12,9 +12,7 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:sand"
-          }
+          "output_state": "minecraft:sand"
         },
         {
           "input_predicate": {
@@ -25,12 +23,7 @@
           "location_predicate": {
             "predicate_type": "minecraft:always_true"
           },
-          "output_state": {
-            "Name": "minecraft:suspicious_sand",
-            "Properties": {
-              "dusted": "0"
-            }
-          }
+          "output_state": "minecraft:suspicious_sand"
         },
         {
           "input_predicate": {
@@ -42,8 +35,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:candle",
-            "Properties": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "2",
               "lit": "false",
               "waterlogged": "false"
@@ -60,8 +53,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:candle",
-            "Properties": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "3",
               "lit": "false",
               "waterlogged": "false"
@@ -78,8 +71,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:candle",
-            "Properties": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "4",
               "lit": "false",
               "waterlogged": "false"
@@ -96,8 +89,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:candle",
-            "Properties": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "1",
               "lit": "true",
               "waterlogged": "false"
@@ -114,8 +107,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:candle",
-            "Properties": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "2",
               "lit": "true",
               "waterlogged": "false"
@@ -132,8 +125,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:candle",
-            "Properties": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "3",
               "lit": "true",
               "waterlogged": "false"
@@ -150,8 +143,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:candle",
-            "Properties": {
+            "id": "minecraft:candle",
+            "properties": {
               "candles": "4",
               "lit": "true",
               "waterlogged": "false"

@@ -11,20 +11,20 @@ authors = "Joseph T. McQuigg (JT122406), AOCAWOL"
 description = '''
 Adds Wayfinder Entity that can find any biome
 '''
-displayURL="https://potionstudios.net/"
-logoFile = "wayfinder.png"
+displayURL = "https://potionstudios.net/"
+iconFile = "wayfinder.png"
 
 [[dependencies.wayfinder]]
 modId = "neoforge"
 type = "required"
-versionRange = "[26.1.0,)"
+versionRange = "[26.3.0,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.wayfinder]]
 modId = "minecraft"
 type = "required"
-versionRange = "[26.1,)"
+versionRange = "[26.3,)"
 ordering = "NONE"
 side = "BOTH"
 

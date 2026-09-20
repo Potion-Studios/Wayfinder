@@ -1,10 +1,6 @@
 package net.potionstudios.wayfinder.neoforge.datagen;
 
-import com.google.common.collect.ImmutableList;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.AdvancementType;
+import net.minecraft.advancements.*;
 import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.SummonedEntityTrigger;
 import net.minecraft.client.data.models.BlockModelGenerators;
@@ -17,6 +13,7 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.core.ClientAsset;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -29,6 +26,7 @@ import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
@@ -38,6 +36,7 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypeIds;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -47,7 +46,7 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ListOperation;
 import net.minecraft.world.level.storage.loot.functions.SetWrittenBookPagesFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.*;
 //import net.potionstudios.biomeswevegone.BiomesWeveGone;
@@ -74,8 +73,6 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 @EventBusSubscriber(modid = Wayfinder.MOD_ID)
@@ -85,16 +82,18 @@ class NeoForgeDatagen {
     private static void onGatherData(final GatherDataEvent.Client event) {
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
-        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getWorldLookupProvider();
 
-        DatapackBuiltinEntriesProvider datapackBuiltinEntriesProvider = new DatapackBuiltinEntriesProvider(output, lookupProvider, BUILDER, Set.of(Wayfinder.MOD_ID));
-        generator.addProvider(true, datapackBuiltinEntriesProvider);
+        DatapackBuiltinEntriesProvider worldProvider = generator.addProvider(true, DatapackBuiltinEntriesProvider.forWorldLayer(
+                output, "Wayfinder World Registries", event.getWorldLookupProvider(), WORLD_BUILDER, Set.of(Wayfinder.MOD_ID)));
+
+        generator.addProvider(true, DatapackBuiltinEntriesProvider.forReloadableLayer(
+                output, "Wayfinder Reloadable Registries", worldProvider.getRegistryProvider(), event.getReloadableLookupProvider(),
+                RELOADABLE_BUILDER, Set.of(Wayfinder.MOD_ID)));
 
         generator.addProvider(true, new LangGenerator(output, "en_us"));
         generator.addProvider(true, new SoundDefinitionsGenerator(output));
         generator.addProvider(true, new ModelGenerator(output));
-        generator.addProvider(true, new LootGenerator(output, lookupProvider));
-        generator.addProvider(true, new AdvancementGenerator(output, lookupProvider));
         generator.addProvider(true, new EntityTypeTagsGenerator(output, lookupProvider));
         generator.addProvider(true, new BlockTagsGenerator(output, lookupProvider));
         generator.addProvider(true, new ItemTagsGenerator(output, lookupProvider));
@@ -240,25 +239,15 @@ class NeoForgeDatagen {
         }
     }
 
-
-    private static class LootGenerator extends LootTableProvider {
-        private LootGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-            super(output, Collections.emptySet(), ImmutableList.of(
-                    new SubProviderEntry(EntityLootGenerator::new, LootContextParamSets.ENTITY),
-                    new SubProviderEntry(AdvancementLootGenerator::new, LootContextParamSets.ADVANCEMENT_REWARD)
-            ), registries);
-        }
-    }
-
     private static class EntityLootGenerator extends EntityLootSubProvider {
         private static final ArrayList<EntityType<?>> knownEntities = new ArrayList<>();
-        private EntityLootGenerator(HolderLookup.Provider registries) {
-            super(FeatureFlags.REGISTRY.allFlags(), registries);
+        private EntityLootGenerator(LootTableSubProvider.Context output) {
+            super(FeatureFlags.REGISTRY.allFlags(), output);
         }
 
         @Override
         public void generate() {
-            add(WayfinderEntityTypes.WAYFINDER.get(), LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(LootItem.lootTableItem(Items.BOOK))));
+            add(WayfinderEntityTypes.WAYFINDER.get(), LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ContextIntProviders.exactly(1)).add(LootItem.lootTableItem(Items.BOOK))));
         }
 
         @Override
@@ -276,145 +265,142 @@ class NeoForgeDatagen {
     private static final ResourceKey<LootTable> bookTable = Wayfinder.key(Registries.LOOT_TABLE, "book");
     private static final ResourceKey<LootTable> sweetDreamsTable = Wayfinder.key(Registries.LOOT_TABLE, "music_disc/sweet_dreams");
 
-    private static class AdvancementLootGenerator implements LootTableSubProvider {
+    private record AdvancementLootGenerator(Context output) implements LootTableSubProvider {
+        @Override
+            public void run() {
+                output.accept(bookTable, LootTable.lootTable().withPool(LootPool.lootPool()
+                        .add(LootItem.lootTableItem(Items.WRITTEN_BOOK)
+                                .apply(SetWrittenBookPagesFunction.simpleBuilder(_ ->
+                                        new SetWrittenBookPagesFunction(Optional.empty(),
+                                                List.of(
+                                                        Filterable.passThrough(Component.translatable("wayfinder.book.story.page1")),
+                                                        Filterable.passThrough(Component.translatable("wayfinder.book.story.page2")),
+                                                        Filterable.passThrough(Component.translatable("wayfinder.book.story.page3")),
+                                                        Filterable.passThrough(Component.translatable("wayfinder.book.story.page4"))),
+                                                ListOperation.Append.INSTANCE))))));
 
-        private AdvancementLootGenerator(HolderLookup.Provider registries) {}
+                output.accept(sweetDreamsTable, LootTable.lootTable().withPool(LootPool.lootPool().add(LootItem.lootTableItem(WayfinderItems.MUSIC_DISC_SWEET_DREAMS.get()))));
+            }
+        }
+
+
+    private static class AdvancementGenerator extends AdvancementSubProvider {
+        protected AdvancementGenerator(BootstrapContext<Advancement> output) {
+            super(output);
+        }
 
         @Override
-        public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> output) {
-            output.accept(bookTable, LootTable.lootTable().withPool(LootPool.lootPool()
-                    .add(LootItem.lootTableItem(Items.WRITTEN_BOOK)
-                            .apply(SetWrittenBookPagesFunction.simpleBuilder(_ ->
-                                    new SetWrittenBookPagesFunction(List.of(),
-                                            List.of(
-                                                    Filterable.passThrough(Component.translatable("wayfinder.book.story.page1")),
-                                                    Filterable.passThrough(Component.translatable("wayfinder.book.story.page2")),
-                                                    Filterable.passThrough(Component.translatable("wayfinder.book.story.page3")),
-                                                    Filterable.passThrough(Component.translatable("wayfinder.book.story.page4"))),
-                                            ListOperation.Append.INSTANCE))))));
+        public void generate() {
+            AdvancementHolder root = Advancement.Builder.advancement()
+                    .addCriterion("near_heartblock", WayfinderHeartBlockTrigger.TriggerInstance.wayFinderHeartBlock())
+                    .rootDisplay(
+                            Items.WRITTEN_BOOK,
+                            translateAble("a_tale_as_old_as_time.title"),
+                            translateAble("a_tale_as_old_as_time.description"),
+                            Identifier.withDefaultNamespace("block/moss_block"), AdvancementType.TASK, true, false, true
+                    )
+                    .rewards(AdvancementRewards.Builder.loot(output.lookup(Registries.LOOT_TABLE).getOrThrow(bookTable)))
+                    .save(output, Wayfinder.id(Wayfinder.MOD_ID + "/a_tale_as_old_as_time"));
 
-            output.accept(sweetDreamsTable, LootTable.lootTable().withPool(LootPool.lootPool().add(LootItem.lootTableItem(WayfinderItems.MUSIC_DISC_SWEET_DREAMS.get()))));
-        }
-    }
+            AdvancementHolder soItBegins = Advancement.Builder.advancement()
+                    .addCriterion("summon_wayfinder", SummonedEntityTrigger.TriggerInstance.summonedEntity(EntityPredicate.Builder.entity().of(output.lookup(Registries.ENTITY_TYPE), WayfinderEntityTypes.WAYFINDER.get())))
+                    .display(
+                            Items.EMERALD,
+                            translateAble("so_it_begins.title"),
+                            translateAble("so_it_begins.description"),
+                            AdvancementType.TASK, true, true, true
+                    )
+                    .parent(root)
+                    .save(output, Wayfinder.id(Wayfinder.MOD_ID + "/so_it_begins"));
 
-    private static class AdvancementGenerator extends AdvancementProvider {
-        private AdvancementGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-            super(output, registries, ImmutableList.of(new Generator()));
-        }
+            AdvancementHolder firstOfMany = Advancement.Builder.advancement()
+                    .addCriterion("get_to_biome", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome())
+                    .display(
+                            Items.MAP,
+                            translateAble("first_of_many.title"),
+                            translateAble("first_of_many.description"),
+                            AdvancementType.TASK, true, true, false
+                    )
+                    .parent(soItBegins)
+                    .save(output, Wayfinder.id(Wayfinder.MOD_ID + "/first_of_many"));
 
-        private static class Generator implements AdvancementSubProvider {
-            @Override
-            public void generate(HolderLookup.@NonNull Provider registries, @NonNull Consumer<AdvancementHolder> writer) {
-                AdvancementHolder root = Advancement.Builder.advancement()
-                        .addCriterion("near_heartblock", WayfinderHeartBlockTrigger.TriggerInstance.wayFinderHeartBlock())
-                        .display(
-                                Items.WRITTEN_BOOK,
-                                translateAble("a_tale_as_old_as_time.title"),
-                                translateAble("a_tale_as_old_as_time.description"),
-                                Identifier.withDefaultNamespace("block/moss_block"), AdvancementType.TASK, true, false, true
-                        )
-                        .rewards(AdvancementRewards.Builder.loot(bookTable))
-                        .save(writer, Wayfinder.id(Wayfinder.MOD_ID + "/a_tale_as_old_as_time"));
+            Advancement.Builder.advancement()
+                    .addCriterion("get_to_biome_in_nether", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(Level.NETHER))
+                    .display(
+                            Items.NETHERRACK,
+                            translateAble("boiling_journeys.title"),
+                            translateAble("boiling_journeys.description"),
+                            AdvancementType.TASK, true, true, false
+                    )
+                    .parent(firstOfMany)
+                    .save(output, Wayfinder.id(Wayfinder.MOD_ID + "/boiling_journeys"));
 
-                AdvancementHolder soItBegins = Advancement.Builder.advancement()
-                        .addCriterion("summon_wayfinder", SummonedEntityTrigger.TriggerInstance.summonedEntity(EntityPredicate.Builder.entity().of(registries.lookupOrThrow(Registries.ENTITY_TYPE), WayfinderEntityTypes.WAYFINDER.get())))
-                        .display(
-                                Items.EMERALD,
-                                translateAble("so_it_begins.title"),
-                                translateAble("so_it_begins.description"),
-                                null, AdvancementType.TASK, true, true, true
-                        )
-                        .parent(root)
-                        .save(writer, Wayfinder.id(Wayfinder.MOD_ID + "/so_it_begins"));
+            Advancement.Builder.advancement()
+                    .addCriterion("get_to_biome_in_end", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(Level.END))
+                    .display(
+                            Items.END_STONE,
+                            translateAble("familiar_lands.title"),
+                            translateAble("familiar_lands.description"),
+                            AdvancementType.TASK, true, true, false
+                    )
+                    .parent(firstOfMany)
+                    .save(output, Wayfinder.id(Wayfinder.MOD_ID + "/familiar_lands"));
 
-                AdvancementHolder firstOfMany = Advancement.Builder.advancement()
-                        .addCriterion("get_to_biome", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome())
-                        .display(
-                                Items.MAP,
-                                translateAble("first_of_many.title"),
-                                translateAble("first_of_many.description"),
-                                null, AdvancementType.TASK, true, true, false
-                        )
-                        .parent(soItBegins)
-                        .save(writer, Wayfinder.id(Wayfinder.MOD_ID + "/first_of_many"));
+            AdvancementHolder Beginner = Advancement.Builder.advancement()
+                    .addCriterion("3_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 3))
+                    .display(
+                            Items.LEATHER_BOOTS,
+                            translateAble("beginner.title"),
+                            translateAble("beginner.description"),
+                            AdvancementType.TASK, true, true, false
+                    )
+                    .parent(firstOfMany)
+                    .save(output, Wayfinder.id(Wayfinder.MOD_ID + "/beginner"));
 
-                Advancement.Builder.advancement()
-                        .addCriterion("get_to_biome_in_nether", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(Level.NETHER))
-                        .display(
-                                Items.NETHERRACK,
-                                translateAble("boiling_journeys.title"),
-                                translateAble("boiling_journeys.description"),
-                                null, AdvancementType.TASK, true, true, false
-                        )
-                        .parent(firstOfMany)
-                        .save(writer, Wayfinder.id(Wayfinder.MOD_ID + "/boiling_journeys"));
+            AdvancementHolder Novice = Advancement.Builder.advancement()
+                    .addCriterion("5_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 5))
+                    .display(
+                            Items.GOLDEN_BOOTS,
+                            translateAble("novice.title"),
+                            translateAble("novice.description"),
+                            AdvancementType.TASK, true, true, false
+                    )
+                    .parent(Beginner)
+                    .save(output, Wayfinder.id(Wayfinder.MOD_ID + "/novice"));
 
-                Advancement.Builder.advancement()
-                        .addCriterion("get_to_biome_in_end", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(Level.END))
-                        .display(
-                                Items.END_STONE,
-                                translateAble("familiar_lands.title"),
-                                translateAble("familiar_lands.description"),
-                                null, AdvancementType.TASK, true, true, false
-                        )
-                        .parent(firstOfMany)
-                        .save(writer, Wayfinder.id(Wayfinder.MOD_ID + "/familiar_lands"));
+            AdvancementHolder Intermediate = Advancement.Builder.advancement()
+                    .addCriterion("8_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 8))
+                    .display(
+                            Items.DIAMOND_BOOTS,
+                            translateAble("intermediate.title"),
+                            translateAble("intermediate.description"),
+                            AdvancementType.TASK, true, true, false
+                    )
+                    .parent(Novice)
+                    .save(output, Wayfinder.id(Wayfinder.MOD_ID + "/intermediate"));
 
-                AdvancementHolder Beginner = Advancement.Builder.advancement()
-                        .addCriterion("3_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 3))
-                        .display(
-                                Items.LEATHER_BOOTS,
-                                translateAble("beginner.title"),
-                                translateAble("beginner.description"),
-                                null, AdvancementType.TASK, true, true, false
-                        )
-                        .parent(firstOfMany)
-                        .save(writer, Wayfinder.id(Wayfinder.MOD_ID + "/beginner"));
+            Advancement.Builder.advancement()
+                    .addCriterion("12_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 12))
+                    .display(
+                            Items.NETHERITE_BOOTS,
+                            translateAble("ultimate.title"),
+                            translateAble("ultimate.description"),
+                            AdvancementType.TASK, true, true, false
+                    )
+                    .rewards(new AdvancementRewards.Builder().addLootTable(output.lookup(Registries.LOOT_TABLE).getOrThrow(sweetDreamsTable)).build())
+                    .parent(Intermediate)
+                    .save(output, Wayfinder.id(Wayfinder.MOD_ID + "/ultimate"));
 
-                AdvancementHolder Novice = Advancement.Builder.advancement()
-                        .addCriterion("5_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 5))
-                        .display(
-                                Items.GOLDEN_BOOTS,
-                                translateAble("novice.title"),
-                                translateAble("novice.description"),
-                                null, AdvancementType.TASK, true, true, false
-                        )
-                        .parent(Beginner)
-                        .save(writer, Wayfinder.id(Wayfinder.MOD_ID + "/novice"));
-
-                AdvancementHolder Intermediate = Advancement.Builder.advancement()
-                        .addCriterion("8_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 8))
-                        .display(
-                                Items.DIAMOND_BOOTS,
-                                translateAble("intermediate.title"),
-                                translateAble("intermediate.description"),
-                                null, AdvancementType.TASK, true, true, false
-                        )
-                        .parent(Novice)
-                        .save(writer, Wayfinder.id(Wayfinder.MOD_ID + "/intermediate"));
-
-                Advancement.Builder.advancement()
-                        .addCriterion("12_3k_journeys", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(3000, 12))
-                        .display(
-                                Items.NETHERITE_BOOTS,
-                                translateAble("ultimate.title"),
-                                translateAble("ultimate.description"),
-                                null, AdvancementType.TASK, true, true, false
-                        )
-                        .rewards(new AdvancementRewards.Builder().addLootTable(sweetDreamsTable).build())
-                        .parent(Intermediate)
-                        .save(writer, Wayfinder.id(Wayfinder.MOD_ID + "/ultimate"));
-
-                Advancement.Builder.advancement()
-                        .addCriterion("kill_wayfinder", WayfinderOwnerKilledTrigger.TriggerInstance.ownerKilledWayfinder())
-                        .display(
-                                Items.BOOK,
-                                translateAble("ultimate_betrayal.title"),
-                                translateAble("ultimate_betrayal.description"),
-                                null, AdvancementType.CHALLENGE, true, true, true
-                        )
-                        .parent(soItBegins)
-                        .save(writer, Wayfinder.id(Wayfinder.MOD_ID + "/ultimate_betrayal"));
+            Advancement.Builder.advancement()
+                    .addCriterion("kill_wayfinder", WayfinderOwnerKilledTrigger.TriggerInstance.ownerKilledWayfinder())
+                    .display(
+                            Items.BOOK,
+                            translateAble("ultimate_betrayal.title"),
+                            translateAble("ultimate_betrayal.description"),
+                            AdvancementType.CHALLENGE, true, true, true
+                    )
+                    .parent(soItBegins)
+                    .save(output, Wayfinder.id(Wayfinder.MOD_ID + "/ultimate_betrayal"));
 
 //                Advancement.Builder.advancement()
 //                        .addCriterion("bwg_biome", WayfinderGotToBiomeTrigger.TriggerInstance.gotToBiome(BiomesWeveGone.MOD_ID))
@@ -425,12 +411,11 @@ class NeoForgeDatagen {
 //                                null, AdvancementType.CHALLENGE, true, false, true
 //                        )
 //                        .parent(firstOfMany)
-//                        .save(writer, Wayfinder.id(BiomesWeveGone.MOD_ID + "/boundless_exploration"));
-            }
+//                        .save(output, Wayfinder.id(BiomesWeveGone.MOD_ID + "/boundless_exploration"));
+        }
 
-            private static MutableComponent translateAble(String key) {
-                return Component.translatable( "advancements." + Wayfinder.MOD_ID +"." + key);
-            }
+        private static MutableComponent translateAble(String key) {
+            return Component.translatable( "advancements." + Wayfinder.MOD_ID +"." + key);
         }
     }
 
@@ -480,7 +465,14 @@ class NeoForgeDatagen {
         }
     }
 
-    private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
-            .add(Registries.PROCESSOR_LIST, pContext -> WayfinderProcessorLists.PROCESSOR_LIST_FACTORIES.forEach((structureProcessorListResourceKey, processorListFactory) -> pContext.register(structureProcessorListResourceKey, processorListFactory.generate(pContext.lookup(Registries.PROCESSOR_LIST)))))
-            .add(Registries.JUKEBOX_SONG, pContext -> WayfinderJukeboxSongs.JUKEBOX_SONG_FACTORIES.forEach((songResourceKey, songFactory) -> pContext.register(songResourceKey, songFactory.generate(pContext))));
+    private static final RegistrySetBuilder WORLD_BUILDER = new RegistrySetBuilder()
+        .add(Registries.PROCESSOR_LIST, pContext -> WayfinderProcessorLists.PROCESSOR_LIST_FACTORIES.forEach((structureProcessorListResourceKey, processorListFactory) -> pContext.register(structureProcessorListResourceKey, processorListFactory.generate(pContext.lookup(Registries.PROCESSOR_LIST)))))
+        .add(Registries.JUKEBOX_SONG, pContext -> WayfinderJukeboxSongs.JUKEBOX_SONG_FACTORIES.forEach((songResourceKey, songFactory) -> pContext.register(songResourceKey, songFactory.generate(pContext))));
+
+    private static final RegistrySetBuilder RELOADABLE_BUILDER = new RegistrySetBuilder()
+        .add(Registries.LOOT_TABLE, new LootTableProvider(Set.of(), List.of(
+                        new LootTableProvider.SubProviderEntry(EntityLootGenerator::new, LootContextParamSets.ENTITY),
+                        new LootTableProvider.SubProviderEntry(AdvancementLootGenerator::new, LootContextParamSets.ADVANCEMENT_REWARD)
+                )))
+        .add(Registries.ADVANCEMENT, new AdvancementProvider(List.of(AdvancementGenerator::new)));
 }

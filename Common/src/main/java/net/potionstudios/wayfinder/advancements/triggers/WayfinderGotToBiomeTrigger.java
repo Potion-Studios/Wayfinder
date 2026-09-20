@@ -2,15 +2,15 @@ package net.potionstudios.wayfinder.advancements.triggers;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.predicates.ContextAwarePredicate;
-import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.potionstudios.wayfinder.PlatformHandler;
 import org.jspecify.annotations.NonNull;
 
@@ -26,10 +26,10 @@ public class WayfinderGotToBiomeTrigger extends SimpleCriterionTrigger<Wayfinder
         super.trigger(player, triggerInstance -> triggerInstance.matches(player, biome, level, distance));
     }
 
-    public record TriggerInstance(Optional<ContextAwarePredicate> player, Optional<ResourceKey<Biome>> biome, Optional<ResourceKey<Level>> level, Optional<Integer> distance, Optional<Integer> threeKJourneys, Optional<String> modid) implements SimpleCriterionTrigger.SimpleInstance {
+    public record TriggerInstance(Optional<Holder<LootItemCondition>> player, Optional<ResourceKey<Biome>> biome, Optional<ResourceKey<Level>> level, Optional<Integer> distance, Optional<Integer> threeKJourneys, Optional<String> modid) implements SimpleCriterionTrigger.SimpleInstance {
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
-                            EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
+                            LootItemCondition.CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
                             ResourceKey.codec(Registries.BIOME).optionalFieldOf("biome").forGetter(TriggerInstance::biome),
                             ResourceKey.codec(Registries.DIMENSION).optionalFieldOf("level").forGetter(TriggerInstance::level),
                             Codec.INT.optionalFieldOf("distance").forGetter(TriggerInstance::distance),

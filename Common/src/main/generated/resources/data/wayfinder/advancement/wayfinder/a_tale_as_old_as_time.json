@@ -24,9 +24,7 @@
     ]
   ],
   "rewards": {
-    "loot": [
-      "wayfinder:book"
-    ]
+    "loot": "wayfinder:book"
   },
   "sends_telemetry_event": true
 }

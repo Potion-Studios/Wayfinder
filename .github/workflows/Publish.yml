@@ -7,6 +7,7 @@ on:
       - 1.21.11
       - 26.1.2
       - 26.2
+      - 26.3
 
 jobs:
   publish-and-release:
@@ -18,9 +19,9 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Set up JDK 25
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
-          distribution: adopt
+          distribution: oracle
           java-version: 25
           cache: gradle
 
@@ -61,9 +62,9 @@ jobs:
         if: steps.gate.outputs.is_release == 'true'
         run: ./gradlew :neoforge:publishMod
 
-      - name: Publish Forge
-        if: steps.gate.outputs.is_release == 'true'
-        run: ./gradlew :forge:publishMod
+#      - name: Publish Forge
+#        if: steps.gate.outputs.is_release == 'true'
+#        run: ./gradlew :forge:publishMod
 
       - name: Check if release exists
         if: steps.gate.outputs.is_release == 'true'
