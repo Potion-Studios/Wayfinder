@@ -32,7 +32,7 @@ dependencies {
 
     localRuntime("me.djtheredstoner:DevAuth-forge-latest:${providers.gradleProperty("devauth_version").get()}")
 
-//    api("com.geckolib:geckolib-forge-$minecraftVersion:${providers.gradleProperty("geckolib_version").get()}")
+    api("com.geckolib:geckolib-forge-$minecraftVersion:${providers.gradleProperty("geckolib_version").get()}")
 
     compileOnly("net.luckperms:api:5.5")
 }
