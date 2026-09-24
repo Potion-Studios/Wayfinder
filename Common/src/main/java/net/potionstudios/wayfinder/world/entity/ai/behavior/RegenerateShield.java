@@ -2,6 +2,8 @@ package net.potionstudios.wayfinder.world.entity.ai.behavior;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.ai.behavior.Behavior;
+import net.minecraft.world.entity.ai.memory.MemoryStatus;
+import net.potionstudios.wayfinder.world.entity.ai.memory.WayfinderMemoryModuleType;
 import net.potionstudios.wayfinder.world.entity.wayfinder.WayfinderEntity;
 import org.jspecify.annotations.NonNull;
 
@@ -11,7 +13,7 @@ public class RegenerateShield extends Behavior<WayfinderEntity> {
     private int counter = 0;
 
     public RegenerateShield() {
-        super(Map.of(), 200);
+        super(Map.of(WayfinderMemoryModuleType.IS_RESTING.get(), MemoryStatus.VALUE_PRESENT), 200);
     }
 
     @Override
