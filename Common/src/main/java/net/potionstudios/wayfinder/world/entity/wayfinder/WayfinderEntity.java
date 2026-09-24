@@ -102,26 +102,12 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     private static final EntityDataAccessor<Boolean> DATA_REST = SynchedEntityData.defineId(WayfinderEntity.class, EntityDataSerializers.BOOLEAN);
     private static final Brain.Provider<WayfinderEntity> BRAIN_PROVIDER = Brain.provider(
             List.of(
-                    MemoryModuleType.PATH,
-                    MemoryModuleType.LOOK_TARGET,
-                    MemoryModuleType.NEAREST_LIVING_ENTITIES,
-                    MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES,
-                    MemoryModuleType.NEAREST_PLAYERS,
-                    MemoryModuleType.WALK_TARGET,
-                    MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
-                    MemoryModuleType.HURT_BY,
-                    MemoryModuleType.DANGER_DETECTED_RECENTLY,
-                    MemoryModuleType.IS_PANICKING,
-                    WayfinderMemoryModuleType.IS_RESTING.get(),
-                    WayfinderMemoryModuleType.JOURNEY_TARGET_POS.get()
-            ),
-            List.of(
                     SensorType.NEAREST_LIVING_ENTITIES,
                     SensorType.NEAREST_PLAYERS,
                     SensorType.HURT_BY,
                     WayfinderSensorType.WAYFINDER_SCARE_DETECTED.get()
             ),
-            var0 -> WayfinderAi.getActivities()
+            _ -> WayfinderAi.getActivities()
     );
 
     private int foundBiomeTick = -20 * Wayfinder.CONFIG.wayfinder.COOLDOWN.value();
