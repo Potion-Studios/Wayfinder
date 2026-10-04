@@ -1,3 +1,5 @@
+# 1.2.5
+
 # 1.2.4
 - Remove use of Deprecated Brain#provider method
 
