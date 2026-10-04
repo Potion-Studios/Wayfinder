@@ -1,4 +1,5 @@
 # 1.2.5
+- Change Wayfinder Shrine weight from 2 to 1 to reduce the amount of shrines that spawn in villages
 
 # 1.2.4
 - Remove use of Deprecated Brain#provider method
