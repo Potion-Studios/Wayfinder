@@ -127,6 +127,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
+    public boolean removeWhenFarAway(double distSqr) {
+        return false;
+    }
+
+    @Override
     protected @NonNull Brain<WayfinderEntity> makeBrain(Brain.@NonNull Packed packedBrain) {
         Brain<WayfinderEntity> brain = BRAIN_PROVIDER.makeBrain(this, packedBrain);
         brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
