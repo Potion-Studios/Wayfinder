@@ -142,6 +142,11 @@ public class WayfinderEntity extends PathfinderMob implements GeoEntity, Ownable
     }
 
     @Override
+    public boolean removeWhenFarAway(double distSqr) {
+        return false;
+    }
+
+    @Override
     protected Brain.@NotNull Provider<WayfinderEntity> brainProvider() {
         return Brain.provider(MEMORY_TYPES, SENSOR_TYPES);
     }
