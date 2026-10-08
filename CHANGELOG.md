@@ -1,3 +1,6 @@
+# 1.2.7
+- Set Wayfinder Entity Type Category to Creature
+
 # 1.2.6
 - Fix Wayfinder Despawning
 
