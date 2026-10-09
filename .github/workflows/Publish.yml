@@ -7,6 +7,7 @@ on:
       - 1.21.11
       - 26.1.2
       - 26.2
+      - 26.3
 
 jobs:
   publish-and-release:
@@ -18,9 +19,9 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Set up JDK 25
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
-          distribution: adopt
+          distribution: oracle
           java-version: 25
           cache: gradle
 
@@ -71,7 +72,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG="v${{ steps.gate.outputs.version }}"
+          TAG="${{ steps.gate.outputs.version }}"
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
             echo "release_exists=true" >> $GITHUB_OUTPUT
             echo "Release $TAG already exists, will append jars."
